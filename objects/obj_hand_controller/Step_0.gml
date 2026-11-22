@@ -165,7 +165,7 @@ next_turn_energy_bonus = 0;
 turn_played_ids = [];
 wind_blade_bonus = 0;
 witch_chant_used = false;
-starter_played_this_turn = false;
+starter_played_this_turn = array_create(4, false);
 starfire_ready = (get_status(char_1, StatusType.STARFIRE) > 0);
 
 // 新回合：护甲清零（疾风步的"护甲保留"这一次不清零）；临时魔力、熔岩加护结束
@@ -557,7 +557,7 @@ if (released_id == 23)
     var starter_before_starfire = false;
     for (var si = 0; si < array_length(turn_played_ids) - 1; si++)
     {
-        if (card_is_starter(turn_played_ids[si])) starter_before_starfire = true;
+        if (card_is_starter(turn_played_ids[si]) && card_get_owner(turn_played_ids[si]) == 1) starter_before_starfire = true;
     }
     starfire_ready = !starter_before_starfire;
 }
@@ -666,8 +666,14 @@ if (released_id == 3 && char_is_alive(card_owner)
 }
 
 // 女巫吟唱：每回合第一次打出初始牌，倒计时1后重放
-var first_hand_starter_this_turn = card_is_starter(released_id) && !starter_played_this_turn;
-if (card_is_starter(released_id)) starter_played_this_turn = true;
+var starter_owner_for_turn = card_get_owner(released_id);
+var first_hand_starter_this_turn = card_is_starter(released_id)
+    && starter_owner_for_turn > 0
+    && !starter_played_this_turn[starter_owner_for_turn];
+if (card_is_starter(released_id) && starter_owner_for_turn > 0)
+{
+    starter_played_this_turn[starter_owner_for_turn] = true;
+}
 
 if (first_hand_starter_this_turn && char_is_alive(card_owner)
 && get_status(card_owner, StatusType.WITCH_CHANT) > 0 && !witch_chant_used)
