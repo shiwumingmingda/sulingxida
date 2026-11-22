@@ -43,7 +43,7 @@ function card_info(_id)
         case 27: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 掌中微日
         case 28: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.NONE, 0);       // 火凝·连珠
         case 29: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 1);       // 火凝·燎原
-        case 30: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 2);       // 狂风·凝盾
+        case 30: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 狂风·凝盾
         case 31: return card_make_info(CardType.ATTACK, 0, Rarity.RARE, false, TargetKind.NONE, 2);       // 狂风·流羽
         case 32: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 冰寒·落雨
 
