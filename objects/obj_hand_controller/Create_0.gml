@@ -767,6 +767,7 @@ wind_blade_bonus = 0;
 rock_wall_ready = false;
 selection_active = false;
 selection_cards = [];
+selection_hover_card = noone;
 selection_action = { kind: "" };
 selection_queue = [];
     // 销毁手上所有卡牌实例
