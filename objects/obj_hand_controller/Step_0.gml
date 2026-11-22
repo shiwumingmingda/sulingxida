@@ -687,6 +687,15 @@ if (try_play && target != noone && target.is_dead)
     warning_text = "该角色已阵亡";
     warning_timer = 90;
 }
+// 需要其他友方角色的牌不能选择尘自己。
+if (try_play && (released_card.card_id == 110 || released_card.card_id == 135 || released_card.card_id == 139)
+&& target == char_2)
+{
+    try_play = false;
+    warning_text = "请选择其他友方角色";
+    warning_timer = 90;
+}
+
 // 需要手牌里有指定的牌才能打出（比如风助火势需要风刃）
 var need_id = card_requirement(released_card.card_id);
 
@@ -940,13 +949,21 @@ if (char_is_alive(char_2) && char_2.team_echo_active && (ctype == CardType.ATTAC
 
     if (actor_id > 0 && !team_echo_used[actor_id])
     {
-        var has_scry = false;
+        var has_modal = false;
         var echo_effects = card_current_effects(released_card);
         for (var ei = 0; ei < array_length(echo_effects); ei++)
-            if (echo_effects[ei].type == EffectType.SCRY) has_scry = true;
+        {
+            var echo_effect = echo_effects[ei];
+            if (echo_effect.type == EffectType.SCRY || echo_effect.type == EffectType.SELECT_HAND)
+                has_modal = true;
+
+            if (echo_effect.type == EffectType.CUSTOM
+            && (echo_effect.action == "discard_choose" || echo_effect.action == "wish_discover"))
+                has_modal = true;
+        }
 
         team_echo_used[actor_id] = true;
-        if (!has_scry)
+        if (!has_modal)
             card_play_effects(released_card, effect_target, hit_enemy);
     }
 }
@@ -957,7 +974,7 @@ if (ctype == CardType.ATTACK && char_is_alive(char_2) && char_2.star_bond_active
 {
     var bond_shot = instance_create_layer(char_2.x, char_2.y, "Instances", obj_star_projectile);
     bond_shot.target_enemy = enemies[0];
-    bond_shot.damage = 5;
+    bond_shot.damage = 5 + (char_2.star_damage_bonus_active ? 2 : 0);
     bond_shot.damage_type = DamageType.MAGIC;
 }
 
