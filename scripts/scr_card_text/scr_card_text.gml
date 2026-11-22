@@ -144,7 +144,7 @@ function card_get_description(_inst)
         case 109: return "造成25点伤害";
         case 110: return "令一名其他友方角色和尘各获得3点护甲";
         case 111: return "造成7点物理伤害，获得1点星光";
-        case 112: return "令一名敌方角色进入前场，然后造成6点伤害";
+        case 112: return "令一名敌方角色进入前场，然后造成" + string(card_effect_at(_inst, 0)) + "点伤害";
         case 113: return "观看弃牌堆中随机5张牌，选择至多2张置入手牌";
         case 114: return "造成6点法术伤害，你每有1点星光，此伤害额外+1";
         case 115: return "固有。造成6点物理伤害；若此牌是本回合使用的第一张牌，获得1点星光";
@@ -163,7 +163,7 @@ function card_get_description(_inst)
         case 128: return "获得10点物理护甲和10点法术护甲";
         case 129: return "本回合所有友方角色获得3点力量和3点魔力";
         case 130: return "远程。移除目标12点护甲";
-        case 131: return "对随机敌人造成1点法术伤害，重复7次";
+        case 131: return "对随机敌人造成" + string(card_effect_at(_inst, 0)) + "点法术伤害，重复7次";
         case 132: return "造成28点物理伤害。尘每使用过一张攻击牌，此牌费用降低1点";
         case 133: return "进入前场，获得5点护甲。若下回合开始前未受到伤害，额外获得3点护甲";
         case 134: return "令所有敌方角色失去3点力量和3点魔力，然后此牌费用+1";
