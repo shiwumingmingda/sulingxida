@@ -333,7 +333,10 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
     var min_elite = _floor;
     var min_treasure = 2;
 
+    var min_battle = 8;
+
     var required_types = [
+        [NodeType.BATTLE, min_battle],
         [NodeType.TREASURE, min_treasure],
         [NodeType.CAMP, min_camp],
         [NodeType.ELITE, min_elite],
@@ -373,11 +376,11 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
         var roll = irandom(99);
         var new_type = NodeType.BATTLE;
 
-        if (roll < 43)
+        if (roll < 52)
             new_type = NodeType.BATTLE;
-        else if (roll < 78)
+        else if (roll < 80)
             new_type = NodeType.EVENT;
-        else if (roll < 83)
+        else if (roll < 84)
             new_type = NodeType.CAMP;
         else if (roll < 87)
             new_type = NodeType.TREASURE;
@@ -397,34 +400,12 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
 
     map.type[map.boss_i] = NodeType.BOSS;
 
-    // 7. 开局不直接揭露空地和普通节点。
-    // 未探索的战斗类节点显示“凶煞”，其他未探索节点显示“隐秘”；
-    // 首领位置始终公开。实际空地只有进入视野后才会显示为空地。
+    // 7. 开局揭露所有真正的空地和首领。
+    // 其他未探索节点仍然显示类别提示：战斗类为“凶煞”，非战斗类为“隐秘”。
     for (var reveal_i = 0; reveal_i < n; reveal_i++)
     {
-        if (map.type[reveal_i] == NodeType.BOSS)
+        if (map.type[reveal_i] == NodeType.EMPTY || map.type[reveal_i] == NodeType.BOSS)
             map.revealed[reveal_i] = true;
-    }
-
-    // 瞭望点：进入地图时揭露自身 3x3 范围内的格子。
-    for (var lookout_i = 0; lookout_i < n; lookout_i++)
-    {
-        if (map.type[lookout_i] != NodeType.LOOKOUT) continue;
-
-        var lx = lookout_i mod _w;
-        var ly = lookout_i div _w;
-
-        for (var oy = -1; oy <= 1; oy++)
-        {
-            for (var ox = -1; ox <= 1; ox++)
-            {
-                var nx = lx + ox;
-                var ny = ly + oy;
-
-                if (nx >= 0 && nx < _w && ny >= 0 && ny < _h)
-                    map.revealed[ny * _w + nx] = true;
-            }
-        }
     }
 
     // 8. 首领先锋：2 层 1 个，3 层 3 个；1 层不生成。
@@ -452,7 +433,6 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
     var lookout_total = 0;
     var realm_total = 0;
     var camp_total = 0;
-    var elite_total = 0;
     var treasure_total = 0;
     var merchant_total = 0;
     var tribe_total = 0;
