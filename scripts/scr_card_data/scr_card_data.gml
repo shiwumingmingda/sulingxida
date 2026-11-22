@@ -950,12 +950,30 @@ if (owner == noone) owner = _receiver;
             // 力量：物理伤害 +1/层；魔力和临时魔力：魔法伤害 +1/层
 if (dt == DamageType.PHYSICAL)
 {
-    v += get_status(owner, StatusType.STRENGTH);
+    v += get_status(owner, StatusType.STRENGTH) + get_status(owner, StatusType.TEMP_STRENGTH);
 }
 else
 {
     v += get_status(owner, StatusType.MAGIC_POWER) + get_status(owner, StatusType.TEMP_MAGIC);
 }
+
+
+            // 星幕：全队伤害提高
+            if (instance_exists(obj_hand_controller.char_2) && obj_hand_controller.char_2.star_damage_bonus_active)
+                v += 2;
+
+            // 落星：伤害随当前星光增加
+            if (variable_struct_exists(_e, "bonus_starlight") && instance_exists(obj_hand_controller.char_2))
+                v += obj_hand_controller.char_2.starlight;
+
+            // 客星：其他友方角色本回合先打出过攻击牌
+            if (variable_struct_exists(_e, "other_attack_bonus"))
+            {
+                var other_attacked = false;
+                for (var ai = 1; ai <= 4; ai++)
+                    if (ai != 2 && obj_hand_controller.attack_used_this_turn[ai]) other_attacked = true;
+                if (other_attacked) v += _e.other_attack_bonus;
+            }
 
             // 剑招：带剑招标签的牌，所有伤害 +N
             if (card_has_tag(_inst.card_id, CardTag.SWORD))
@@ -1153,12 +1171,10 @@ function card_apply_effect(_e, _v, _target, _enemy)
         }
 
         if (variable_struct_exists(_e, "on_kill_id") && target_killed)
-        {
-            with (obj_hand_controller)
-            {
-                add_card_to_hand_id(_e.on_kill_id, _e.on_kill_cost, 0);
-            }
-        }
+            with (obj_hand_controller) add_card_to_hand_id(_e.on_kill_id, _e.on_kill_cost, 0);
+
+        if (variable_struct_exists(_e, "on_kill_starlight") && target_killed)
+            add_starlight(obj_hand_controller.char_2, _e.on_kill_starlight);
     }
 }
 break;
@@ -1176,7 +1192,213 @@ break;
                 if (en != _enemy && instance_exists(en))
                 {
                     deal_damage(en, _v, dt_o);
+                    if (variable_struct_exists(_e, "on_kill_starlight") && !instance_exists(en))
+                        add_starlight(obj_hand_controller.char_2, _e.on_kill_starlight);
                 }
+            }
+        }
+        break;
+
+        case EffectType.SCRY:
+            break;
+
+        case EffectType.STAR_PROJECTILE:
+        {
+            var projectile_target = _enemy;
+            if (!instance_exists(projectile_target) && array_length(obj_hand_controller.enemies) > 0)
+                projectile_target = obj_hand_controller.enemies[0];
+            if (instance_exists(projectile_target) && _v > 0)
+            {
+                var shot = instance_create_layer(obj_hand_controller.char_2.x, obj_hand_controller.char_2.y,
+                    "Instances", obj_star_projectile);
+                shot.target_enemy = projectile_target;
+                shot.damage = _v;
+                shot.damage_type = DamageType.MAGIC;
+            }
+        }
+        break;
+
+        case EffectType.ARMOR_BACKLINE:
+        {
+            for (var bi = 0; bi < array_length(obj_hand_controller.back_chars); bi++)
+            {
+                var back_friend = obj_hand_controller.back_chars[bi];
+                if (char_is_alive(back_friend)) add_armor(back_friend, _e.armor, _v);
+            }
+        }
+        break;
+
+        case EffectType.RANDOM_DAMAGE:
+        {
+            var hit_times = variable_struct_exists(_e, "times") ? _e.times : 1;
+            var random_type = variable_struct_exists(_e, "dtype") ? _e.dtype : DamageType.MAGIC;
+            repeat (hit_times)
+            {
+                var living_targets = [];
+                for (var ei = 0; ei < array_length(obj_hand_controller.enemies); ei++)
+                    if (instance_exists(obj_hand_controller.enemies[ei]))
+                        living_targets[array_length(living_targets)] = obj_hand_controller.enemies[ei];
+
+                if (array_length(living_targets) <= 0) break;
+                var random_target = living_targets[irandom(array_length(living_targets) - 1)];
+                deal_damage(random_target, _v, random_type);
+            }
+        }
+        break;
+
+        case EffectType.CUSTOM:
+        {
+            var dust = obj_hand_controller.char_2;
+            switch (_e.action)
+            {
+                case "starseal":
+                    dust.enemy_debuff_turns = 2;
+                    break;
+                case "both_armor":
+                    if (instance_exists(_target) && _target != dust) add_armor(_target, ArmorType.GENERAL, _v);
+                    add_armor(dust, ArmorType.GENERAL, _v);
+                    break;
+                case "pull_and_damage":
+                    if (instance_exists(_enemy))
+                    {
+                        obj_hand_controller.bring_enemy_to_front(_enemy);
+                        deal_damage(_enemy, _v, DamageType.PHYSICAL);
+                    }
+                    break;
+                case "purple_star": dust.purple_star = true; break;
+                case "star_aura": dust.star_damage_bonus_active = true; break;
+                case "long_life":
+                    if (instance_exists(_target)) _target.long_life = true;
+                    break;
+                case "retreat_mark": dust.retreat_mark_target = _enemy; break;
+                case "front_lock":
+                    if (instance_exists(_enemy)) _enemy.force_front = true;
+                    break;
+                case "temp_allies":
+                    for (var ti = 0; ti < array_length(obj_hand_controller.party_insts); ti++)
+                    {
+                        var f = obj_hand_controller.party_insts[ti];
+                        if (!char_is_alive(f)) continue;
+                        add_status(f, StatusType.TEMP_STRENGTH, _v);
+                        add_status(f, StatusType.TEMP_MAGIC, _v);
+                    }
+                    break;
+                case "remove_armor":
+                    if (instance_exists(_enemy))
+                    {
+                        var left = _v;
+                        var cut = min(_enemy.armor_general, left);
+                        _enemy.armor_general -= cut; left -= cut;
+                        cut = min(_enemy.armor_physical, left);
+                        _enemy.armor_physical -= cut; left -= cut;
+                        cut = min(_enemy.armor_magic, left);
+                        _enemy.armor_magic -= cut;
+                    }
+                    break;
+                case "weaken_enemies":
+                    for (var wi = 0; wi < array_length(obj_hand_controller.enemies); wi++)
+                    {
+                        var weak = obj_hand_controller.enemies[wi];
+                        if (!instance_exists(weak)) continue;
+                        add_status(weak, StatusType.STRENGTH_DOWN, _v);
+                        add_status(weak, StatusType.MAGIC_DOWN, _v);
+                    }
+                    break;
+                case "ally_rotate_temp_magic":
+                    if (instance_exists(_target) && _target != dust)
+                    {
+                        obj_hand_controller.rotate_character(_target);
+                        add_status(_target, StatusType.TEMP_MAGIC, _v);
+                    }
+                    break;
+                case "rotate_and_mark":
+                    obj_hand_controller.rotate_character(dust);
+                    obj_hand_controller.mark_random_deck_card();
+                    break;
+                case "showmanship":
+                    obj_hand_controller.bring_to_front(dust);
+                    add_armor(dust, ArmorType.GENERAL, _v);
+                    dust.showmanship_active = true;
+                    dust.showmanship_hit = false;
+                    break;
+                case "next_attack_bonus": dust.next_attack_bonus = _v; break;
+                case "shared_guard":
+                    if (instance_exists(_target) && _target != dust)
+                    {
+                        add_armor(_target, ArmorType.GENERAL, _v);
+                        _target.shared_damage_owner = dust;
+                    }
+                    break;
+                case "assist_star":
+                    if (!dust.assist_star_used)
+                    {
+                        dust.assist_star_used = true;
+                        obj_hand_controller.energy += _v;
+                        var gifts = [];
+                        for (var gi = 105; gi <= 152; gi++)
+                            if (card_get_object(gi) != -1 && card_get_type(gi) != CardType.STATUS)
+                                gifts[array_length(gifts)] = gi;
+                        repeat (2)
+                        {
+                            if (array_length(gifts) <= 0) break;
+                            var gp = irandom(array_length(gifts) - 1);
+                            var gid = gifts[gp];
+                            array_delete(gifts, gp, 1);
+                            obj_hand_controller.add_card_to_hand_id(gid, 0, 0);
+                        }
+                    }
+                    break;
+                case "wish_discover":
+                    var wish_pool = [];
+                    for (var wt = 0; wt < 3; wt++)
+                    {
+                        var ids = [];
+                        for (var id = 101; id <= 152; id++)
+                            if (card_get_type(id) == wt && card_rarity(id) != Rarity.NONE && card_get_object(id) != -1)
+                                ids[array_length(ids)] = id;
+                        if (array_length(ids) > 0)
+                            wish_pool[array_length(wish_pool)] = card_get_object(ids[irandom(array_length(ids) - 1)]);
+                    }
+                    obj_hand_controller.request_discover(wish_pool, array_length(wish_pool), "retain_once");
+                    break;
+                case "star_bond": dust.star_bond_active = true; break;
+                case "heal_allies":
+                    for (var hi = 0; hi < array_length(obj_hand_controller.party_insts); hi++)
+                    {
+                        var hf = obj_hand_controller.party_insts[hi];
+                        if (!char_is_alive(hf)) continue;
+                        heal_hp(hf, _v);
+                        add_armor(hf, ArmorType.MAGIC, 10);
+                    }
+                    break;
+                case "team_echo": dust.team_echo_active = true; break;
+                case "mark_hand_draw":
+                    var num = array_length(obj_hand_controller.hand);
+                    for (var mi = 0; mi < num; mi++)
+                    {
+                        var mc = obj_hand_controller.hand[mi];
+                        if (instance_exists(mc)) mc.star_marked = true;
+                    }
+                    obj_hand_controller.draw_cards(num);
+                    break;
+                case "night_guard": dust.night_guard_active = true; break;
+                case "stars_to_power":
+                    var stars = dust.starlight;
+                    add_status(dust, StatusType.MAGIC_POWER, stars);
+                    add_armor(dust, ArmorType.GENERAL, stars);
+                    break;
+                case "armor_allies_equal":
+                    var total_armor = unit_armor_total(dust);
+                    for (var ai = 0; ai < array_length(obj_hand_controller.party_insts); ai++)
+                    {
+                        var ally = obj_hand_controller.party_insts[ai];
+                        if (char_is_alive(ally) && ally != dust) add_armor(ally, ArmorType.GENERAL, total_armor);
+                    }
+                    break;
+                case "star_walk":
+                    dust.star_walk_active = true;
+                    dust.starlight_unlimited = true;
+                    break;
             }
         }
         break;
@@ -1194,7 +1416,10 @@ break;
 
         case EffectType.STARLIGHT:
         {
-            // 星光是角色2的专属资源
+            if (variable_struct_exists(_e, "first_card_only")
+            && _e.first_card_only
+            && array_length(obj_hand_controller.turn_played_ids) > 1) break;
+
             add_starlight(obj_hand_controller.char_2, _v);
         }
         break;
@@ -1859,8 +2084,35 @@ function card_play_effects(_card, _target, _enemy)
     {
         var e = effects[i];
 
+        // 尘的下一张攻击牌获得一次性伤害加成
+        if (i == 0 && card_get_owner(_card.card_id) == 2
+        && card_get_type(_card.card_id) == CardType.ATTACK
+        && instance_exists(obj_hand_controller.char_2)
+        && obj_hand_controller.char_2.next_attack_bonus > 0)
+        {
+            effects = effects_add_damage(effects, obj_hand_controller.char_2.next_attack_bonus);
+            obj_hand_controller.char_2.next_attack_bonus = 0;
+        }
+
         // 数值在出牌这一刻算好（含力量、魔力、敏捷、剑招等加成）
         var v = card_effect_final(e, _card, effect_target_char(e, _target));
+
+        if (e.type == EffectType.SCRY)
+        {
+            var followups = [];
+            for (var qi = i + 1; qi < array_length(effects); qi++)
+            {
+                var qe = effects[qi];
+                var qv = card_effect_final(qe, _card, effect_target_char(qe, _target));
+                followups[array_length(followups)] = { effect: qe, value: qv, target: _target, enemy: _enemy };
+            }
+            with (obj_hand_controller)
+            {
+                scry_followups = followups;
+                scry_start(v);
+            }
+            return;
+        }
 
         // "等量"：数值等于这张牌当前造成的伤害
         if (variable_struct_exists(e, "equal_damage"))
@@ -2250,10 +2502,8 @@ function card_entry_from_instance(_inst)
     }
 
     entry.merge_level = card_merge_level(_inst);
-	if (variable_instance_exists(_inst, "cost"))
-{
-    entry.cost = _inst.cost;
-}
+    if (variable_instance_exists(_inst, "cost")) entry.cost = _inst.cost;
+    if (variable_instance_exists(_inst, "star_marked") && _inst.star_marked) entry.star_marked = true;
 
     return entry;
 }
@@ -2283,12 +2533,22 @@ function card_spawn_from_entry(_entry, _x, _y)
         inst.retain_once = true;
     }
 
-    if (!is_undefined(_entry.cost))
-    {
-        inst.cost = _entry.cost;
-    }
+    if (!is_undefined(_entry.cost)) inst.cost = _entry.cost;
+    if (variable_struct_exists(_entry, "star_marked") && _entry.star_marked) inst.star_marked = true;
 
     return inst;
+}
+
+function card_on_draw(_inst)
+{
+    if (!instance_exists(_inst)) return;
+    if (variable_instance_exists(_inst, "star_marked") && _inst.star_marked)
+    {
+        var dust = obj_hand_controller.char_2;
+        add_starlight(dust, 1);
+        add_armor(dust, ArmorType.MAGIC, 5);
+        _inst.star_marked = false;
+    }
 }
 
 // 卡牌标签
