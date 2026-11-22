@@ -929,8 +929,10 @@ case EffectType.FIREBALL_VOLLEY:
         if (vi < use_count)
         {
             var fire_inst = card_spawn_from_entry(fire_entry, -1000, -1000);
-            card_play_effects(fire_inst, _target, volley_target);
+            var current_volley_target = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
+            card_play_effects(fire_inst, _target, current_volley_target);
             with (fire_inst) instance_destroy();
+            obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = fire_entry;
         }
         else
         {
@@ -949,8 +951,22 @@ case EffectType.RANDOM_STARTER:
     var random_owner = effect_target_char(_e, _target);
     var random_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
 
+    // 视为使用：记录初始牌编号，使其他“本回合使用过初始牌”的效果也能识别
+    obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = random_id;
+    if (random_id <= 3) obj_hand_controller.attack_used_this_turn[1] = true;
+
+    // 星火与燎原也会作用于这次视为使用的初始牌
+    if (get_status(random_owner, StatusType.STARFIRE) > 0)
+    {
+        card_double_effects(random_inst);
+        clear_status(random_owner, StatusType.STARFIRE);
+    }
+
     card_play_effects(random_inst, random_owner, random_enemy);
+    var random_used_entry = card_entry_from_instance(random_inst);
     with (random_inst) instance_destroy();
+
+    obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = random_used_entry;
 
     with (obj_hand_controller)
     {
