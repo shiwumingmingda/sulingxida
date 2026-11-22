@@ -283,6 +283,7 @@ function draw_countdown_icons(_owner, _x, _y)
                     case EffectType.DRAW: part = "抽" + string(e.amount) + "张牌"; break;
                     case EffectType.DAMAGE: part = "造成" + string(e.amount) + "点伤害"; break;
                     case EffectType.DAMAGE_OTHERS: part = "对其他敌人造成" + string(e.amount) + "点伤害"; break;
+                    case EffectType.DAMAGE_ARMOR_TOTAL: part = "造成等同于护甲总和的伤害"; break;
                     case EffectType.MOVE_TO_BACK: part = "移动至后场"; break;
                     case EffectType.BRING_TO_FRONT: part = "移动至前场"; break;
                     case EffectType.DISCOVER_OWN: part = "发现一张本角色的牌"; break;
