@@ -165,6 +165,8 @@ next_turn_energy_bonus = 0;
 turn_played_ids = [];
 wind_blade_bonus = 0;
 witch_chant_used = false;
+starter_played_this_turn = false;
+starfire_ready = (get_status(char_1, StatusType.STARFIRE) > 0);
 
 // 新回合：护甲清零（疾风步的"护甲保留"这一次不清零）；临时魔力、熔岩加护结束
 with (obj_character_1)
@@ -549,6 +551,17 @@ else
 	first_cost_up = 0;   // 本回合使用的第一张牌已经用掉了这个费用加成
 	turn_played_ids[array_length(turn_played_ids)] = released_id;   // 记录本回合打出的牌
 
+// 星火与燎原若在本回合已经使用过初始牌后才打出，则留到下回合触发
+if (released_id == 23)
+{
+    var starter_before_starfire = false;
+    for (var si = 0; si < array_length(turn_played_ids) - 1; si++)
+    {
+        if (card_is_starter(turn_played_ids[si])) starter_before_starfire = true;
+    }
+    starfire_ready = !starter_before_starfire;
+}
+
     var ctype = card_get_type(released_id);
 
     // 地岳·镇垒强化后的岩盾会让苏灵兮进入前场
@@ -619,10 +632,11 @@ var card_owner = card_get_owner_instance(released_id);
 
 // 星火与燎原：每回合第一张初始牌视为合成强化一次
 if (card_is_starter(released_id) && char_is_alive(card_owner)
-&& get_status(card_owner, StatusType.STARFIRE) > 0)
+&& starfire_ready && get_status(card_owner, StatusType.STARFIRE) > 0)
 {
     card_double_effects(released_card);
     clear_status(card_owner, StatusType.STARFIRE);
+    starfire_ready = false;
 }
 
 if (ctype == CardType.SKILL && char_is_alive(card_owner) && get_status(card_owner, StatusType.OVERCHARGE) > 0)
@@ -652,7 +666,10 @@ if (released_id == 3 && char_is_alive(card_owner)
 }
 
 // 女巫吟唱：每回合第一次打出初始牌，倒计时1后重放
-if (card_is_starter(released_id) && char_is_alive(card_owner)
+var first_hand_starter_this_turn = card_is_starter(released_id) && !starter_played_this_turn;
+if (card_is_starter(released_id)) starter_played_this_turn = true;
+
+if (first_hand_starter_this_turn && char_is_alive(card_owner)
 && get_status(card_owner, StatusType.WITCH_CHANT) > 0 && !witch_chant_used)
 {
     witch_chant_used = true;
