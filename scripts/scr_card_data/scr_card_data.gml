@@ -2558,7 +2558,7 @@ function card_on_draw(_inst)
     {
         var dust = obj_hand_controller.char_2;
         add_starlight(dust, 1);
-        add_armor(dust, ArmorType.MAGIC, 5);
+        add_armor(dust, ArmorType.MAGIC, 5 + get_status(dust, StatusType.DEXTERITY));
         _inst.star_marked = false;
     }
 }
