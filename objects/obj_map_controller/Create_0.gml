@@ -43,13 +43,13 @@ if (!variable_global_exists("battle_count")) global.battle_count = 0;
 if (!variable_global_exists("go_battle")) global.go_battle = false;
 
 // 三层的尺寸（宽、高）和行动力
-var floor_sizes = [[4, 5], [7, 6], [9, 7]];
+var floor_sizes = [[5, 6], [5, 6], [5, 6]];
 var floor_ap = [9, 11, 14];
 var fi = clamp(global.map_floor, 1, 3) - 1;
 // 地图保存在全局变量里：进战斗再回来时不重新生成
 if (!variable_global_exists("map") || is_undefined(global.map))
 {
-    global.map = map_generate(floor_sizes[fi][0], floor_sizes[fi][1], floor_ap[fi], 0.38, 0.20, global.map_floor);
+    global.map = map_generate(floor_sizes[fi][0], floor_sizes[fi][1], floor_ap[fi], 0.62, 0.08, global.map_floor);
 }
 
 map = global.map;
