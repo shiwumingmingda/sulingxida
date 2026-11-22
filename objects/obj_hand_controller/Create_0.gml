@@ -1068,8 +1068,6 @@ countdown_fire = function(_cd)
 
     if (!char_is_alive(owner_inst)) return;
 
-    var en = (array_length(enemies) > 0) ? enemies[0] : noone;
-
     for (var k = 0; k < array_length(_cd.effects); k++)
     {
         var e = _cd.effects[k];
@@ -1081,7 +1079,31 @@ countdown_fire = function(_cd)
             continue;
         }
 
-        card_apply_effect(e, card_effect_value(e), owner_inst, en);
+        // 只有伤害或对敌方施加的状态才需要敌方目标
+        var needs_enemy = (e.type == EffectType.DAMAGE
+            || e.type == EffectType.DAMAGE_OTHERS
+            || e.type == EffectType.DAMAGE_ARMOR_TOTAL
+            || (e.type == EffectType.STATUS && !variable_struct_exists(e, "on_char")));
+
+        var en = noone;
+        if (needs_enemy && array_length(enemies) > 0) en = enemies[0];
+        if (needs_enemy && !instance_exists(en)) continue;
+
+        var fire_value = card_effect_value(e);
+
+        // 倒计时获得护甲同样受敏捷、全局护甲加成与地岳·镇垒影响
+        if (e.type == EffectType.ARMOR)
+        {
+            var armor_receiver = effect_target_char(e, owner_inst);
+            if (instance_exists(armor_receiver))
+            {
+                fire_value += get_status(armor_receiver, StatusType.DEXTERITY);
+                if (variable_global_exists("armor_bonus")) fire_value += global.armor_bonus;
+                if (get_status(armor_receiver, StatusType.ROCK_WALL) > 0) fire_value *= 2;
+            }
+        }
+
+        card_apply_effect(e, fire_value, owner_inst, en);
     }
 };
 
