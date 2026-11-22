@@ -1197,7 +1197,8 @@ break;
 case EffectType.REPLAY_STARTER:
 {
     var replay_obj = card_get_object(_e.card_id);
-    var replay_inst = card_spawn_from_entry(card_make_entry(replay_obj), -1000, -1000);
+    var replay_entry = variable_struct_exists(_e, "entry") ? _e.entry : card_make_entry(replay_obj);
+    var replay_inst = card_spawn_from_entry(replay_entry, -1000, -1000);
     var replay_owner = card_get_owner_instance(_e.card_id);
     var replay_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
 
