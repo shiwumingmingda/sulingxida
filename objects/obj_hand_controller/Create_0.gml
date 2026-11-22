@@ -1184,6 +1184,28 @@ countdown_shift = function(_owner, _delta)
     }
 };
 
+// 移除某个角色由指定效果类型创建的倒计时（状态被替换时使用）
+countdown_remove_effect = function(_owner, _effect_type)
+{
+    for (var i = array_length(countdowns) - 1; i >= 0; i--)
+    {
+        var cd = countdowns[i];
+        if (cd.owner != _owner) continue;
+
+        var matched = false;
+        for (var k = 0; k < array_length(cd.effects); k++)
+        {
+            if (cd.effects[k].type == _effect_type)
+            {
+                matched = true;
+                break;
+            }
+        }
+
+        if (matched) array_delete(countdowns, i, 1);
+    }
+};
+
 // ---------- 手牌和牌堆操作 ----------
 
 // 手牌里有没有这个编号的牌（不算 _exclude 这一张）
