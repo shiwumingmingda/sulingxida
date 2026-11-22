@@ -480,6 +480,7 @@ witch_chant_used = false;
 starter_played_this_turn = array_create(5, false);
 starfire_ready = false;
 wind_blade_bonus = 0;
+rock_wall_ready = false;
 selection_active = false;
 selection_cards = [];
 selection_action = { kind: "" };
@@ -735,7 +736,7 @@ selection_finish = function()
             chosen.effects = card_copy_effects(card_get_effects(4));
             chosen.merge_level = 0;
             chosen.cost = card_get_cost(4);
-            add_status(char_1, StatusType.ROCK_WALL, 1);
+            rock_wall_ready = true;
             check_merge();
         }
         break;
@@ -771,6 +772,7 @@ selection_finish = function()
 };
 
 wind_blade_bonus = 0;
+rock_wall_ready = false;
 // 左下：抽牌按钮（在"抽牌堆/弃牌堆"文字上方）
 button_x1 = 25;
 button_x2 = 190;
