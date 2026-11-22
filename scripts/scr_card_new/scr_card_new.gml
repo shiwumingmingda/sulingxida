@@ -291,6 +291,10 @@ function card_get_effects_new(_id)
             ];
 
         // 33 冰寒·霜索：消耗一张霜落，令一名敌人获得冻结
+        // 23 星火与燎原：本回合第一张初始牌视为合成强化一次
+        case 23:
+            return [ { type: EffectType.STATUS, status: StatusType.STARFIRE, amount: 1, on_char: 1 } ];
+
         // 28 火凝·连珠：生成五张伤害-2的火球并依次打出
         case 28:
             return [ { type: EffectType.FIREBALL_VOLLEY, amount: 5, damage_bonus: -2 } ];
@@ -419,6 +423,7 @@ function card_get_description_new(_inst)
         case 25: return "从抽牌堆抽取五张【风刃】";
         case 26: return "本角色使用的下一张技能牌额外结算1次";
         case 27: return "倒计时2：将三张【火球】置入手牌，并令其均变为0费和伤害+2";
+        case 23: return "你每回合打出的第一张初始牌视为进行一次合成强化";
         case 28: return "获得五张伤害-2的【火球】，并将其依次打出";
         case 29: return "消耗一张【火球】，对所有敌人造成等同于该【火球】的伤害";
         case 30: return "消耗任意张【风刃】，获得等同于其伤害总和两倍的护甲";
