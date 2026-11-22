@@ -328,8 +328,7 @@ function card_get_effects_new(_id)
         // 37 阅读：回合开始时，发现一张本角色的牌。若你在本回合使用，获得1费
         case 37:
             return [
-                { type: EffectType.STATUS,      status: StatusType.READING, amount: 1, on_char: 1 },
-                { type: EffectType.GAIN_ENERGY, amount: 1 }
+                { type: EffectType.STATUS, status: StatusType.READING, amount: 1, on_char: 1 }
             ];
 
         // 39 灵光一现：令本角色所有的倒计时-1
