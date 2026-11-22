@@ -1229,7 +1229,8 @@ break;
             for (var bi = 0; bi < array_length(obj_hand_controller.back_chars); bi++)
             {
                 var back_friend = obj_hand_controller.back_chars[bi];
-                if (char_is_alive(back_friend)) add_armor(back_friend, _e.armor, _v);
+                if (char_is_alive(back_friend))
+                    add_armor(back_friend, _e.armor, _v + get_status(back_friend, StatusType.DEXTERITY));
             }
         }
         break;
@@ -1265,8 +1266,9 @@ break;
                     dust.enemy_debuff_turns = 2;
                     break;
                 case "both_armor":
-                    if (instance_exists(_target) && _target != dust) add_armor(_target, ArmorType.GENERAL, _v);
-                    add_armor(dust, ArmorType.GENERAL, _v);
+                    if (instance_exists(_target) && _target != dust)
+                        add_armor(_target, ArmorType.GENERAL, _v + get_status(_target, StatusType.DEXTERITY));
+                    add_armor(dust, ArmorType.GENERAL, _v + get_status(dust, StatusType.DEXTERITY));
                     break;
                 case "pull_and_damage":
                     if (instance_exists(_enemy))
@@ -1327,7 +1329,7 @@ break;
                     break;
                 case "showmanship":
                     obj_hand_controller.bring_to_front(dust);
-                    add_armor(dust, ArmorType.GENERAL, _v);
+                    add_armor(dust, ArmorType.GENERAL, _v + get_status(dust, StatusType.DEXTERITY));
                     dust.showmanship_active = true;
                     dust.showmanship_hit = false;
                     break;
@@ -1335,7 +1337,7 @@ break;
                 case "shared_guard":
                     if (instance_exists(_target) && _target != dust)
                     {
-                        add_armor(_target, ArmorType.GENERAL, _v);
+                        add_armor(_target, ArmorType.GENERAL, _v + get_status(_target, StatusType.DEXTERITY));
                         _target.shared_damage_owner = dust;
                     }
                     break;
@@ -1378,7 +1380,7 @@ break;
                         var hf = obj_hand_controller.party_insts[hi];
                         if (!char_is_alive(hf)) continue;
                         heal_hp(hf, _v);
-                        add_armor(hf, ArmorType.MAGIC, 10);
+                        add_armor(hf, ArmorType.MAGIC, 10 + get_status(hf, StatusType.DEXTERITY));
                     }
                     break;
                 case "team_echo": dust.team_echo_active = true; break;
@@ -1395,7 +1397,7 @@ break;
                 case "stars_to_power":
                     var stars = dust.starlight;
                     add_status(dust, StatusType.MAGIC_POWER, stars);
-                    add_armor(dust, ArmorType.GENERAL, stars);
+                    add_armor(dust, ArmorType.GENERAL, stars + get_status(dust, StatusType.DEXTERITY));
                     break;
                 case "armor_allies_equal":
                     var total_armor = unit_armor_total(dust);
