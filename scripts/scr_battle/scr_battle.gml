@@ -79,7 +79,9 @@ function deal_damage(_target, _amount, _dtype)
         _target.hp = 1;
         _target.long_life = false;
         remaining = 0;
-        spawn_float_text(_target, "长明", make_color_rgb(255, 220, 120));
+        var long_life_text = instance_create_layer(_target.x, _target.y - 20, "Instances", obj_damage_text);
+        long_life_text.text = "长明";
+        long_life_text.col = make_color_rgb(255, 220, 120);
     }
     else
     {
