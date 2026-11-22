@@ -208,6 +208,14 @@ countdown_tick();
 
 if (char_is_alive(char_1))
 {
+    // 苏灵兮天赋：每回合开始，从四张初始牌中选择一张加入手牌。
+    request_discover([
+        card_get_object(1),
+        card_get_object(2),
+        card_get_object(3),
+        card_get_object(4)
+    ], 4, "sulingxi_talent");
+
     // 元素共鸣：每回合开始，倒计时1：将一张随机的元素牌洗入抽牌堆（每层一个）
     repeat (get_status(char_1, StatusType.RESONANCE))
     {
