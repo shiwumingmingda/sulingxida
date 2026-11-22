@@ -141,7 +141,7 @@ function enemy_perform_attack(_enemy)
         var reduce = (h.dtype == DamageType.PHYSICAL) ? strength_down : magic_down;
         reduce += star_reduction;
         if (instance_exists(obj_hand_controller.char_2) && obj_hand_controller.char_2.night_guard_active)
-            add_armor(target, ArmorType.GENERAL, 5);
+            add_armor(target, ArmorType.GENERAL, 5 + get_status(target, StatusType.DEXTERITY));
         deal_damage(target, max(h.damage - reduce, 0), h.dtype);
     }
 }
