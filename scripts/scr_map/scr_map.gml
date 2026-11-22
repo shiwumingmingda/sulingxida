@@ -175,6 +175,7 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
     var n = _w * _h;
 
     var map = {
+        generation_version: 2,
         w: _w,
         h: _h,
         ap_max: _ap,
@@ -321,18 +322,19 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
     }
 
     cells = array_shuffle(cells);
+
+    // 空地只占指定比例；其余格子都进入待分配列表。
     var empty_n = min(max(round(n * _empty_ratio) - 1, 0), array_length(cells));
-    var available = [];
+    var available_n = array_length(cells) - empty_n;
+    var available = array_create(available_n, -1);
 
-    for (var cell_k = empty_n; cell_k < array_length(cells); cell_k++)
-        available[array_length(available)] = cells[cell_k];
+    for (var av_i = 0; av_i < available_n; av_i++)
+        available[av_i] = cells[empty_n + av_i];
 
-    // 5. 先保证每层的最低节点数量。每次从剩余格子随机挑选位置，
-    // 所以固定的是数量下限，不是节点在地图上的位置。
+    // 5. 先保证每层的最低节点数量。使用游标顺序分配，避免反复删除数组元素。
     var min_camp = _floor;
     var min_elite = _floor;
     var min_treasure = 2;
-
     var min_battle = 8;
 
     var required_types = [
@@ -344,6 +346,8 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
         [NodeType.TRIBE, 1]
     ];
 
+    var available_used = 0;
+
     for (var req_i = 0; req_i < array_length(required_types); req_i++)
     {
         var req_type = required_types[req_i][0];
@@ -351,27 +355,23 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
 
         for (var req_k = 0; req_k < req_count; req_k++)
         {
-            if (array_length(available) <= 0) break;
+            if (available_used >= array_length(available)) break;
 
-            var pick_at = irandom(array_length(available) - 1);
-            var picked_cell = available[pick_at];
-
-            map.type[picked_cell] = req_type;
-            available = array_delete(available, pick_at, 1);
+            map.type[available[available_used]] = req_type;
+            available_used++;
         }
     }
 
     // 2、3 层各自有 50% 概率出现一个秘境；不会出现第二个。
-    if (_floor >= 2 && array_length(available) > 0 && random(1) < 0.5)
+    if (_floor >= 2 && available_used < array_length(available) && random(1) < 0.5)
     {
-        var realm_at = irandom(array_length(available) - 1);
-        map.type[available[realm_at]] = NodeType.REALM;
-        available = array_delete(available, realm_at, 1);
+        map.type[available[available_used]] = NodeType.REALM;
+        available_used++;
     }
 
     // 6. 填充剩余位置。战斗和事件是绝对主体，其余节点只占较小比例。
     // 1 层不生成擂台、瞭望点、秘境和首领先锋。
-    for (var fill_i = 0; fill_i < array_length(available); fill_i++)
+    for (var fill_i = available_used; fill_i < array_length(available); fill_i++)
     {
         var roll = irandom(99);
         var new_type = NodeType.BATTLE;
@@ -400,12 +400,32 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
 
     map.type[map.boss_i] = NodeType.BOSS;
 
-    // 7. 开局揭露所有真正的空地和首领。
-    // 其他未探索节点仍然显示类别提示：战斗类为“凶煞”，非战斗类为“隐秘”。
+    // 7. 开局揭露所有真正的空地、首领，以及瞭望点周围的 3×3 区域。
     for (var reveal_i = 0; reveal_i < n; reveal_i++)
     {
         if (map.type[reveal_i] == NodeType.EMPTY || map.type[reveal_i] == NodeType.BOSS)
             map.revealed[reveal_i] = true;
+
+        if (map.type[reveal_i] == NodeType.LOOKOUT)
+        {
+            var lookout_x = reveal_i mod _w;
+            var lookout_y = reveal_i div _w;
+
+            for (var oy = -1; oy <= 1; oy++)
+            {
+                for (var ox = -1; ox <= 1; ox++)
+                {
+                    var reveal_x = lookout_x + ox;
+                    var reveal_y = lookout_y + oy;
+
+                    if (reveal_x >= 0 && reveal_x < _w
+                    &&  reveal_y >= 0 && reveal_y < _h)
+                    {
+                        map.revealed[reveal_y * _w + reveal_x] = true;
+                    }
+                }
+            }
+        }
     }
 
     // 8. 首领先锋：2 层 1 个，3 层 3 个；1 层不生成。
