@@ -11,7 +11,7 @@ enum StatusType
 	STRENGTH,     // 力量：你造成的物理伤害额外 +1/层
 	DEXTERITY,    // 敏捷：你获得的护甲额外 +1/层
 	SWORD_FORM,   // 剑招：带剑招标签的牌造成的伤害 +N
-	BLOOD,       // 血色
+	BLOOD,       // 血色：与心羽的天赋计数共用
 	DILIGENCE,   // 精进：每回合开始，往手牌里放一张 0 费的练心（每层一张）
 	MAGIC_POWER,    // 魔力：魔法伤害 +1/层
 	INK,            // 墨化（怪物自带）
@@ -149,15 +149,50 @@ function enemy_perform_attack(_enemy)
 function get_status(_unit, _type)
 {
     if (!instance_exists(_unit)) return 0;
-    if (!variable_instance_exists(_unit, "status_stacks")) return 0;
 
+    // 心羽的血色与天赋计数共用同一个数值，不再作为第二个独立状态保存。
+    if (_type == StatusType.BLOOD && variable_instance_exists(_unit, "talent_count"))
+        return _unit.talent_count;
+
+    if (!variable_instance_exists(_unit, "status_stacks")) return 0;
     return _unit.status_stacks[_type];
 }
 
 // 增加层数
+function character3_add_blood(_unit, _amount)
+{
+    if (!instance_exists(_unit)) return;
+    if (!variable_instance_exists(_unit, "talent_count")) return;
+    if (!variable_instance_exists(_unit, "talent_need") || _unit.talent_need <= 0) return;
+
+    _unit.talent_count += _amount;
+
+    var controller = instance_find(obj_hand_controller, 0);
+    if (!instance_exists(controller) || controller.char_3 != _unit) return;
+
+    // 达到阈值时触发心羽天赋；若一次获得多层血色，保留超出的进度。
+    while (_unit.talent_count >= _unit.talent_need)
+    {
+        _unit.talent_count -= _unit.talent_need;
+        controller.request_discover(discover_pool_xinyu(controller.discover_46_unlocked), 3);
+    }
+}
+
 function add_status(_unit, _type, _stacks)
 {
     if (!instance_exists(_unit)) return;
+
+    // 心羽获得血色时，直接增加天赋进度，不再生成重复的独立状态图标。
+    if (_type == StatusType.BLOOD && variable_instance_exists(_unit, "talent_count"))
+    {
+        if (variable_instance_exists(_unit, "status_stacks"))
+        {
+            _unit.talent_count += _unit.status_stacks[StatusType.BLOOD];
+            _unit.status_stacks[StatusType.BLOOD] = 0;
+        }
+        character3_add_blood(_unit, _stacks);
+        return;
+    }
 
     status_init(_unit);
     _unit.status_stacks[_type] += _stacks;
@@ -167,6 +202,9 @@ function add_status(_unit, _type, _stacks)
 function clear_status(_unit, _type)
 {
     if (!instance_exists(_unit)) return;
+
+    if (_type == StatusType.BLOOD && variable_instance_exists(_unit, "talent_count"))
+        _unit.talent_count = 0;
 
     status_init(_unit);
     _unit.status_stacks[_type] = 0;
@@ -222,17 +260,124 @@ function draw_icon_with_count(_spr, _x, _y, _size, _n)
     }
 }
 
+function status_get_name(_type)
+{
+    switch (_type)
+    {
+        case StatusType.CHILL: return "寒冷";
+        case StatusType.FROZEN: return "冻结";
+        case StatusType.RESONANCE: return "元素共鸣";
+        case StatusType.STRENGTH_DOWN: return "力量下降";
+        case StatusType.MAGIC_DOWN: return "魔力下降";
+        case StatusType.STRENGTH: return "力量";
+        case StatusType.DEXTERITY: return "敏捷";
+        case StatusType.SWORD_FORM: return "剑招";
+        case StatusType.BLOOD: return "血色";
+        case StatusType.DILIGENCE: return "精进";
+        case StatusType.MAGIC_POWER: return "魔力";
+        case StatusType.INK: return "墨化";
+        case StatusType.CORPSE_THIEF: return "窃尸";
+        case StatusType.ARMOR_KEEP: return "护甲保留";
+        case StatusType.LAVA_WARD: return "熔岩加护";
+        case StatusType.OVERCHARGE: return "聚能";
+        case StatusType.WIND_COURT: return "风息庭";
+        case StatusType.READING: return "阅读";
+        case StatusType.TEMP_MAGIC: return "临时魔力";
+        case StatusType.TEMP_STRENGTH: return "临时力量";
+        case StatusType.STARFIRE: return "星火与燎原";
+        case StatusType.FROST_RAIN: return "落雨";
+        case StatusType.ROCK_WALL: return "镇垒";
+        case StatusType.WITCH_CHANT: return "女巫吟唱";
+    }
+    return "状态";
+}
+
+function status_get_description(_type)
+{
+    switch (_type)
+    {
+        case StatusType.CHILL: return "回合开始时，若寒冷达到3层，清除寒冷并施加冻结。";
+        case StatusType.FROZEN: return "下次行动跳过一次，随后移除冻结。";
+        case StatusType.RESONANCE: return "每个我方回合开始时，倒计时1：将一张随机元素牌洗入抽牌堆。";
+        case StatusType.STRENGTH_DOWN: return "下次行动期间，每次物理攻击伤害减少对应层数。";
+        case StatusType.MAGIC_DOWN: return "下次行动期间，每次魔法攻击伤害减少对应层数。";
+        case StatusType.STRENGTH: return "每层使造成的物理伤害提高1点。";
+        case StatusType.DEXTERITY: return "每层使获得的护甲提高1点。";
+        case StatusType.SWORD_FORM: return "带有剑招标签的牌造成的伤害提高对应层数。";
+        case StatusType.BLOOD: return "与心羽的天赋计数共用。打出符合条件的攻击牌或获得血色都会推进计数；达到阈值时发现心羽的牌。";
+        case StatusType.DILIGENCE: return "每个我方回合开始时，每层将一张0费的【练心】置入手牌。";
+        case StatusType.MAGIC_POWER: return "每层使造成的魔法伤害提高1点。";
+        case StatusType.INK: return "墨灵受到伤害降至10点以下后，在下回合开始时触发墨化护甲。";
+        case StatusType.CORPSE_THIEF: return "盗尸者的特殊状态。";
+        case StatusType.ARMOR_KEEP: return "下个回合开始时保留护甲一次。";
+        case StatusType.LAVA_WARD: return "持续期间每次损失护甲，都会将一张【火球】置入抽牌堆。";
+        case StatusType.OVERCHARGE: return "下一张技能牌额外结算一次。";
+        case StatusType.WIND_COURT: return "每个我方回合开始时，将一张【风刃】置入手牌。";
+        case StatusType.READING: return "每个我方回合开始时，发现一张本角色的牌。";
+        case StatusType.TEMP_MAGIC: return "本回合魔法伤害提高1点/层。";
+        case StatusType.TEMP_STRENGTH: return "本回合物理伤害提高1点/层。";
+        case StatusType.STARFIRE: return "本回合第一张初始牌会进行一次合成强化。";
+        case StatusType.FROST_RAIN: return "下一张【霜落】会对其他敌人重复结算。";
+        case StatusType.ROCK_WALL: return "本回合【岩盾】会令角色移动至前场，且护甲翻倍。";
+        case StatusType.WITCH_CHANT: return "本局每回合第一次使用初始牌时，倒计时1：延迟重放该牌。";
+    }
+    return "查看该状态的当前效果。";
+}
+
+function draw_status_tooltip(_type, _count, _spr)
+{
+    if (_spr == -1 || !sprite_exists(_spr)) return;
+
+    var box_w = 340;
+    var box_h = 122;
+    var tx = clamp(mouse_x + 18, 8, room_width - box_w - 8);
+    var ty = clamp(mouse_y - box_h - 16, 8, room_height - box_h - 8);
+
+    draw_set_alpha(0.94);
+    draw_set_color(make_color_rgb(18, 22, 34));
+    draw_rectangle(tx, ty, tx + box_w, ty + box_h, false);
+    draw_set_alpha(1);
+    draw_set_color(make_color_rgb(145, 165, 205));
+    draw_rectangle(tx, ty, tx + box_w, ty + box_h, true);
+
+    var icon_size = 72;
+    var icon_scale = icon_size / max(sprite_get_width(_spr), sprite_get_height(_spr));
+    var icon_x = tx + 12 + sprite_get_xoffset(_spr) * icon_scale;
+    var icon_y = ty + 12 + sprite_get_yoffset(_spr) * icon_scale;
+    draw_sprite_ext(_spr, 0, icon_x, icon_y, icon_scale, icon_scale, 0, c_white, 1);
+
+    draw_set_font(global.chinese_font);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_white);
+    draw_text(tx + 96, ty + 10, status_get_name(_type) + "  ×" + string(_count));
+    draw_text_ext(tx + 96, ty + 42, status_get_description(_type), 3, box_w - 108);
+
+    draw_set_color(c_white);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+}
+
 // 在 (_x, _y)（图标行的左上角）处，横向画出这个单位的天赋和身上的所有状态图标
 function draw_status_icons(_unit, _x, _y)
 {
     var icon_size = 24;   // 图标大小（像素）
     var gap = 6;          // 图标之间的间距
     var cx = _x;
+    var hovered_type = -1;
+    var hovered_count = 0;
+    var hovered_sprite = -1;
 
     // 天赋：始终显示，数值是 0 也在
     if (variable_instance_exists(_unit, "talent_spr"))
     {
         draw_icon_with_count(_unit.talent_spr, cx, _y, icon_size, _unit.talent_count);
+        if (point_in_rectangle(mouse_x, mouse_y, cx, _y, cx + icon_size, _y + icon_size))
+        {
+            hovered_type = StatusType.BLOOD;
+            hovered_count = _unit.talent_count;
+            hovered_sprite = _unit.talent_spr;
+        }
         cx += icon_size + gap;
     }
 
@@ -248,9 +393,18 @@ function draw_status_icons(_unit, _x, _y)
             if (spr == -1) continue;
 
             draw_icon_with_count(spr, cx, _y, icon_size, status_shows_count(t) ? n : -1);
+            if (point_in_rectangle(mouse_x, mouse_y, cx, _y, cx + icon_size, _y + icon_size))
+            {
+                hovered_type = t;
+                hovered_count = n;
+                hovered_sprite = spr;
+            }
             cx += icon_size + gap;
         }
     }
+
+    if (hovered_type >= 0)
+        draw_status_tooltip(hovered_type, hovered_count, hovered_sprite);
 
     draw_set_color(c_white);
 }
