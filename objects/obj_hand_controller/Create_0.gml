@@ -681,6 +681,7 @@ selection_finish = function()
             chosen.effects = card_copy_effects(card_get_effects(4));
             chosen.merge_level = 0;
             chosen.cost = card_get_cost(4);
+            add_status(char_1, StatusType.ROCK_WALL, 1);
         }
         break;
 
@@ -995,6 +996,9 @@ for (var p2 = 0; p2 < array_length(party_insts); p2++)
 // ---------- 倒计时 ----------
 countdowns = [];          // { owner: 角色编号, turns: 剩余回合, effects: [效果] }
 turn_played_ids = [];     // 本回合打出过的牌编号
+attack_used_this_turn = array_create(4, false);
+attack_used_last_turn = array_create(4, false);
+witch_chant_used = false;
 discover_queue = [];      // 排队等待的发现
 
 countdown_add = function(_owner, _turns, _effects)
@@ -1014,6 +1018,14 @@ countdown_fire = function(_cd)
     for (var k = 0; k < array_length(_cd.effects); k++)
     {
         var e = _cd.effects[k];
+
+        if (variable_struct_exists(e, "conditional_no_attack")
+        &&  e.conditional_no_attack
+        &&  attack_used_last_turn[_cd.owner])
+        {
+            continue;
+        }
+
         card_apply_effect(e, card_effect_value(e), owner_inst, en);
     }
 };
