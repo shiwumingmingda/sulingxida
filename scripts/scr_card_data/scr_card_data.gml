@@ -994,7 +994,17 @@ case EffectType.RANDOM_STARTER:
 
     with (obj_hand_controller)
     {
-        add_card_to_hand_id(random_id, -1, 0);
+        // 复制实际使用的那张牌，保留本次触发的强化效果
+        if (array_length(hand) >= max_hand_size)
+        {
+            discard_pile[array_length(discard_pile)] = random_used_entry;
+        }
+        else
+        {
+            var copy_inst = card_spawn_from_entry(random_used_entry, room_width * 0.5, room_height - 115);
+            copy_inst.is_dealing = true;
+            hand[array_length(hand)] = copy_inst;
+        }
     }
 }
 break;
