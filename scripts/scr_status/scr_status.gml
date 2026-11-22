@@ -22,6 +22,7 @@ enum StatusType
 	WIND_COURT,   // 风息庭：每回合开始，将一张风刃置入手牌
 	READING,      // 阅读：每回合开始，发现一张本角色的牌
 	TEMP_MAGIC,   // 临时魔力：本回合魔法伤害 +1/层
+    TEMP_STRENGTH,    // 临时力量：本回合物理伤害 +1/层
     STARFIRE,     // 星火与燎原：本回合第一张初始牌合成强化
     FROST_RAIN,   // 冰寒·落雨：下一张霜落对其他敌人重复
     ROCK_WALL,    // 地岳·镇垒：本回合岩盾前场化且护甲翻倍
@@ -61,6 +62,7 @@ function status_get_sprite(_type)
 
         case StatusType.MAGIC_POWER:
         case StatusType.TEMP_MAGIC: return spr_status_magic_power;
+        case StatusType.TEMP_STRENGTH: return spr_strength;
 
         case StatusType.INK: return spr_status_ink;
         case StatusType.CORPSE_THIEF: return spr_status_corpse;
@@ -88,6 +90,7 @@ function status_shows_count(_type)
         case StatusType.DILIGENCE:
         case StatusType.MAGIC_POWER:
         case StatusType.TEMP_MAGIC:
+        case StatusType.TEMP_STRENGTH:
             return true;
     }
 
@@ -122,7 +125,13 @@ function enemy_perform_attack(_enemy)
     }
 
     var strength_down = get_status(_enemy, StatusType.STRENGTH_DOWN);
-    var magic_down    = get_status(_enemy, StatusType.MAGIC_DOWN);
+    var magic_down = get_status(_enemy, StatusType.MAGIC_DOWN);
+    var star_reduction = 0;
+    if (instance_exists(obj_hand_controller.char_2)
+    && obj_hand_controller.char_2.enemy_debuff_turns > 0)
+    {
+        star_reduction = obj_hand_controller.char_2.enemy_damage_reduction;
+    }
 
     for (var i = 0; i < array_length(hits); i++)
     {
@@ -130,7 +139,9 @@ function enemy_perform_attack(_enemy)
 
         // 物理攻击扣力量下降，魔法攻击扣魔力下降；连续攻击每一次都扣
         var reduce = (h.dtype == DamageType.PHYSICAL) ? strength_down : magic_down;
-
+        reduce += star_reduction;
+        if (instance_exists(obj_hand_controller.char_2) && obj_hand_controller.char_2.night_guard_active)
+            add_armor(target, ArmorType.GENERAL, 5);
         deal_damage(target, max(h.damage - reduce, 0), h.dtype);
     }
 }
@@ -381,14 +392,13 @@ function draw_countdown_icons(_owner, _x, _y)
 // 永久状态牌：不占状态位置，也不会被顶掉
 function card_state_is_permanent(_id)
 {
-    return (_id == 209 || _id == 43);
+    return (_id == 209 || _id == 43 || _id == 120 || _id == 123 || _id == 144 || _id == 147 || _id == 149 || _id == 152);
 }
 
 // 移除一张状态牌给这个角色带来的效果（图标也会消失）
 function state_remove(_char, _card_id)
 {
-    var effects = card_get_effects_new(_card_id);
-    if (array_length(effects) <= 0) effects = card_get_effects(_card_id);
+    var effects = card_get_effects(_card_id);
 
     for (var i = 0; i < array_length(effects); i++)
     {
@@ -410,7 +420,17 @@ function state_remove(_char, _card_id)
         }
     }
 
-    // 以后状态牌有别的持续效果（不是状态图标的），在这里补上对应的移除
+    // 尘的战斗常驻状态：被另一张状态牌替换时移除
+    if (_card_id == 120) _char.purple_star = false;
+    if (_card_id == 123) _char.star_damage_bonus_active = false;
+    if (_card_id == 144) _char.star_bond_active = false;
+    if (_card_id == 147) _char.team_echo_active = false;
+    if (_card_id == 149) _char.night_guard_active = false;
+    if (_card_id == 152)
+    {
+        _char.star_walk_active = false;
+        _char.starlight_unlimited = false;
+    }
 }
 
 // 这个角色使用了一张状态牌：顶掉旧的状态牌效果，普通状态牌成为新的当前状态
