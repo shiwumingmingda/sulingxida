@@ -312,7 +312,7 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
         }
     }
 
-    // 4. 保留约 20% 空地（起点也计入空地比例），其余格子用于放置节点。
+    // 4. 保留约 15% 空地（起点也计入空地比例），其余格子用于放置节点。
     var cells = [];
     for (var collect_i = 0; collect_i < n; collect_i++)
     {
