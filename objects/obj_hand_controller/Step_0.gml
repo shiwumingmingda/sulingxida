@@ -645,6 +645,8 @@ if (tkind == TargetKind.FRIEND)
 {
     // 必须松手在我方角色身上才算打出
     target = instance_position(mx, my, obj_character_1);
+    if (card_requires_other_friend(released_card.card_id) && target == char_2)
+        target = noone;
     can_play = (target != noone);
 
     // 先把卡牌显示回来：打出会被销毁，没打出就飞回手牌
