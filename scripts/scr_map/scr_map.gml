@@ -49,18 +49,18 @@ function map_degree(_map, _i)
 // 格子 _i 在方向 _d 上的相邻格子下标（调用前要确认没出界或者有连线）
 function map_neighbor(_map, _i, _d)
 {
-    var x = _i mod _map.w;
-    var y = _i div _map.w;
+    var cell_col = _i mod _map.w;
+    var cell_row = _i div _map.w;
 
     switch (_d)
     {
-        case 0: y--; break;
-        case 1: x++; break;
-        case 2: y++; break;
-        case 3: x--; break;
+        case 0: cell_row--; break;
+        case 1: cell_col++; break;
+        case 2: cell_row++; break;
+        case 3: cell_col--; break;
     }
 
-    return y * _map.w + x;
+    return cell_row * _map.w + cell_col;
 }
 
 // 并查集：找到 _i 所在区域的根（只读）
