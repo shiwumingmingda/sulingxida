@@ -953,7 +953,15 @@ case EffectType.RANDOM_STARTER:
 
     // 视为使用：记录初始牌编号，使其他“本回合使用过初始牌”的效果也能识别
     obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = random_id;
-    if (random_id <= 3) obj_hand_controller.attack_used_this_turn[1] = true;
+    if (random_id <= 3)
+    {
+        obj_hand_controller.attack_used_this_turn[1] = true;
+        with (obj_hand_controller) bring_to_front(random_owner);
+    }
+    else if (random_id == 4 && get_status(random_owner, StatusType.ROCK_WALL) > 0)
+    {
+        with (obj_hand_controller) bring_to_front(random_owner);
+    }
 
     // 星火与燎原也会作用于这次视为使用的初始牌
     if (get_status(random_owner, StatusType.STARFIRE) > 0)
@@ -963,6 +971,21 @@ case EffectType.RANDOM_STARTER:
     }
 
     card_play_effects(random_inst, random_owner, random_enemy);
+
+    // 若随机到霜落，也会消耗冰寒·落雨并对其他敌人重复
+    if (random_id == 3 && get_status(random_owner, StatusType.FROST_RAIN) > 0)
+    {
+        clear_status(random_owner, StatusType.FROST_RAIN);
+        var extra_targets = copy_array(obj_hand_controller.enemies);
+        for (var ei = 0; ei < array_length(extra_targets); ei++)
+        {
+            if (extra_targets[ei] != random_enemy && instance_exists(extra_targets[ei]))
+            {
+                card_play_effects(random_inst, random_owner, extra_targets[ei]);
+            }
+        }
+    }
+
     var random_used_entry = card_entry_from_instance(random_inst);
     with (random_inst) instance_destroy();
 
