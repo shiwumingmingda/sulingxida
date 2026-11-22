@@ -972,10 +972,6 @@ if (ctype == CardType.ATTACK && released_id >= 101 && released_id <= 200
 if (released_id == 134 && !card_is_exhaust(released_id) && array_length(discard_pile) > 0)
     discard_pile[array_length(discard_pile) - 1].cost = card_current_cost(released_card) + 1;
 
-// 星灭：使用后自身费用提高1点，并保存在弃牌堆记录中。
-if (released_id == 134 && !card_is_exhaust(released_id) && array_length(discard_pile) > 0)
-    discard_pile[array_length(discard_pile) - 1].cost = card_current_cost(released_card) + 1;
-
 // 销毁打出的卡牌实例
 with (released_card)
 {
