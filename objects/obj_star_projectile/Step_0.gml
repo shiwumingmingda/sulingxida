@@ -30,8 +30,8 @@ if (!instance_exists(target_enemy))
 
 trail_x = x;
 trail_y = y;
-var direction = point_direction(x, y, target_enemy.x, target_enemy.y);
-image_angle = direction;
+var aim_dir = point_direction(x, y, target_enemy.x, target_enemy.y);
+image_angle = aim_dir;
 var distance = point_distance(x, y, target_enemy.x, target_enemy.y);
 
 if (distance <= projectile_speed)
