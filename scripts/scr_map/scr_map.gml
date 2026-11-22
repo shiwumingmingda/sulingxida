@@ -443,7 +443,12 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
     // 调试信息：便于确认每次生成的地图确实不同，并核对核心规则。
     var deg_all = 0;
     var empty_total = 0;
-    var battle_event_total = 0;
+    var battle_total = 0;
+    var event_total = 0;
+    var elite_total = 0;
+    var arena_total = 0;
+    var lookout_total = 0;
+    var realm_total = 0;
     var camp_total = 0;
     var elite_total = 0;
     var treasure_total = 0;
@@ -457,10 +462,13 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
         switch (map.type[stat_i])
         {
             case NodeType.EMPTY: empty_total++; break;
-            case NodeType.BATTLE:
-            case NodeType.EVENT: battle_event_total++; break;
+            case NodeType.BATTLE: battle_total++; break;
+            case NodeType.EVENT: event_total++; break;
             case NodeType.CAMP: camp_total++; break;
             case NodeType.ELITE: elite_total++; break;
+            case NodeType.ARENA: arena_total++; break;
+            case NodeType.LOOKOUT: lookout_total++; break;
+            case NodeType.REALM: realm_total++; break;
             case NodeType.TREASURE: treasure_total++; break;
             case NodeType.MERCHANT: merchant_total++; break;
             case NodeType.TRIBE: tribe_total++; break;
@@ -470,10 +478,14 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
     show_debug_message("地图 " + string(_w) + "x" + string(_h)
         + " 第" + string(_floor) + "层"
         + " 空地:" + string(empty_total)
-        + " 战斗/事件:" + string(battle_event_total)
+        + " 战斗:" + string(battle_total)
+        + " 事件:" + string(event_total)
         + " 营地:" + string(camp_total)
         + " 精英:" + string(elite_total)
+        + " 擂台:" + string(arena_total)
         + " 珍宝:" + string(treasure_total)
+        + " 瞭望点:" + string(lookout_total)
+        + " 秘境:" + string(realm_total)
         + " 行商:" + string(merchant_total)
         + " 部落:" + string(tribe_total)
         + " 首领距离:" + string(start_dist[map.boss_i])
