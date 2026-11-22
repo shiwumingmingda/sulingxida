@@ -30,8 +30,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"Sprite3",
-    "path":"sprites/Sprite3/Sprite3.yy",
+    "name":"spr_card_109",
+    "path":"sprites/spr_card_109/spr_card_109.yy",
   },
   "spriteMaskId":null,
   "visible":true,
