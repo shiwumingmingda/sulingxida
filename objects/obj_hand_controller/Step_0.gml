@@ -521,14 +521,14 @@ if (try_play && need_id > 0 && !hand_has_card(need_id, released_card))
     warning_timer = 90;
 }
 
-if (try_play && released_id == 35 && array_length(hand) <= 1)
+if (try_play && released_card.card_id == 35 && array_length(hand) <= 1)
 {
     try_play = false;
     warning_text = "手牌中没有可转化的牌";
     warning_timer = 90;
 }
 
-if (try_play && released_id == 46)
+if (try_play && released_card.card_id == 46)
 {
     var has_sulingxi_starter = false;
     for (var si = 0; si < array_length(hand); si++)
