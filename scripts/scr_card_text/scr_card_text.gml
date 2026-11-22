@@ -37,6 +37,12 @@ function card_text_shadow_ext(_x, _y, _str, _wrap, _ts, _a, _col)
 // 读取卡牌"当前"的费用和伤害（优先用牌自己的变量，没有就查表）
 function card_current_cost(_inst)
 {
+    if (_inst.card_id == 132 && instance_exists(obj_hand_controller)
+    && instance_exists(obj_hand_controller.char_2))
+    {
+        return max(7 - obj_hand_controller.char_2.attack_cards_used_battle, 0);
+    }
+
     if (variable_instance_exists(_inst, "cost")) return _inst.cost;
     return card_get_cost(_inst.card_id);
 }
@@ -125,6 +131,61 @@ function card_get_description(_inst)
         case 44: return "将十张【风刃】置入你的手牌。每回合开始时，将一张【风刃】置入你的手牌";
 
 
+        
+        // 尘：星星的孩子
+        case 101: return "造成" + string(card_current_damage(_inst)) + "点法术伤害";
+        case 102: return "对所有敌人造成6点法术伤害";
+        case 103: return "获得2点星光";
+        case 104: return "令敌方接下来的两个回合受到的伤害+4，造成的伤害-3";
+        case 105: return "造成3点法术伤害；若本回合其他角色使用过攻击牌，额外造成6点伤害";
+        case 106: return "造成4点物理伤害，令所有后场友方角色获得4点护甲";
+        case 107: return "占卜5，然后抽2张牌";
+        case 108: return "占卜3，然后向敌人投射星星，造成等同于置入牌堆底数量的伤害";
+        case 109: return "造成25点伤害";
+        case 110: return "令一名其他友方角色和尘各获得3点护甲";
+        case 111: return "造成7点物理伤害，获得1点星光";
+        case 112: return "令一名敌方角色进入前场，然后造成6点伤害";
+        case 113: return "观看弃牌堆中随机5张牌，选择至多2张置入手牌";
+        case 114: return "造成6点法术伤害，你每有1点星光，此伤害额外+1";
+        case 115: return "固有。造成6点物理伤害；若此牌是本回合使用的第一张牌，获得1点星光";
+        case 116: return "获得1点星光和5点护甲，并进入前场。当本牌被占卜置入牌堆底时，改为置入手牌";
+        case 117: return "抽2张牌，然后弃置2张牌。被弃置的牌获得【繁星】";
+        case 118: return "获得2点敏捷";
+        case 119: return "选择一张其他角色的手牌，本回合此牌可以将星光当作费用使用";
+        case 120: return "在本场战斗剩余时间内，每回合开始时，尘占卜2";
+        case 121: return "获得8点护甲，下回合额外获得1费";
+        case 122: return "对所有敌人造成15点伤害，每击杀一个敌人，获得1点星光";
+        case 123: return "本场战斗中，你队伍造成的所有伤害+2";
+        case 124: return "消耗。令一名友方角色获得【长明】";
+        case 125: return "选择一名敌方角色；当尘使用攻击牌时，若其位于前场，则令其退至后场";
+        case 126: return "追猎。造成12点物理伤害";
+        case 127: return "选择一名敌方角色，直到下回合开始前，每当其离开前场时，将其置入前场";
+        case 128: return "获得10点物理护甲和10点法术护甲";
+        case 129: return "本回合所有友方角色获得3点力量和3点魔力";
+        case 130: return "远程。移除目标12点护甲";
+        case 131: return "对随机敌人造成1点法术伤害，重复7次";
+        case 132: return "造成28点物理伤害。尘每使用过一张攻击牌，此牌费用降低1点";
+        case 133: return "进入前场，获得5点护甲。若下回合开始前未受到伤害，额外获得3点护甲";
+        case 134: return "令所有敌方角色失去3点力量和3点魔力，然后此牌费用+1";
+        case 135: return "令一名其他友方角色移动，并获得2点临时魔力";
+        case 136: return "令自己移动，然后为抽牌堆中的一张牌施加【繁星】";
+        case 137: return "造成6点法术伤害。当本牌被占卜置入牌堆底时，此伤害+3";
+        case 138: return "固有。你的下一张攻击牌造成的伤害额外+5";
+        case 139: return "令一名其他友方角色获得10点护甲；直到下回合开始前，其受到的溢出伤害由尘承担";
+        case 140: return "消耗。每场战斗限一次：获得5费，并随机获得两张尘的牌，本回合变为0费";
+        case 141: return "下个倒计时阶段开始时，额外抽2张牌并获得2点星光";
+        case 142: return "消耗1点星光，发现一张尘的攻击牌、技能牌和状态牌。所选牌保留一回合";
+        case 143: return "消耗。造成15点伤害，令目标下回合无法行动";
+        case 144: return "消耗2点星光。本场战斗中，友方角色使用攻击牌后，尘投射5点伤害";
+        case 145: return "消耗。所有友方角色回复5点体力，并获得10点法术护甲";
+        case 146: return "固有，消耗。获得3点星光";
+        case 147: return "本场战斗中，每回合每名友方角色使用的第一张技能牌或攻击牌额外结算一次";
+        case 148: return "消耗。为所有手牌施加【繁星】，然后抽取等同于手牌数量的牌";
+        case 149: return "在本场战斗中，当一名友方角色受到攻击时，令其获得5点护甲";
+        case 150: return "消耗。获得1点星光，然后获得等同于当前星光数量的魔力和护甲";
+        case 151: return "获得16点护甲。令其他友方角色获得等同于尘当前护甲总和的护甲";
+        case 152: return "每回合结束时，为抽牌堆中的一张牌施加【繁星】；本场战斗中，星光补费不再限次";
+
         // 1号牌：对前场敌人造成 6 点法术伤害，对其他敌人造成 3 点法术伤害
         case 1:
             return "造成" + string(card_current_damage(_inst)) + "点法术伤害，"
@@ -153,17 +214,10 @@ function card_get_description(_inst)
 		case 4:
 			return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲和"
          + string(card_current_armor_of(_inst, ArmorType.PHYSICAL)) + "点物理护甲";
-        case 101:
-            return "造成" + string(card_current_damage(_inst)) + "点法术伤害";
 
         // 12号牌：造成物理伤害，获得星光
-        case 102:
-            return "造成" + string(card_current_damage(_inst)) + "点物理伤害，"
-                 + "获得" + string(card_current_xingguang(_inst)) + "点星光";
 
         // 15号牌：获得星光
-        case 105:
-            return "获得" + string(card_current_xingguang(_inst)) + "点星光";
 			
 			
 		case 201:
@@ -283,11 +337,13 @@ function card_draw_text(_inst, _spr, _x, _y, _xs, _ys, _a)
     draw_set_valign(fa_middle);
     var p_cost = card_local_to_world(_spr, _x, _y, _xs, _ys, _a, 0.87, 0.09);
     var shown_cost = card_display_cost(_inst);
-var base_cost = card_current_cost(_inst);
+    var base_cost = card_current_cost(_inst);
+    var star_cost = card_star_cost(_inst.card_id);
     var cost_col = (shown_cost > base_cost) ? make_color_rgb(255, 90, 90) : c_white;
+    var cost_text = string(shown_cost);
+    if (star_cost > 0) cost_text += " ★" + string(star_cost);
 
-card_text_shadow(p_cost[0], p_cost[1],
-    string(shown_cost), ts * 1.4, _a, cost_col);
+    card_text_shadow(p_cost[0], p_cost[1], cost_text, ts * 1.4, _a, cost_col);
 
     // 描述：从卡牌 62% 的高度开始往下，每 10 个字符换行
     draw_set_valign(fa_top);
