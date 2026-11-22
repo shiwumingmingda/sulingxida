@@ -44,12 +44,12 @@ function status_get_sprite(_type)
 		case StatusType.MAGIC_POWER:  return spr_status_magic_power;
 		case StatusType.INK:          return spr_status_ink;
 		case StatusType.CORPSE_THIEF: return spr_status_corpse;
-		case StatusType.ARMOR_KEEP: return spr_status_armor_keep;
-		case StatusType.LAVA_WARD:  return spr_status_lava_ward;
-		case StatusType.OVERCHARGE: return spr_status_overcharge;
-		case StatusType.WIND_COURT: return spr_status_wind_court;
-		case StatusType.READING:    return spr_status_reading;
-		case StatusType.TEMP_MAGIC: return spr_status_temp_magic;
+		case StatusType.ARMOR_KEEP: return spr_dexterity;
+		case StatusType.LAVA_WARD:  return spr_strength;
+		case StatusType.OVERCHARGE: return spr_resonance;
+		case StatusType.WIND_COURT: return spr_sword_form;
+		case StatusType.READING:    return spr_star;
+		case StatusType.TEMP_MAGIC: return spr_status_magic_power;
     }
 
     return -1;
@@ -219,6 +219,86 @@ function draw_status_icons(_unit, _x, _y)
     }
 
     draw_set_color(c_white);
+}
+
+// 在角色状态图标下方绘制倒计时。临时使用元素共鸣图标，之后可替换成专用计时 Sprite。
+function draw_countdown_icons(_owner, _x, _y)
+{
+    if (!instance_exists(obj_hand_controller)) return;
+
+    var cds = obj_hand_controller.countdowns;
+    var icon_size = 22;
+    var gap = 6;
+    var index = 0;
+
+    for (var i = 0; i < array_length(cds); i++)
+    {
+        var cd = cds[i];
+        if (cd.owner != _owner) continue;
+
+        var ix = _x + index * (icon_size + gap);
+        var iy = _y;
+        var spr = spr_resonance;
+
+        draw_sprite_stretched(spr, 0, ix, iy, icon_size, icon_size);
+
+        draw_set_font(global.chinese_font);
+        draw_set_halign(fa_right);
+        draw_set_valign(fa_bottom);
+        draw_set_color(c_black);
+        draw_text(ix + icon_size + 1, iy + icon_size + 1, string(cd.turns));
+        draw_set_color(c_white);
+        draw_text(ix + icon_size, iy + icon_size, string(cd.turns));
+
+        // 鼠标悬停时显示倒计时和即将释放的效果
+        if (point_in_rectangle(mouse_x, mouse_y, ix, iy, ix + icon_size, iy + icon_size))
+        {
+            var detail = "";
+            for (var k = 0; k < array_length(cd.effects); k++)
+            {
+                var e = cd.effects[k];
+                var part = "触发效果";
+
+                switch (e.type)
+                {
+                    case EffectType.ARMOR: part = "获得" + string(e.amount) + "点护甲"; break;
+                    case EffectType.GAIN_ENERGY: part = "获得" + string(e.amount) + "费"; break;
+                    case EffectType.DRAW: part = "抽" + string(e.amount) + "张牌"; break;
+                    case EffectType.DAMAGE: part = "造成" + string(e.amount) + "点伤害"; break;
+                    case EffectType.MOVE_TO_BACK: part = "移动至后场"; break;
+                    case EffectType.BRING_TO_FRONT: part = "移动至前场"; break;
+                    case EffectType.DISCOVER_OWN: part = "发现一张本角色的牌"; break;
+                    case EffectType.ADD_TO_HAND:
+                        var n = variable_struct_exists(e, "count") ? e.count : 1;
+                        part = "将" + string(n) + "张牌置入手牌";
+                    break;
+                    case EffectType.STATUS: part = "获得状态"; break;
+                }
+
+                if (detail != "") detail += "；";
+                detail += part;
+            }
+
+            var tip = "倒计时" + string(cd.turns) + "：" + string(cd.turns)
+                    + "回合后，释放" + detail;
+
+            var tx = clamp(mouse_x + 18, 8, room_width - 360);
+            var ty = clamp(mouse_y - 48, 8, room_height - 54);
+            draw_set_halign(fa_left);
+            draw_set_valign(fa_top);
+            draw_set_color(c_black);
+            draw_rectangle(tx - 6, ty - 5, tx + 360, ty + 40, false);
+            draw_set_color(c_white);
+            draw_rectangle(tx - 6, ty - 5, tx + 360, ty + 40, true);
+            draw_text(tx, ty, tip);
+        }
+
+        index++;
+    }
+
+    draw_set_color(c_white);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
 }
 
 // 永久状态牌：不占状态位置，也不会被顶掉
