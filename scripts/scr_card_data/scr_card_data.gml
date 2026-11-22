@@ -1365,7 +1365,7 @@ break;
                         obj_hand_controller.energy += _v;
                         var gifts = [];
                         for (var gi = 101; gi <= 152; gi++)
-                            if (card_get_object(gi) != -1)
+                            if (gi != 140 && card_get_object(gi) != -1)
                                 gifts[array_length(gifts)] = gi;
                         repeat (2)
                         {
