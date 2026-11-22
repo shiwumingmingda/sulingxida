@@ -374,6 +374,26 @@ function card_get_owner_instance(_id)
     return variable_instance_get(obj_hand_controller, "char_" + string(owner_num));
 }
 
+// 随机选择一个存活的友方角色，供“视为使用”需要友方目标的初始牌使用
+function card_pick_random_living_ally()
+{
+    var controller = instance_find(obj_hand_controller, 0);
+    if (!instance_exists(controller)) return noone;
+
+    var choices = [];
+    for (var i = 1; i <= 4; i++)
+    {
+        var ally = variable_instance_get(controller, "char_" + string(i));
+        if (char_is_alive(ally))
+        {
+            choices[array_length(choices)] = ally;
+        }
+    }
+
+    if (array_length(choices) <= 0) return noone;
+    return choices[irandom(array_length(choices) - 1)];
+}
+
 function card_get_owner(_id)
 {
     if (_id >= 1   && _id <= 100) return 1;   // 苏灵兮
@@ -998,6 +1018,19 @@ case EffectType.RANDOM_STARTER:
     var random_entry = card_make_entry(random_obj);
     var random_inst = card_spawn_from_entry(random_entry, -1000, -1000);
     var random_owner = effect_target_char(_e, _target);
+
+    // 岩盾需要友方目标；随机选择一名存活队友，而不是固定选择 char_1
+    if (random_id == 4)
+    {
+        random_owner = card_pick_random_living_ally();
+    }
+
+    if (!instance_exists(random_owner))
+    {
+        with (random_inst) instance_destroy();
+        break;
+    }
+
     var random_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
 
     // 视为使用：记录初始牌编号，使其他“本回合使用过初始牌”的效果也能识别
@@ -1007,9 +1040,10 @@ case EffectType.RANDOM_STARTER:
         obj_hand_controller.attack_used_this_turn[1] = true;
         with (obj_hand_controller) bring_to_front(random_owner);
     }
-    else if (random_id == 4 && get_status(random_owner, StatusType.ROCK_WALL) > 0)
+    else if (random_id == 4 && obj_hand_controller.rock_wall_ready)
     {
         with (obj_hand_controller) bring_to_front(random_owner);
+        add_status(random_owner, StatusType.ROCK_WALL, 1);
     }
 
     // 星火与燎原也会作用于这次视为使用的初始牌
@@ -1219,6 +1253,19 @@ case EffectType.REPLAY_STARTER:
     var replay_entry = variable_struct_exists(_e, "entry") ? _e.entry : card_make_entry(replay_obj);
     var replay_inst = card_spawn_from_entry(replay_entry, -1000, -1000);
     var replay_owner = card_get_owner_instance(_e.card_id);
+
+    // 岩盾的延迟重放同样需要友方目标，随机选取存活队友
+    if (_e.card_id == 4)
+    {
+        replay_owner = card_pick_random_living_ally();
+    }
+
+    if (!instance_exists(replay_owner))
+    {
+        with (replay_inst) instance_destroy();
+        break;
+    }
+
     var replay_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
 
     // 倒计时重放也视为本回合使用过这张初始牌
@@ -1228,9 +1275,10 @@ case EffectType.REPLAY_STARTER:
         obj_hand_controller.attack_used_this_turn[1] = true;
         with (obj_hand_controller) bring_to_front(replay_owner);
     }
-    else if (_e.card_id == 4 && get_status(replay_owner, StatusType.ROCK_WALL) > 0)
+    else if (_e.card_id == 4 && obj_hand_controller.rock_wall_ready)
     {
         with (obj_hand_controller) bring_to_front(replay_owner);
+        add_status(replay_owner, StatusType.ROCK_WALL, 1);
     }
 
     if (obj_hand_controller.starfire_ready && get_status(replay_owner, StatusType.STARFIRE) > 0)
