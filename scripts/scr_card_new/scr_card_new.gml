@@ -32,6 +32,7 @@ function card_info(_id)
         case 19: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.ENEMY, 0);   // 引燃
         case 21: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0);    // 元素更迭
         case 22: return card_make_info(CardType.ATTACK, 2, Rarity.COMMON, false, TargetKind.NONE, 0);    // 霜碎
+        case 23: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 星火与燎原
 
         case 23: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 星火与燎原
 
@@ -41,6 +42,11 @@ function card_info(_id)
         case 25: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 千风所指
         case 26: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 聚能
         case 27: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 掌中微日
+        case 28: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.NONE, 0);       // 火凝·连珠
+        case 29: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 火凝·燎原
+        case 30: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 狂风·凝盾
+        case 31: return card_make_info(CardType.ATTACK, 0, Rarity.RARE, false, TargetKind.NONE, 0);       // 狂风·流羽
+        case 32: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 冰寒·落雨
 
         case 28: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.NONE, 0);       // 火凝·连珠
         case 29: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 火凝·燎原
@@ -49,15 +55,22 @@ function card_info(_id)
         case 32: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 冰寒·落雨
         case 35: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);       // 地岳·镇垒
         case 33: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.ENEMY, 3);     // 冰寒·霜索（需要霜落）
+        case 35: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);       // 地岳·镇垒
         case 34: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 4);      // 地岳·磐缚（需要岩盾）
         case 36: return card_make_info(CardType.SKILL,  0, Rarity.RARE, false, TargetKind.NONE, 0);      // 安宁
         case 37: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);      // 阅读
         case 39: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 灵光一现
         case 38: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 随性发挥
+        case 38: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 随性发挥
 
         // ---- 传说 ----
         case 40: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, true, TargetKind.NONE, 0); // 元素亲和
         case 41: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, true,  TargetKind.NONE, 0); // 唯魔法与美食不可辜负
+        case 40: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, true, TargetKind.NONE, 0); // 元素亲和
+        case 42: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 平凡即安乐
+        case 43: return card_make_info(CardType.STATUS, 1, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 女巫吟唱
+        case 45: return card_make_info(CardType.ATTACK, 2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);  // 吃我火球术哒！
+        case 46: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, true, TargetKind.NONE, 0);  // 压缩
 
         case 42: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 平凡即安乐
         case 43: return card_make_info(CardType.STATUS, 1, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 女巫吟唱
@@ -278,6 +291,26 @@ function card_get_effects_new(_id)
             ];
 
         // 33 冰寒·霜索：消耗一张霜落，令一名敌人获得冻结
+        // 28 火凝·连珠：生成五张伤害-2的火球并依次打出
+        case 28:
+            return [ { type: EffectType.FIREBALL_VOLLEY, amount: 5, damage_bonus: -2 } ];
+
+        // 29 火凝·燎原：消耗一张火球，对所有敌人造成等同于火球的伤害
+        case 29:
+            return [ { type: EffectType.SELECT_HAND, filter_id: 1, mode: "single", min: 1, max: 1, action: { kind: "fireball_aoe" } } ];
+
+        // 30 狂风·凝盾：消耗任意张风刃，获得其伤害总和两倍的护甲
+        case 30:
+            return [ { type: EffectType.SELECT_HAND, filter_id: 2, mode: "multi", min: 1, max: 999, action: { kind: "wind_shield" } } ];
+
+        // 31 狂风·流羽：消耗一张风刃，敌方前排移动；本回合风刃伤害+2
+        case 31:
+            return [ { type: EffectType.SELECT_HAND, filter_id: 2, mode: "single", min: 1, max: 1, action: { kind: "wind_feather" } } ];
+
+        // 32 冰寒·落雨：下一张霜落会对其他敌人各重复一次
+        case 32:
+            return [ { type: EffectType.STATUS, status: StatusType.FROST_RAIN, amount: 1, on_char: 1 } ];
+
         case 33:
             return [
                 { type: EffectType.CONSUME_FROM_HAND, amount: 1, card_id: 3 },
@@ -292,6 +325,10 @@ function card_get_effects_new(_id)
             ];
 
         // 36 安宁：令你手中的所有牌获得保留一回合
+        // 35 地岳·镇垒：将一张手牌变为岩盾
+        case 35:
+            return [ { type: EffectType.SELECT_HAND, filter_id: 0, mode: "single", min: 1, max: 1, action: { kind: "convert_rockshield" } } ];
+
         case 36:
             return [
                 { type: EffectType.RETAIN_HAND, amount: 1 }
@@ -305,12 +342,20 @@ function card_get_effects_new(_id)
             ];
 
         // 39 灵光一现：令本角色所有的倒计时-1
+        // 38 随性发挥：随机视为使用一张本角色初始牌，并复制一张到手牌
+        case 38:
+            return [ { type: EffectType.RANDOM_STARTER, amount: 1, on_char: 1 } ];
+
         case 39:
             return [
                 { type: EffectType.COUNTDOWN_SHIFT, amount: 1, on_char: 1 }
             ];
 
         // 41 唯魔法与美食不可辜负：消耗，将本角色的所有初始牌各一张置入手牌并变为0费，然后回复5点体力值
+        // 40 元素亲和：消耗，强化所有区域里的苏灵兮初始牌
+        case 40:
+            return [ { type: EffectType.UPGRADE_ALL_STARTERS, amount: 1, on_char: 1 } ];
+
         case 41:
             return [
                 { type: EffectType.ADD_TO_HAND, amount: 1, card_id: 1, count: 1, cost: 0 },
@@ -321,6 +366,22 @@ function card_get_effects_new(_id)
             ];
 
         // 44 风息庭：将十张风刃置入你的手牌。每回合开始时，将一张风刃置入你的手牌
+        // 42 平凡即安乐：友方角色倒计时1，若上回合没用攻击牌，获得10护甲
+        case 42:
+            return [ { type: EffectType.COUNTDOWN_ALL_FRIENDS, amount: 1, effects: [ { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 10, conditional_no_attack: true } ] } ];
+
+        // 43 女巫吟唱：本场战斗中，每回合第一次打出初始牌时，倒计时1重放
+        case 43:
+            return [ { type: EffectType.STATUS, status: StatusType.WITCH_CHANT, amount: 1, on_char: 1 } ];
+
+        // 45 吃我火球术哒！：消耗所有区域里的火球，合成一张并打出
+        case 45:
+            return [ { type: EffectType.MERGE_ALL_FIREBALLS, amount: 1 } ];
+
+        // 46 压缩：消耗一张初始牌，倒计时2将其强化后的版本加入手牌
+        case 46:
+            return [ { type: EffectType.SELECT_HAND, filter_id: -1, mode: "single", min: 1, max: 1, action: { kind: "compress" } } ];
+
         case 44:
             return [
                 { type: EffectType.ADD_TO_HAND, amount: 1, card_id: 2, count: 10 },
@@ -358,12 +419,24 @@ function card_get_description_new(_inst)
         case 25: return "从抽牌堆抽取五张【风刃】";
         case 26: return "本角色使用的下一张技能牌额外结算1次";
         case 27: return "倒计时2：将三张【火球】置入手牌，并令其均变为0费和伤害+2";
+        case 28: return "获得五张伤害-2的【火球】，并将其依次打出";
+        case 29: return "消耗一张【火球】，对所有敌人造成等同于该【火球】的伤害";
+        case 30: return "消耗任意张【风刃】，获得等同于其伤害总和两倍的护甲";
+        case 31: return "消耗一张【风刃】，令敌方前排移动。本回合【风刃】伤害+2";
+        case 32: return "你使用的下一张【霜落】会对其他敌方角色各重复一次";
         case 33: return "消耗一张【霜落】，令一名敌人获得冻结";
         case 34: return "消耗一张【岩盾】，造成等同于你所有护甲总和的物理伤害";
         case 36: return "令你手中的所有牌获得保留一回合";
+        case 35: return "将你的一张手牌变为【岩盾】。本回合【岩盾】还会令角色移动至前场，且获得的所有护甲翻倍";
         case 37: return "回合开始时，发现一张本角色的牌，若你在本回合使用，获得1费";
         case 39: return "令本角色所有的倒计时-1";
+        case 38: return "随机视为使用一张本角色的初始牌，并将该初始牌的复制置入手牌";
         case 41: return "消耗，将本角色的所有初始牌各一张置入你的手牌，将其变为0费。然后回复5点体力值";
+        case 40: return "消耗。令你手牌、抽牌堆、弃牌堆中的所有苏灵兮初始牌各进行一次合成强化";
+        case 42: return "所有友方角色获得倒计时1：若本角色上回合没有使用过攻击牌，获得10点护甲";
+        case 43: return "在本局对战剩余时间内，每回合当本角色第一次从手牌中打出初始牌时，倒计时1：视为使用该初始牌";
+        case 45: return "将你手牌、抽牌堆和弃牌堆中的所有【火球】合成为一张，然后使用并消耗";
+        case 46: return "消耗。选择手牌中的一张初始牌，将其消耗。倒计时2：将一张其合成强化后的置入手牌";
         case 44: return "将十张【风刃】置入你的手牌。每回合开始时，将一张【风刃】置入你的手牌";
     }
 
