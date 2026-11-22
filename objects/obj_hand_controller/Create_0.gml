@@ -731,6 +731,7 @@ selection_finish = function()
             chosen.merge_level = 0;
             chosen.cost = card_get_cost(4);
             add_status(char_1, StatusType.ROCK_WALL, 1);
+            check_merge();
         }
         break;
 
