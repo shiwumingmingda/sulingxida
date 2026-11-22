@@ -1031,7 +1031,9 @@ case EffectType.RANDOM_STARTER:
         break;
     }
 
-    var random_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
+    // 岩盾只指向友方角色，不传入敌方目标
+    var random_enemy = (random_id == 4 || array_length(obj_hand_controller.enemies) <= 0)
+        ? noone : obj_hand_controller.enemies[0];
 
     // 视为使用：记录初始牌编号，使其他“本回合使用过初始牌”的效果也能识别
     obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = random_id;
@@ -1266,7 +1268,9 @@ case EffectType.REPLAY_STARTER:
         break;
     }
 
-    var replay_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
+    // 岩盾只指向友方角色，不传入敌方目标
+    var replay_enemy = (_e.card_id == 4 || array_length(obj_hand_controller.enemies) <= 0)
+        ? noone : obj_hand_controller.enemies[0];
 
     // 倒计时重放也视为本回合使用过这张初始牌
     obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = _e.card_id;
