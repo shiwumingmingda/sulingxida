@@ -944,10 +944,25 @@ case EffectType.FIREBALL_VOLLEY:
         if (vi < use_count)
         {
             var fire_inst = card_spawn_from_entry(fire_entry, -1000, -1000);
+
+            // 这张生成的火球也算实际使用了一张初始牌
+            obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = 1;
+            obj_hand_controller.attack_used_this_turn[1] = true;
+
+            // 星火与燎原强化本回合实际打出的第一张初始牌
+            var fire_owner = card_get_owner_instance(1);
+            if (obj_hand_controller.starfire_ready && get_status(fire_owner, StatusType.STARFIRE) > 0)
+            {
+                card_double_effects(fire_inst);
+                clear_status(fire_owner, StatusType.STARFIRE);
+                obj_hand_controller.starfire_ready = false;
+            }
+
             var current_volley_target = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
             card_play_effects(fire_inst, _target, current_volley_target);
+            var used_fire_entry = card_entry_from_instance(fire_inst);
             with (fire_inst) instance_destroy();
-            obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = fire_entry;
+            obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = used_fire_entry;
         }
         else
         {
@@ -1158,6 +1173,19 @@ case EffectType.MERGE_ALL_FIREBALLS:
         var existing_merge_level = card_merge_level(merged_inst);
         var extra_merge_times = max(desired_merge_level - existing_merge_level, 0);
         repeat (extra_merge_times) card_double_effects(merged_inst);
+
+        // 合成后的火球是一次真实的初始牌使用
+        obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = 1;
+        obj_hand_controller.attack_used_this_turn[1] = true;
+
+        // 若本回合尚未使用初始牌，星火与燎原会进一步强化这张合成后的火球
+        var fire_owner = card_get_owner_instance(1);
+        if (obj_hand_controller.starfire_ready && get_status(fire_owner, StatusType.STARFIRE) > 0)
+        {
+            card_double_effects(merged_inst);
+            clear_status(fire_owner, StatusType.STARFIRE);
+            obj_hand_controller.starfire_ready = false;
+        }
 
         var merged_target = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
         card_play_effects(merged_inst, _target, merged_target);
