@@ -430,7 +430,7 @@ else
             // 敏捷：获得的护甲 +1/层（按接收者算，没有指定接收者就按拥有者算）
             var receiver = (_receiver != noone) ? _receiver : owner;
             v += get_status(receiver, StatusType.DEXTERITY);
-            if (_inst.card_id == 4 && get_status(receiver, StatusType.ROCK_WALL) > 0) v *= 2;
+            if (get_status(receiver, StatusType.ROCK_WALL) > 0) v *= 2;
         }
         break;
     }
