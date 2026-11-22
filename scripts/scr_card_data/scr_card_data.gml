@@ -1432,7 +1432,12 @@ function card_entries_from_objects(_objs)
 // 从卡牌实例生成记录（连同合成强化一起保存），进入弃牌堆时用
 function card_entry_from_instance(_inst)
 {
-    var entry = card_make_entry(_inst.object_index);
+    // 以当前卡牌编号对应的对象保存，确保被转化的牌（例如变成岩盾）离开手牌后仍保留新身份
+    var saved_obj = card_get_object(_inst.card_id);
+    if (saved_obj == -1) saved_obj = _inst.object_index;
+
+    var entry = card_make_entry(saved_obj);
+    entry.card_id = _inst.card_id;
 
     if (variable_instance_exists(_inst, "effects"))
     {
@@ -1452,6 +1457,12 @@ function card_entry_from_instance(_inst)
 function card_spawn_from_entry(_entry, _x, _y)
 {
     var inst = instance_create_layer(_x, _y, "Instances", _entry.obj);
+
+    // 覆盖对象 Create 事件里的默认编号，保留实例经过转化后的卡牌身份
+    if (variable_struct_exists(_entry, "card_id") && !is_undefined(_entry.card_id))
+    {
+        inst.card_id = _entry.card_id;
+    }
 
     // 没合成过的牌不设置 effects，继续从数据表读取
     if (!is_undefined(_entry.effects))
