@@ -700,11 +700,15 @@ selection_finish = function()
             }
             for (var i = 0; i < array_length(picked); i++) remove_card_from_hand(picked[i]);
 
-            var shield_amount = card_effect_value({ type: EffectType.ARMOR, amount: total * 2 });
-            shield_amount += get_status(char_1, StatusType.DEXTERITY);
-            if (get_status(char_1, StatusType.ROCK_WALL) > 0) shield_amount *= 2;
+            // 零张风刃时不产生护甲，也不单独触发敏捷或全局护甲加成
+            if (array_length(picked) > 0)
+            {
+                var shield_amount = card_effect_value({ type: EffectType.ARMOR, amount: total * 2 });
+                shield_amount += get_status(char_1, StatusType.DEXTERITY);
+                if (get_status(char_1, StatusType.ROCK_WALL) > 0) shield_amount *= 2;
 
-            add_armor(char_1, ArmorType.GENERAL, shield_amount);
+                add_armor(char_1, ArmorType.GENERAL, shield_amount);
+            }
         }
         break;
 
