@@ -44,7 +44,8 @@ enum EffectType
     RANDOM_STARTER,      // 随机视为使用一张初始牌并复制
     UPGRADE_ALL_STARTERS,// 强化所有区域里的苏灵兮初始牌
     COUNTDOWN_ALL_FRIENDS,// 给所有友方角色添加倒计时
-    MERGE_ALL_FIREBALLS  // 消耗所有火球并合成后使用
+    MERGE_ALL_FIREBALLS, // 消耗所有火球并合成后使用
+    REPLAY_STARTER       // 倒计时后视为再次使用一张初始牌
 }
 
 // 卡牌分类
@@ -415,6 +416,12 @@ else
             {
                 v += get_status(owner, StatusType.SWORD_FORM);
             }
+
+            // 风狂·流羽：本回合风刃的每个伤害段额外+2
+            if (_inst.card_id == 2 && instance_exists(obj_hand_controller))
+            {
+                v += obj_hand_controller.wind_blade_bonus;
+            }
         }
         break;
 
@@ -423,6 +430,7 @@ else
             // 敏捷：获得的护甲 +1/层（按接收者算，没有指定接收者就按拥有者算）
             var receiver = (_receiver != noone) ? _receiver : owner;
             v += get_status(receiver, StatusType.DEXTERITY);
+            if (_inst.card_id == 4 && get_status(receiver, StatusType.ROCK_WALL) > 0) v *= 2;
         }
         break;
     }
@@ -1061,6 +1069,17 @@ case EffectType.MERGE_ALL_FIREBALLS:
         card_play_effects(merged_inst, _target, merged_target);
         with (merged_inst) instance_destroy();
     }
+}
+break;
+
+case EffectType.REPLAY_STARTER:
+{
+    var replay_obj = card_get_object(_e.card_id);
+    var replay_inst = card_spawn_from_entry(card_make_entry(replay_obj), -1000, -1000);
+    var replay_owner = card_get_owner_instance(_e.card_id);
+    var replay_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
+    card_play_effects(replay_inst, replay_owner, replay_enemy);
+    with (replay_inst) instance_destroy();
 }
 break;
     }
