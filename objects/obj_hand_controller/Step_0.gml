@@ -52,6 +52,40 @@ if (discover_active)
 
     exit;
 }
+
+// ---------------------------------
+// 手牌选择界面：只允许选择符合条件的手牌，右侧按钮确认
+// ---------------------------------
+var selection_was_active = selection_active;
+if (selection_active && mouse_check_button_pressed(mb_left))
+{
+    if (mx >= end_button_x1 && mx <= end_button_x2
+    &&  my >= end_button_y1 && my <= end_button_y2)
+    {
+        selection_finish();
+    }
+    else
+    {
+        for (var si = array_length(hand) - 1; si >= 0; si--)
+        {
+            var scard = hand[si];
+            if (!instance_exists(scard)) continue;
+            if (position_meeting(mx, my, scard))
+            {
+                if (selection_can_select(scard))
+                {
+                    selection_toggle(scard);
+                }
+                else
+                {
+                    warning_text = "这张牌不能选择";
+                    warning_timer = 45;
+                }
+                break;
+            }
+        }
+    }
+}
 if (warning_timer > 0) warning_timer--;
 // 延迟触发的卡牌效果（比如 2 号牌两次伤害之间的间隔）
 for (var di = array_length(pending_effects) - 1; di >= 0; di--)
@@ -194,7 +228,7 @@ draw_cards(5);
 // ---------------------------------
 hover_card = noone;
 
-if (turn_state == "player" && !hand_collapsed && drag_card == noone)
+if (turn_state == "player" && !selection_active && !hand_collapsed && drag_card == noone)
 {
     // 从后往前找，优先选中最上层的牌
     for (var i = array_length(hand) - 1; i >= 0; i--)
@@ -220,7 +254,7 @@ if (turn_state == "player" && !hand_collapsed && drag_card == noone)
 // ---------------------------------
 
 
-    if (turn_state == "player" && mouse_check_button_pressed(mb_left))
+    if (turn_state == "player" && !selection_was_active && !selection_active && mouse_check_button_pressed(mb_left))
 {
 	// 测试按钮：发现一张场上角色的牌（临时）
 if (mx >= test_x1 && mx <= test_x2
@@ -643,6 +677,8 @@ if (count > 0)
 
         var target_y = base_y
             - (1 - abs(t)) * fan_height;
+
+        if (selection_active && selection_has(card)) target_y -= 35;
 
         var target_angle = -t * max_angle;
 
