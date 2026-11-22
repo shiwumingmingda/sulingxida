@@ -546,6 +546,7 @@ for (var ci = 1; ci <= 4; ci++)
 
 discover_options = [];
 discover_active = false;
+discover_tag = "";
 discover_46_unlocked = false;
 
 // 状态牌记录和天赋计数
@@ -915,8 +916,10 @@ check_merge = function()
 // 开始发现：暂停游戏，在中央摆出随机三张剑招牌
 // 开始发现：暂停游戏，从 _pool（卡牌对象数组）里随机摆出三张供选择
 
-start_discover = function(_pool, _count)
+start_discover = function(_pool, _count, _tag)
 {
+    if (is_undefined(_tag)) _tag = "";
+
     // 默认抽取三张
     if (is_undefined(_count)) _count = 3;
 
@@ -950,12 +953,14 @@ start_discover = function(_pool, _count)
     }
 
     hover_card = noone;
+    discover_tag = _tag;
     discover_active = true;
 };
 
-request_discover = function(_pool, _count)
+request_discover = function(_pool, _count, _tag)
 {
-    var req = { pool: _pool, count: is_undefined(_count) ? 3 : _count };
+    if (is_undefined(_tag)) _tag = "";
+    var req = { pool: _pool, count: is_undefined(_count) ? 3 : _count, tag: _tag };
 
     if (discover_active)
     {
@@ -963,7 +968,7 @@ request_discover = function(_pool, _count)
     }
     else
     {
-        start_discover(req.pool, req.count);
+        start_discover(req.pool, req.count, req.tag);
     }
 };
 // 选中其中一张：它进入手牌，另外两张消失，游戏继续
@@ -990,6 +995,12 @@ pick_discover = function(_chosen)
 
     hand[array_length(hand)] = _chosen;
 
+    // 阅读发现的牌：本回合打出时额外获得1费
+    if (discover_tag == "reading")
+    {
+        _chosen.reading_bonus = true;
+    }
+
     discover_options = [];
     discover_active = false;
 	// 有排队的发现：接着进行下一个
@@ -997,7 +1008,7 @@ if (array_length(discover_queue) > 0)
 {
     var next_req = discover_queue[0];
     array_delete(discover_queue, 0, 1);
-    start_discover(next_req.pool, next_req.count);
+    start_discover(next_req.pool, next_req.count, next_req.tag);
 }
 };
 
