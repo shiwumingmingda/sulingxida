@@ -282,15 +282,56 @@ function draw_countdown_icons(_owner, _x, _y)
                     case EffectType.GAIN_ENERGY: part = "获得" + string(e.amount) + "费"; break;
                     case EffectType.DRAW: part = "抽" + string(e.amount) + "张牌"; break;
                     case EffectType.DAMAGE: part = "造成" + string(e.amount) + "点伤害"; break;
+                    case EffectType.DAMAGE_OTHERS: part = "对其他敌人造成" + string(e.amount) + "点伤害"; break;
                     case EffectType.MOVE_TO_BACK: part = "移动至后场"; break;
                     case EffectType.BRING_TO_FRONT: part = "移动至前场"; break;
                     case EffectType.DISCOVER_OWN: part = "发现一张本角色的牌"; break;
                     case EffectType.ADD_TO_HAND:
+                    {
                         var n = variable_struct_exists(e, "count") ? e.count : 1;
-                        part = "将" + string(n) + "张牌置入手牌";
+                        var card_name = "牌";
+                        if (variable_struct_exists(e, "card_id"))
+                        {
+                            switch (e.card_id)
+                            {
+                                case 1: card_name = "【火球】"; break;
+                                case 2: card_name = "【风刃】"; break;
+                                case 3: card_name = "【霜落】"; break;
+                                case 4: card_name = "【岩盾】"; break;
+                            }
+                        }
+                        part = "将" + string(n) + "张" + card_name + "置入手牌";
+                    }
                     break;
-                    case EffectType.STATUS: part = "获得状态"; break;
-                    case EffectType.REPLAY_STARTER: part = "视为使用一张初始牌"; break;
+                    case EffectType.STATUS:
+                    {
+                        var status_name = "状态";
+                        switch (e.status)
+                        {
+                            case StatusType.MAGIC_POWER: status_name = "魔力"; break;
+                            case StatusType.STRENGTH: status_name = "力量"; break;
+                            case StatusType.DEXTERITY: status_name = "敏捷"; break;
+                            case StatusType.CHILL: status_name = "寒冷"; break;
+                            case StatusType.FROZEN: status_name = "冻结"; break;
+                            case StatusType.ARMOR_KEEP: status_name = "护甲保留"; break;
+                            case StatusType.TEMP_MAGIC: status_name = "临时魔力"; break;
+                        }
+                        part = "获得" + string(e.amount) + "层" + status_name;
+                    }
+                    break;
+                    case EffectType.REPLAY_STARTER:
+                    {
+                        var starter_name = "初始牌";
+                        switch (e.card_id)
+                        {
+                            case 1: starter_name = "【火球】"; break;
+                            case 2: starter_name = "【风刃】"; break;
+                            case 3: starter_name = "【霜落】"; break;
+                            case 4: starter_name = "【岩盾】"; break;
+                        }
+                        part = "视为使用" + starter_name;
+                    }
+                    break;
                     case EffectType.ADD_ENTRY_TO_HAND: part = "将强化后的牌加入手牌"; break;
                     case EffectType.SHUFFLE_ELEMENT: part = "将一张随机元素牌洗入抽牌堆"; break;
                 }
