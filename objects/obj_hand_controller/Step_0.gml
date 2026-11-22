@@ -4,6 +4,70 @@
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
+
+// 占卜界面：暂停其他操作，只处理拖动、排序和确认。
+if (scry_active)
+{
+    if (mouse_check_button_pressed(mb_left))
+    {
+        if (mx >= scry_confirm_x1 && mx <= scry_confirm_x2
+        && my >= scry_confirm_y1 && my <= scry_confirm_y2)
+        {
+            scry_finish();
+            exit;
+        }
+
+        scry_drag_card = noone;
+        for (var si = 0; si < 2 && scry_drag_card == noone; si++)
+        {
+            var list = (si == 0) ? scry_top : scry_bottom;
+            for (var ci = array_length(list) - 1; ci >= 0; ci--)
+            {
+                var card = list[ci];
+                if (!instance_exists(card)) continue;
+                var hw = sprite_get_width(card.sprite_index) * scry_scale * 0.5;
+                var hh = sprite_get_height(card.sprite_index) * scry_scale * 0.5;
+                if (point_in_rectangle(mx, my, card.x - hw, card.y - hh, card.x + hw, card.y + hh))
+                {
+                    scry_drag_card = card;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (instance_exists(scry_drag_card) && mouse_check_button(mb_left))
+    {
+        scry_drag_card.x = mx;
+        scry_drag_card.y = my;
+    }
+
+    if (mouse_check_button_released(mb_left) && instance_exists(scry_drag_card))
+    {
+        var moving = scry_drag_card;
+        var old_list = (array_get_index(scry_top, moving) >= 0) ? scry_top : scry_bottom;
+        for (var oi = 0; oi < array_length(old_list); oi++)
+        {
+            if (old_list[oi] == moving)
+            {
+                array_delete(old_list, oi, 1);
+                break;
+            }
+        }
+
+        var target_list = (my < room_height * 0.52) ? scry_top : scry_bottom;
+        var insert_at = 0;
+        while (insert_at < array_length(target_list)
+        && target_list[insert_at].x < mx) insert_at++;
+        array_insert(target_list, insert_at, moving);
+        scry_drag_card = noone;
+        scry_layout();
+    }
+
+    exit;
+}
+
+
 // ---------------------------------
 // 战斗奖励：只处理三选一和跳过
 // ---------------------------------
@@ -197,11 +261,39 @@ if (instance_exists(char_3)) clear_status(char_3, StatusType.ROCK_WALL);
 if (instance_exists(char_4)) clear_status(char_4, StatusType.ROCK_WALL);
 rock_wall_ready = false;
 
-// 新回合：星光可以再次使用
+// 新回合：星光可以再次使用；星印持续两个敌方回合。
 if (instance_exists(char_2))
 {
     char_2.starlight_used = false;
+    if (char_2.enemy_debuff_turns > 0) char_2.enemy_debuff_turns--;
+
+    // 炫技：若上一个敌方回合没有受到伤害，额外获得3点护甲。
+    if (char_2.showmanship_active)
+    {
+        if (!char_2.showmanship_hit) add_armor(char_2, ArmorType.GENERAL, 3);
+        char_2.showmanship_active = false;
+        char_2.showmanship_hit = false;
+    }
 }
+
+// 临时属性与天河渡的分担效果只持续到本回合开始。
+for (var fi = 0; fi < array_length(party_insts); fi++)
+{
+    var friend = party_insts[fi];
+    if (!instance_exists(friend)) continue;
+    clear_status(friend, StatusType.TEMP_MAGIC);
+    clear_status(friend, StatusType.TEMP_STRENGTH);
+    friend.shared_damage_owner = noone;
+}
+team_echo_used = array_create(5, false);
+
+// 同尘授予的星光支付只持续当前回合。
+for (var hi = 0; hi < array_length(hand); hi++)
+    if (instance_exists(hand[hi])) hand[hi].starlight_enabled = false;
+
+// 前场锁定只持续到下个玩家回合开始。
+for (var ei = 0; ei < array_length(enemies); ei++)
+    if (instance_exists(enemies[ei])) enemies[ei].force_front = false;
 
 // 倒计时：所有倒计时 -1，到 0 的立刻触发
 countdown_tick();
@@ -246,6 +338,9 @@ if (char_is_alive(char_3))
 
 // 抽 5 张牌
 draw_cards(5);
+
+// 紫微垣：每回合开始占卜2。
+if (char_is_alive(char_2) && char_2.purple_star) scry_start(2);
         }
     }
 }
@@ -295,7 +390,10 @@ if (mx >= test_x1 && mx <= test_x2
     else if (mx >= end_button_x1 && mx <= end_button_x2
     &&  my >= end_button_y1 && my <= end_button_y2)
     {
-		// 出牌阶段结束：结算手牌里的回合结束效果（猩红）
+		// 漫步繁星之畔：回合结束时为抽牌堆中的一张牌施加繁星。
+if (char_is_alive(char_2) && char_2.star_walk_active) mark_random_deck_card();
+
+// 出牌阶段结束：结算手牌里的回合结束效果（猩红）
 for (var ei = 0; ei < array_length(hand); ei++)
 {
     var ec = hand[ei];
@@ -560,43 +658,45 @@ if (try_play)
 {
         var released_id = released_card.card_id;
         var cost = card_current_cost(released_card) + first_cost_up;
+        var printed_star_cost = card_star_cost(released_id);
+        var shortage = max(cost - energy, 0);
+        var can_convert_star = card_uses_starlight(released_id)
+            || (variable_instance_exists(released_card, "starlight_enabled") && released_card.starlight_enabled);
+        var star_conversion = 0;
+        var total_star_pay = printed_star_cost;
+        var can_play = (energy >= cost);
 
-var can_play = (energy >= cost);
-var star_pay = 0;
+        if (instance_exists(char_2))
+        {
+            if (shortage > 0 && can_convert_star
+            && (!char_2.starlight_used || char_2.starlight_unlimited))
+            {
+                star_conversion = shortage;
+                can_play = true;
+            }
 
-// 费用不足时：角色2的牌可以用星光补差额（每回合限一次）
-if (!can_play
-&&  card_uses_starlight(released_id)
-&&  instance_exists(char_2))
-{
-    var shortage = cost - energy;
+            total_star_pay += star_conversion;
+            if (char_2.starlight < total_star_pay) can_play = false;
+        }
+        else if (total_star_pay > 0)
+        {
+            can_play = false;
+        }
 
-    if (!char_2.starlight_used && char_2.starlight >= shortage)
-    {
-        can_play = true;
-        star_pay = shortage;
-    }
-}
+        // 助星捷辰一场战斗只能使用一次。
+        if (released_id == 140 && char_2.assist_star_used) can_play = false;
 
-// 仍然不够：不打出，牌自动飞回手牌
+// 费用和星光都不足：不打出，牌自动飞回手牌
 if (!can_play)
 {
-    warning_text = "费用不足";
+    warning_text = (printed_star_cost > 0 || star_conversion > 0) ? "星光或费用不足" : "费用不足";
     warning_timer = 90;
 }
 else
 {
-    if (star_pay > 0)
-    {
-        // 先用完剩余费用，不够的部分用星光补
-        energy = 0;
-        char_2.starlight -= star_pay;
-        char_2.starlight_used = true;
-    }
-    else
-    {
-        energy -= cost;
-    }
+    energy -= min(energy, cost);
+    if (total_star_pay > 0) char_2.starlight -= total_star_pay;
+    if (star_conversion > 0) char_2.starlight_used = true;
 	first_cost_up = 0;   // 本回合使用的第一张牌已经用掉了这个费用加成
 	turn_played_ids[array_length(turn_played_ids)] = released_id;   // 记录本回合打出的牌
 
@@ -627,8 +727,10 @@ if (released_id == 23)
         add_status(target, StatusType.ROCK_WALL, 1);
     }
 
-    // 记录各角色本回合是否打出过攻击牌
+    // 记录各角色本回合是否打出过攻击牌。
     var attack_owner_n = card_get_owner(released_id);
+    if (ctype == CardType.ATTACK && attack_owner_n == 2)
+        char_2.attack_cards_used_battle++;
     if (ctype == CardType.ATTACK)
     {
         if (attack_owner_n > 0)
@@ -647,7 +749,7 @@ if (released_id == 23)
 
 // 攻击牌：对应角色先进入前场
 // 攻击牌：所属角色先进入前场（通用攻击牌没有所属角色，不用换人）
-if (ctype == CardType.ATTACK)
+if (ctype == CardType.ATTACK && !card_has_tag(released_id, CardTag.RANGED))
 {
     var who = card_get_character(released_id);
 
