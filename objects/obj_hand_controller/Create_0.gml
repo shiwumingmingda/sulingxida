@@ -604,6 +604,27 @@ selection_can_select = function(_card)
 
 selection_start = function(_filter, _mode, _min, _max, _action)
 {
+    // 先检查是否还有足够的候选牌，避免聚能重复选择时出现无法确认的空界面
+    var available = 0;
+    for (var ai = 0; ai < array_length(hand); ai++)
+    {
+        var candidate = hand[ai];
+        if (!instance_exists(candidate)) continue;
+
+        var allowed = (_filter == 0)
+            || (_filter == -1 && candidate.card_id >= 1 && candidate.card_id <= 4)
+            || (_filter > 0 && candidate.card_id == _filter);
+
+        if (allowed) available++;
+    }
+
+    if (available < _min)
+    {
+        warning_text = "没有足够的可选手牌";
+        warning_timer = 60;
+        return;
+    }
+
     if (selection_active)
     {
         selection_queue[array_length(selection_queue)] = {
