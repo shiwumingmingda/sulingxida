@@ -95,6 +95,16 @@ scry_confirm_y1 = room_height * 0.88;
 scry_confirm_y2 = room_height * 0.96;
 last_scry_bottom_count = 0;
 
+// 弃牌堆选牌界面（拾愿）
+discard_choice_active = false;
+discard_choice_options = [];
+discard_choice_max = 2;
+discard_choice_scale = 0.48;
+discard_choice_x1 = room_width * 0.40;
+discard_choice_x2 = room_width * 0.60;
+discard_choice_y1 = room_height * 0.88;
+discard_choice_y2 = room_height * 0.96;
+
 // 当前正在拖动的卡牌
 drag_card = noone;
 drag_offset_x = 0;
@@ -412,6 +422,87 @@ draw_cards = function(_n)
     check_merge();
 };
 
+
+
+discard_choice_start = function(_show_count, _choose_count)
+{
+    if (discard_choice_active) return;
+
+    var count = min(_show_count, array_length(discard_pile));
+    if (count <= 0) return;
+
+    var indices = [];
+    for (var i = 0; i < array_length(discard_pile); i++) indices[i] = i;
+    indices = array_shuffle(indices);
+
+    discard_choice_options = [];
+    discard_choice_max = _choose_count;
+    for (var i = 0; i < count; i++)
+    {
+        var index = indices[i];
+        var card = card_spawn_from_entry(discard_pile[index], room_width * 0.5, room_height * 0.47);
+        card.visible = false;
+        card.image_xscale = discard_choice_scale;
+        card.image_yscale = discard_choice_scale;
+        discard_choice_options[i] = { card: card, index: index, selected: false };
+    }
+
+    var gap = min(170, room_width * 0.80 / max(count, 1));
+    for (var i = 0; i < count; i++)
+    {
+        var card = discard_choice_options[i].card;
+        card.x = room_width * 0.5 + (i - (count - 1) * 0.5) * gap;
+        card.y = room_height * 0.47;
+    }
+
+    discard_choice_active = true;
+};
+
+discard_choice_finish = function()
+{
+    var indices = [];
+    for (var i = 0; i < array_length(discard_choice_options); i++)
+        if (discard_choice_options[i].selected)
+            indices[array_length(indices)] = discard_choice_options[i].index;
+
+    // 从大到小删除，防止前面的删除改变后续下标。
+    for (var i = 0; i < array_length(indices); i++)
+    {
+        for (var j = i + 1; j < array_length(indices); j++)
+        {
+            if (indices[j] > indices[i])
+            {
+                var temp = indices[i];
+                indices[i] = indices[j];
+                indices[j] = temp;
+            }
+        }
+    }
+
+    for (var i = 0; i < array_length(indices); i++)
+    {
+        var entry = discard_pile[indices[i]];
+        array_delete(discard_pile, indices[i], 1);
+        if (array_length(hand) < max_hand_size)
+        {
+            var card = card_spawn_from_entry(entry, room_width * 0.5, room_height - 115);
+            card.is_dealing = true;
+            hand[array_length(hand)] = card;
+        }
+        else
+        {
+            discard_pile[array_length(discard_pile)] = entry;
+        }
+    }
+
+    for (var i = 0; i < array_length(discard_choice_options); i++)
+        if (instance_exists(discard_choice_options[i].card))
+            with (discard_choice_options[i].card) instance_destroy();
+
+    discard_choice_options = [];
+    discard_choice_active = false;
+    check_merge();
+};
 
 scry_layout = function()
 {
