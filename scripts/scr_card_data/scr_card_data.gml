@@ -1056,7 +1056,7 @@ case EffectType.COUNTDOWN_ALL_FRIENDS:
 {
     with (obj_hand_controller)
     {
-        for (var fi = 1; fi <= 3; fi++)
+        for (var fi = 1; fi <= 4; fi++)
         {
             var friend_inst = variable_instance_get(id, "char_" + string(fi));
             if (char_is_alive(friend_inst))
