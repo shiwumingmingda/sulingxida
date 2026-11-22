@@ -62,7 +62,7 @@ function card_get_type(_id)
         return CardType.ATTACK;
     }
 
-    // 技能牌：4~6、105~107、207~208、302~304
+    // 技能牌：4~5、105~107、207~208、302~304
     if ((_id >= 4 && _id <= 6) || (_id >= 105 && _id <= 107)
     ||  (_id >= 207 && _id <= 208) || (_id >= 302 && _id <= 304))
     {
@@ -82,8 +82,8 @@ function card_get_cost(_id)
     var info = card_info(_id);
     if (!is_undefined(info)) return info.cost;
 
-    // 2 费：7~10、102、105、210
-    if ((_id >= 7 && _id <= 10) || _id == 102 || _id == 105 || _id == 210) return 2;
+    // 2 费：102、105、210
+    if (_id == 102 || _id == 105 || _id == 210) return 2;
 
     // 1 费：1~3、101、103、104、201~206、208、301、302、304
     if ((_id >= 1 && _id <= 3) || _id == 101 || _id == 103 || _id == 104
@@ -1382,11 +1382,7 @@ function card_get_object(_n)
         case 3:  return obj_card_0003;
         case 4:  return obj_card_0004;
         case 5:  return obj_card_0005;
-        case 6:  return obj_card_0006;
         case 7:  return obj_card_0007;
-        case 8:  return obj_card_0008;
-        case 9:  return obj_card_0009;
-        case 10: return obj_card_0010;
         case 11: return obj_card_0011;
         case 12: return obj_card_0012;
         case 13: return obj_card_0013;
