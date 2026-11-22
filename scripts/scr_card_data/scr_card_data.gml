@@ -273,7 +273,10 @@ function effects_add_damage(_effects, _n)
 
     for (var i = 0; i < array_length(result); i++)
     {
-        if (result[i].type == EffectType.DAMAGE || result[i].type == EffectType.DAMAGE_OTHERS)
+        if (result[i].type == EffectType.DAMAGE
+        || result[i].type == EffectType.DAMAGE_OTHERS
+        || result[i].type == EffectType.RANDOM_DAMAGE
+        || (result[i].type == EffectType.CUSTOM && result[i].action == "pull_and_damage"))
         {
             result[i].amount = max(result[i].amount + _n, 0);
         }
@@ -996,6 +999,20 @@ else
             var receiver = (_receiver != noone) ? _receiver : owner;
             v += get_status(receiver, StatusType.DEXTERITY);
             if (get_status(receiver, StatusType.ROCK_WALL) > 0) v *= 2;
+        }
+        break;
+
+        case EffectType.CUSTOM:
+        {
+            // 回星引月：该自定义物理伤害也受力量与星幕加成。
+            if (variable_struct_exists(_e, "action") && _e.action == "pull_and_damage")
+            {
+                v += get_status(owner, StatusType.STRENGTH);
+                v += get_status(owner, StatusType.TEMP_STRENGTH);
+                if (instance_exists(obj_hand_controller.char_2)
+                && obj_hand_controller.char_2.star_damage_bonus_active)
+                    v += 2;
+            }
         }
         break;
     }
