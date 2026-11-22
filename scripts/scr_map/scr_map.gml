@@ -49,10 +49,18 @@ function map_degree(_map, _i)
 // 格子 _i 在方向 _d 上的相邻格子下标（调用前要确认没出界或者有连线）
 function map_neighbor(_map, _i, _d)
 {
-    var ddx = [0, 1, 0, -1];
-    var ddy = [-1, 0, 1, 0];
+    var x = _i mod _map.w;
+    var y = _i div _map.w;
 
-    return ((_i div _map.w) + ddy[_d]) * _map.w + ((_i mod _map.w) + ddx[_d]);
+    switch (_d)
+    {
+        case 0: y--; break;
+        case 1: x++; break;
+        case 2: y++; break;
+        case 3: x--; break;
+    }
+
+    return y * _map.w + x;
 }
 
 // 并查集：找到 _i 所在区域的根（只读）
@@ -302,7 +310,6 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
     map.boss_i = boss_candidates[irandom(array_length(boss_candidates) - 1)];
 
     // 3. 起点直接连着的节点必定是普通战斗，确保开局附近有敌人。
-    var forced_n = 0;
     for (var dir = 0; dir < 4; dir++)
     {
         if (!map_has_link(map, start_i, dir)) continue;
@@ -311,7 +318,6 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
         if (near_i != map.boss_i)
         {
             map.type[near_i] = NodeType.BATTLE;
-            forced_n++;
         }
     }
 
@@ -846,12 +852,10 @@ function node_description(_t, _revealed)
 // 角色对象 → 角色编号（1~4），没有返回 0
 function character_get_num(_obj)
 {
-    var list = [obj_character_1, obj_character_2, obj_character_3, obj_character_4];
-
-    for (var i = 0; i < 4; i++)
-    {
-        if (list[i] == _obj) return i + 1;
-    }
+    if (_obj == obj_character_1) return 1;
+    if (_obj == obj_character_2) return 2;
+    if (_obj == obj_character_3) return 3;
+    if (_obj == obj_character_4) return 4;
 
     return 0;
 }
@@ -866,14 +870,6 @@ function character_base_max_hp(_num)
 // 角色头像（没有头像的角色先返回 -1，地图里会用角色自己的图代替）
 function character_avatar_sprite(_num)
 {
-    switch (_num)
-    {
-        case 1: return -1;   // 换成：return spr_你的头像1;
-        case 2: return -1;   // 换成：return spr_你的头像2;
-        case 3: return -1;
-        case 4: return -1;
-    }
-
     return -1;
 }
 
