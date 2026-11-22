@@ -119,7 +119,7 @@ function turn_distinct_starters()
 
         for (var k = 0; k < array_length(seen); k++)
         {
-            if (seen[k] == cid) dup = true;
+            if (seen[k] == cid) { dup = true; break; }
         }
 
         if (!dup) seen[array_length(seen)] = cid;
@@ -487,7 +487,7 @@ function reward_roll_cards(_n)
 
         for (var i = 0; i < array_length(result); i++)
         {
-            if (result[i] == pick) dup = true;
+            if (result[i] == pick) { dup = true; break; }
         }
 
         if (!dup) result[array_length(result)] = pick;
