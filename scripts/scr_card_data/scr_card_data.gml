@@ -39,7 +39,12 @@ enum EffectType
     ROTATE_SELF,         // 角色在前场和后场之间轮换
     DRAW_IF_PLAYED,      // 本回合打出过指定牌时抽牌
     SELECT_HAND,         // 打开通用手牌选择界面
-    ADD_ENTRY_TO_HAND    // 将保存的强化卡牌记录加入手牌
+    ADD_ENTRY_TO_HAND,   // 将保存的强化卡牌记录加入手牌
+    FIREBALL_VOLLEY,     // 生成并依次使用多张火球
+    RANDOM_STARTER,      // 随机视为使用一张初始牌并复制
+    UPGRADE_ALL_STARTERS,// 强化所有区域里的苏灵兮初始牌
+    COUNTDOWN_ALL_FRIENDS,// 给所有友方角色添加倒计时
+    MERGE_ALL_FIREBALLS  // 消耗所有火球并合成后使用
 }
 
 // 卡牌分类
@@ -360,6 +365,14 @@ function card_effect_value(_effect)
     return max(v, 0);
 }
 // 这张牌的拥有者角色的实例（没有就返回 noone）
+function card_get_owner_instance(_id)
+{
+    var owner_num = card_get_owner(_id);
+    if (owner_num <= 0) return noone;
+    if (!instance_exists(obj_hand_controller)) return noone;
+    return variable_instance_get(obj_hand_controller, "char_" + string(owner_num));
+}
+
 function card_get_owner(_id)
 {
     if (_id >= 1   && _id <= 100) return 1;   // 苏灵兮
