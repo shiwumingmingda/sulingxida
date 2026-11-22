@@ -114,6 +114,9 @@ function map_cell_sprite(_map, _i)
 {
     var t = _map.type[_i];
 
+    // 空地始终显示空地精灵，不使用未揭露节点的“隐秘”图标。
+    if (t == NodeType.EMPTY) return spr_node_empty;
+
     if (_map.revealed[_i]) return node_sprite(t);
 
     return node_hidden_sprite(t);
