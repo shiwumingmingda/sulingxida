@@ -996,18 +996,32 @@ pick_discover = function(_chosen)
         }
     }
 
-    // 选中的牌：先记好手牌里的原始大小（它会从中央放大状态缩回手牌）
-    _chosen.hand_base_xscale = _chosen.opt_base_xscale;
-    _chosen.hand_base_yscale = _chosen.opt_base_yscale;
-    _chosen.visible = true;
-    _chosen.is_dealing = true;
-
-    hand[array_length(hand)] = _chosen;
-
-    // 阅读发现的牌：本回合打出时额外获得1费
-    if (discover_tag == "reading")
+    // 手牌已满时，选中的牌进入弃牌堆，避免发现界面突破手牌上限
+    if (array_length(hand) >= max_hand_size)
     {
-        _chosen.reading_bonus = true;
+        discard_pile[array_length(discard_pile)] = card_entry_from_instance(_chosen);
+        with (_chosen) instance_destroy();
+
+        warning_text = "手牌已满，发现的牌进入弃牌堆";
+        warning_timer = 90;
+    }
+    else
+    {
+        // 选中的牌：从中央放大状态缩回手牌
+        _chosen.hand_base_xscale = _chosen.opt_base_xscale;
+        _chosen.hand_base_yscale = _chosen.opt_base_yscale;
+        _chosen.visible = true;
+        _chosen.is_dealing = true;
+
+        hand[array_length(hand)] = _chosen;
+
+        // 阅读发现的牌：本回合打出时额外获得1费
+        if (discover_tag == "reading")
+        {
+            _chosen.reading_bonus = true;
+        }
+
+        check_merge();
     }
 
     discover_options = [];
