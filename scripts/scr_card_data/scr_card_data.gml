@@ -943,6 +943,7 @@ if (owner == noone) owner = _receiver;
     {
         case EffectType.DAMAGE:
         case EffectType.DAMAGE_OTHERS:
+        case EffectType.RANDOM_DAMAGE:
         {
             var dt = variable_struct_exists(_e, "dtype") ? _e.dtype : DamageType.PHYSICAL;
 
@@ -1209,10 +1210,15 @@ break;
                 projectile_target = obj_hand_controller.enemies[0];
             if (instance_exists(projectile_target) && _v > 0)
             {
+                var projectile_damage = _v;
+                if (instance_exists(obj_hand_controller.char_2)
+                && obj_hand_controller.char_2.star_damage_bonus_active)
+                    projectile_damage += 2;
+
                 var shot = instance_create_layer(obj_hand_controller.char_2.x, obj_hand_controller.char_2.y,
                     "Instances", obj_star_projectile);
                 shot.target_enemy = projectile_target;
-                shot.damage = _v;
+                shot.damage = projectile_damage;
                 shot.damage_type = DamageType.MAGIC;
             }
         }
@@ -1339,8 +1345,8 @@ break;
                         dust.assist_star_used = true;
                         obj_hand_controller.energy += _v;
                         var gifts = [];
-                        for (var gi = 105; gi <= 152; gi++)
-                            if (card_get_object(gi) != -1 && card_get_type(gi) != CardType.STATUS)
+                        for (var gi = 101; gi <= 152; gi++)
+                            if (card_get_object(gi) != -1)
                                 gifts[array_length(gifts)] = gi;
                         repeat (2)
                         {
