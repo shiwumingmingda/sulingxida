@@ -474,10 +474,10 @@ reset_cards_to_battle_start = function()
 	countdowns = [];
 turn_played_ids = [];
 discover_queue = [];
-attack_used_this_turn = array_create(4, false);
-attack_used_last_turn = array_create(4, false);
+attack_used_this_turn = array_create(5, false);
+attack_used_last_turn = array_create(5, false);
 witch_chant_used = false;
-starter_played_this_turn = array_create(4, false);
+starter_played_this_turn = array_create(5, false);
 starfire_ready = false;
 wind_blade_bonus = 0;
 selection_active = false;
@@ -1055,10 +1055,10 @@ for (var p2 = 0; p2 < array_length(party_insts); p2++)
 // ---------- 倒计时 ----------
 countdowns = [];          // { owner: 角色编号, turns: 剩余回合, effects: [效果] }
 turn_played_ids = [];     // 本回合打出过的牌编号
-attack_used_this_turn = array_create(4, false);
-attack_used_last_turn = array_create(4, false);
+attack_used_this_turn = array_create(5, false);
+attack_used_last_turn = array_create(5, false);
 witch_chant_used = false;
-starter_played_this_turn = array_create(4, false);
+starter_played_this_turn = array_create(5, false);
 starfire_ready = false;
 discover_queue = [];      // 排队等待的发现
 
