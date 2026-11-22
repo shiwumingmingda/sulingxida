@@ -909,6 +909,7 @@ case EffectType.ADD_ENTRY_TO_HAND:
             var spawned = card_spawn_from_entry(entry, room_width * 0.5, room_height - 115);
             spawned.is_dealing = true;
             hand[array_length(hand)] = spawned;
+            check_merge();
         }
     }
 }
@@ -1004,6 +1005,7 @@ case EffectType.RANDOM_STARTER:
             var copy_inst = card_spawn_from_entry(random_used_entry, room_width * 0.5, room_height - 115);
             copy_inst.is_dealing = true;
             hand[array_length(hand)] = copy_inst;
+            check_merge();
         }
     }
 }
