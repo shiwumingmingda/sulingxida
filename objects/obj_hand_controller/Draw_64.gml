@@ -387,8 +387,8 @@ if (selection_active)
         {
             draw_set_alpha(1);
             draw_set_color(make_color_rgb(255, 220, 90));
-            draw_rectangle(qcard.bbox_left, qcard.bbox_top - 35,
-                qcard.bbox_right, qcard.bbox_bottom - 35, true);
+            draw_rectangle(qcard.bbox_left, qcard.bbox_top,
+                qcard.bbox_right, qcard.bbox_bottom, true);
             draw_set_color(c_white);
         }
     }
