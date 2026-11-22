@@ -508,9 +508,12 @@ if (scry_active)
     {
         var card = scry_top[i];
         if (!instance_exists(card) || card == scry_drag_card) continue;
+        var card_scale = (card == scry_hover_card) ? scry_scale * 1.18 : scry_scale;
         draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            scry_scale, scry_scale, card.image_angle, c_white, 1);
-        card_draw_text(card, card.sprite_index, card.x, card.y, scry_scale, scry_scale, card.image_angle);
+            card_scale, card_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, card.sprite_index, card.x, card.y, card_scale, card_scale, card.image_angle);
+        card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
+            card_scale, card_scale, card.image_angle);
     }
 
     // 牌堆底区域
@@ -518,9 +521,12 @@ if (scry_active)
     {
         var card = scry_bottom[i];
         if (!instance_exists(card) || card == scry_drag_card) continue;
+        var card_scale = (card == scry_hover_card) ? scry_scale * 1.18 : scry_scale;
         draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            scry_scale, scry_scale, card.image_angle, c_white, 1);
-        card_draw_text(card, card.sprite_index, card.x, card.y, scry_scale, scry_scale, card.image_angle);
+            card_scale, card_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, card.sprite_index, card.x, card.y, card_scale, card_scale, card.image_angle);
+        card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
+            card_scale, card_scale, card.image_angle);
     }
 
     // 正在拖动的牌绘制在最上层。
@@ -530,6 +536,49 @@ if (scry_active)
         draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
             scry_scale, scry_scale, card.image_angle, c_white, 1);
         card_draw_text(card, card.sprite_index, card.x, card.y, scry_scale, scry_scale, card.image_angle);
+        card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
+            scry_scale, scry_scale, card.image_angle);
+    }
+
+    // 悬停时在屏幕另一侧显示清晰的大卡预览。
+    if (instance_exists(scry_hover_card) && !instance_exists(scry_drag_card))
+    {
+        var preview_card = scry_hover_card;
+        var preview_spr = card_get_preview_sprite(preview_card.card_id);
+        if (preview_spr == -1) preview_spr = preview_card.sprite_index;
+
+        var preview_h = room_height * 0.42;
+        var preview_s = preview_h / sprite_get_height(preview_spr);
+        var preview_w = sprite_get_width(preview_spr) * preview_s;
+        var preview_cx = (preview_card.x < room_width * 0.5)
+            ? room_width * 0.78 : room_width * 0.22;
+        preview_cx = clamp(preview_cx, preview_w * 0.5 + 12,
+            room_width - preview_w * 0.5 - 12);
+        var preview_cy = room_height * 0.50;
+
+        draw_set_alpha(0.90);
+        draw_set_color(c_black);
+        draw_rectangle(preview_cx - preview_w * 0.5 - 10,
+            preview_cy - preview_h * 0.5 - 10,
+            preview_cx + preview_w * 0.5 + 10,
+            preview_cy + preview_h * 0.5 + 10, false);
+        draw_set_alpha(1);
+        draw_set_color(make_color_rgb(170, 185, 220));
+        draw_rectangle(preview_cx - preview_w * 0.5 - 10,
+            preview_cy - preview_h * 0.5 - 10,
+            preview_cx + preview_w * 0.5 + 10,
+            preview_cy + preview_h * 0.5 + 10, true);
+
+        var preview_x = preview_cx
+            - (sprite_get_width(preview_spr) * 0.5 - sprite_get_xoffset(preview_spr)) * preview_s;
+        var preview_y = preview_cy
+            - (sprite_get_height(preview_spr) * 0.5 - sprite_get_yoffset(preview_spr)) * preview_s;
+        draw_sprite_ext(preview_spr, 0, preview_x, preview_y,
+            preview_s, preview_s, 0, c_white, 1);
+        card_draw_text(preview_card, preview_spr, preview_x, preview_y,
+            preview_s, preview_s, 0);
+        card_draw_merge_frame(preview_card, preview_spr, preview_x, preview_y,
+            preview_s, preview_s, 0);
     }
 
     // 确认按钮
