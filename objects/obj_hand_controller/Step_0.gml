@@ -179,6 +179,7 @@ with (obj_character_1)
 
     clear_status(id, StatusType.TEMP_MAGIC);
     clear_status(id, StatusType.LAVA_WARD);
+    clear_status(id, StatusType.ROCK_WALL);
 }
 
 // 新回合：星光可以再次使用
