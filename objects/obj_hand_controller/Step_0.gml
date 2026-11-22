@@ -160,6 +160,8 @@ next_turn_energy_bonus = 0;
 
 // 本回合打出的牌记录清零
 turn_played_ids = [];
+wind_blade_bonus = 0;
+witch_chant_used = false;
 
 // 新回合：护甲清零（疾风步的"护甲保留"这一次不清零）；临时魔力、熔岩加护结束
 with (obj_character_1)
@@ -319,7 +321,11 @@ if (front_char == noone || !instance_exists(front_char))
     }
 }
 
-        // 轮到敌人
+        // 记录本回合每个角色是否使用过攻击牌，供下一回合倒计时判断
+attack_used_last_turn = copy_array(attack_used_this_turn);
+attack_used_this_turn = array_create(4, false);
+
+// 轮到敌人
 
 turn_state = "enemy";
 enemy_timer = 0;
@@ -540,6 +546,13 @@ else
 
     var ctype = card_get_type(released_id);
 
+    // 记录各角色本回合是否打出过攻击牌
+    var attack_owner_n = card_get_owner(released_id);
+    if (ctype == CardType.ATTACK && attack_owner_n > 0)
+    {
+        attack_used_this_turn[attack_owner_n] = true;
+    }
+
 // 攻击牌：对应角色先进入前场
 // 攻击牌：所属角色先进入前场（通用攻击牌没有所属角色，不用换人）
 if (ctype == CardType.ATTACK)
@@ -593,6 +606,14 @@ var hit_enemy = (target_enemy != noone) ? target_enemy : front_enemy;
 var repeat_n = 1;
 var card_owner = card_get_owner_instance(released_id);
 
+// 星火与燎原：每回合第一张初始牌视为合成强化一次
+if (card_is_starter(released_id) && char_is_alive(card_owner)
+&& get_status(card_owner, StatusType.STARFIRE) > 0)
+{
+    card_double_effects(released_card);
+    clear_status(card_owner, StatusType.STARFIRE);
+}
+
 if (ctype == CardType.SKILL && char_is_alive(card_owner) && get_status(card_owner, StatusType.OVERCHARGE) > 0)
 {
     clear_status(card_owner, StatusType.OVERCHARGE);
@@ -602,6 +623,30 @@ if (ctype == CardType.SKILL && char_is_alive(card_owner) && get_status(card_owne
 repeat (repeat_n)
 {
     card_play_effects(released_card, effect_target, hit_enemy);
+}
+
+// 冰寒·落雨：下一张霜落对其他敌人各重复一次
+if (released_id == 3 && char_is_alive(card_owner)
+&& get_status(card_owner, StatusType.FROST_RAIN) > 0)
+{
+    clear_status(card_owner, StatusType.FROST_RAIN);
+    var frost_targets = copy_array(enemies);
+    for (var fi = 0; fi < array_length(frost_targets); fi++)
+    {
+        if (frost_targets[fi] != hit_enemy && instance_exists(frost_targets[fi]))
+        {
+            card_play_effects(released_card, effect_target, frost_targets[fi]);
+        }
+    }
+}
+
+// 女巫吟唱：每回合第一次打出初始牌，倒计时1后重放
+if (card_is_starter(released_id) && char_is_alive(card_owner)
+&& get_status(card_owner, StatusType.WITCH_CHANT) > 0 && !witch_chant_used)
+{
+    witch_chant_used = true;
+    countdown_add(card_get_owner(released_id), 1,
+        [ { type: EffectType.REPLAY_STARTER, card_id: released_id } ]);
 }
 
 // 销毁打出的卡牌实例
