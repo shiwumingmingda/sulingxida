@@ -42,9 +42,7 @@ function unit_armor_total(_u)
 // 造成伤害：先扣对应类型的护甲 → 再扣通用护甲 → 最后扣血
 function deal_damage(_target, _amount, _dtype)
 {
-    if (!instance_exists(_target)) return;
-	
-	if (unit_is_dead(_target)) return;
+    if (unit_is_dead(_target)) return;
 	var armor_before = unit_armor_total(_target);
     var remaining = _amount;
 
@@ -158,8 +156,7 @@ function spawn_float_text(_target, _text, _col)
 // 失去生命：直接扣血，不吃护甲
 function lose_hp(_target, _amount)
 {
-	if (unit_is_dead(_target)) return;
-    if (!instance_exists(_target)) return;
+    if (unit_is_dead(_target)) return;
 
     _target.hp = max(_target.hp - _amount, 0);
     spawn_float_text(_target, "-" + string(_amount), make_color_rgb(255, 70, 70));
