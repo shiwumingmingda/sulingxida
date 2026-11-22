@@ -1059,14 +1059,22 @@ case EffectType.MERGE_ALL_FIREBALLS:
 {
     var fire_obj = card_get_object(1);
     var fire_count = 0;
+    var best_fire_power = -1;
+    var best_fire_entry = card_make_entry(fire_obj);
 
-    // 消耗手牌中的火球
+    // 消耗手牌中的火球，同时保留其中强化程度最高的一张作为合成底牌
     for (var hi = array_length(obj_hand_controller.hand) - 1; hi >= 0; hi--)
     {
         var hcard = obj_hand_controller.hand[hi];
         if (instance_exists(hcard) && hcard.card_id == 1)
         {
             fire_count++;
+            var hand_power = card_power(hcard);
+            if (hand_power > best_fire_power)
+            {
+                best_fire_power = hand_power;
+                best_fire_entry = card_entry_from_instance(hcard);
+            }
             obj_hand_controller.remove_card_from_hand(hcard);
         }
     }
@@ -1077,6 +1085,14 @@ case EffectType.MERGE_ALL_FIREBALLS:
         if (obj_hand_controller.deck[di].obj == fire_obj)
         {
             fire_count++;
+            var deck_fire_inst = card_spawn_from_entry(obj_hand_controller.deck[di], -1000, -1000);
+            var deck_fire_power = card_power(deck_fire_inst);
+            if (deck_fire_power > best_fire_power)
+            {
+                best_fire_power = deck_fire_power;
+                best_fire_entry = card_entry_from_instance(deck_fire_inst);
+            }
+            with (deck_fire_inst) instance_destroy();
             array_delete(obj_hand_controller.deck, di, 1);
         }
     }
@@ -1087,6 +1103,14 @@ case EffectType.MERGE_ALL_FIREBALLS:
         if (obj_hand_controller.discard_pile[di].obj == fire_obj)
         {
             fire_count++;
+            var discard_fire_inst = card_spawn_from_entry(obj_hand_controller.discard_pile[di], -1000, -1000);
+            var discard_fire_power = card_power(discard_fire_inst);
+            if (discard_fire_power > best_fire_power)
+            {
+                best_fire_power = discard_fire_power;
+                best_fire_entry = card_entry_from_instance(discard_fire_inst);
+            }
+            with (discard_fire_inst) instance_destroy();
             array_delete(obj_hand_controller.discard_pile, di, 1);
         }
     }
@@ -1101,7 +1125,7 @@ case EffectType.MERGE_ALL_FIREBALLS:
             merge_level++;
         }
 
-        var merged_inst = card_spawn_from_entry(card_make_entry(fire_obj), -1000, -1000);
+        var merged_inst = card_spawn_from_entry(best_fire_entry, -1000, -1000);
         repeat (merge_level) card_double_effects(merged_inst);
 
         var merged_target = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
