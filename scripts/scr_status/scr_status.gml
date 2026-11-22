@@ -35,29 +35,38 @@ function status_get_sprite(_type)
 {
     switch (_type)
     {
-        case StatusType.CHILL:  return spr_chill;
-        case StatusType.FROZEN: return spr_frozen;
-		case StatusType.RESONANCE: return spr_resonance;
-		case StatusType.STRENGTH_DOWN: return spr_strength_down;
-		case StatusType.MAGIC_DOWN:    return spr_magic_down;
-		case StatusType.STRENGTH:   return spr_strength;
-		case StatusType.DEXTERITY:  return spr_dexterity;
-		case StatusType.SWORD_FORM: return spr_sword_form;
-		case StatusType.BLOOD:     return spr_blood;
-		case StatusType.DILIGENCE: return spr_diligence;
-		case StatusType.MAGIC_POWER:  return spr_status_magic_power;
-		case StatusType.INK:          return spr_status_ink;
-		case StatusType.CORPSE_THIEF: return spr_status_corpse;
-		case StatusType.ARMOR_KEEP: return spr_dexterity;
-		case StatusType.LAVA_WARD:  return spr_strength;
-		case StatusType.OVERCHARGE: return spr_resonance;
-		case StatusType.WIND_COURT: return spr_sword_form;
-		case StatusType.READING:    return spr_star;
-		case StatusType.TEMP_MAGIC: return spr_status_magic_power;
-        case StatusType.STARFIRE: return spr_star;
+        case StatusType.CHILL:
         case StatusType.FROST_RAIN: return spr_chill;
+
+        case StatusType.FROZEN: return spr_frozen;
+        case StatusType.RESONANCE:
+        case StatusType.OVERCHARGE: return spr_resonance;
+
+        case StatusType.STRENGTH_DOWN: return spr_strength_down;
+        case StatusType.MAGIC_DOWN: return spr_magic_down;
+
+        case StatusType.STRENGTH:
+        case StatusType.LAVA_WARD: return spr_strength;
+
+        case StatusType.DEXTERITY:
+        case StatusType.ARMOR_KEEP:
         case StatusType.ROCK_WALL: return spr_dexterity;
+
+        case StatusType.SWORD_FORM:
+        case StatusType.WIND_COURT:
         case StatusType.WITCH_CHANT: return spr_sword_form;
+
+        case StatusType.BLOOD: return spr_blood;
+        case StatusType.DILIGENCE: return spr_diligence;
+
+        case StatusType.MAGIC_POWER:
+        case StatusType.TEMP_MAGIC: return spr_status_magic_power;
+
+        case StatusType.INK: return spr_status_ink;
+        case StatusType.CORPSE_THIEF: return spr_status_corpse;
+
+        case StatusType.READING:
+        case StatusType.STARFIRE: return spr_star;
     }
 
     return -1;
@@ -66,17 +75,23 @@ function status_get_sprite(_type)
 // 这个状态是否在图标上显示层数
 function status_shows_count(_type)
 {
-    return (_type == StatusType.CHILL
-         || _type == StatusType.RESONANCE
-         || _type == StatusType.STRENGTH_DOWN
-         || _type == StatusType.MAGIC_DOWN
-         || _type == StatusType.STRENGTH
-         || _type == StatusType.DEXTERITY
-         || _type == StatusType.SWORD_FORM
-		 || _type == StatusType.BLOOD
-         || _type == StatusType.DILIGENCE
-		 || _type == StatusType.MAGIC_POWER)
-		 || _type == StatusType.TEMP_MAGIC
+    switch (_type)
+    {
+        case StatusType.CHILL:
+        case StatusType.RESONANCE:
+        case StatusType.STRENGTH_DOWN:
+        case StatusType.MAGIC_DOWN:
+        case StatusType.STRENGTH:
+        case StatusType.DEXTERITY:
+        case StatusType.SWORD_FORM:
+        case StatusType.BLOOD:
+        case StatusType.DILIGENCE:
+        case StatusType.MAGIC_POWER:
+        case StatusType.TEMP_MAGIC:
+            return true;
+    }
+
+    return false;
 }
 
 // 确保这个单位身上有状态数组
@@ -366,7 +381,7 @@ function draw_countdown_icons(_owner, _x, _y)
 // 永久状态牌：不占状态位置，也不会被顶掉
 function card_state_is_permanent(_id)
 {
-    return (_id == 10 || _id == 209 || _id == 43);
+    return (_id == 209 || _id == 43);
 }
 
 // 移除一张状态牌给这个角色带来的效果（图标也会消失）
@@ -403,7 +418,6 @@ function state_card_played(_char, _card_id)
 {
     if (!instance_exists(_char)) return;
 
-    // （如果不想让 29 也顶掉当前状态：在这里加一行 if (_card_id == 29) return;）
 
     // 这个角色当前的状态牌编号（0 = 没有）
     var current = variable_instance_exists(_char, "state_card_id") ? _char.state_card_id : 0;
@@ -415,7 +429,7 @@ function state_card_played(_char, _card_id)
         _char.state_card_id = 0;
     }
 
-    // 永久牌（10、29）不占位置；普通状态牌成为新的当前状态
+    // 永久牌（209、43）不占位置；普通状态牌成为新的当前状态
     if (!card_state_is_permanent(_card_id))
     {
         _char.state_card_id = _card_id;
