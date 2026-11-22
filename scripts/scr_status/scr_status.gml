@@ -328,12 +328,13 @@ function draw_status_tooltip(_type, _count, _spr)
 {
     if (_spr == -1 || !sprite_exists(_spr)) return;
 
-    var box_w = 360;
-    var desc = status_get_description(_type);
+    var box_w = 390;
+    var desc = string_replace_all(status_get_description(_type), "。", "。\n\n");
     var text_w = box_w - 124;
-    var text_sep = 4;
-    var desc_h = string_height_ext(desc, text_sep, text_w);
-    var box_h = max(118, desc_h + 62);
+    var text_scale = 0.88;
+    var text_sep = 5;
+    var desc_h = string_height_ext(desc, text_sep, text_w / text_scale) * text_scale;
+    var box_h = max(118, desc_h + 66);
     var tx = clamp(mouse_x + 18, 8, room_width - box_w - 8);
     var ty = clamp(mouse_y - box_h - 16, 8, room_height - box_h - 8);
 
@@ -355,7 +356,8 @@ function draw_status_tooltip(_type, _count, _spr)
     draw_set_valign(fa_top);
     draw_set_color(c_white);
     draw_text(tx + 108, ty + 10, status_get_name(_type) + "  ×" + string(_count));
-    draw_text_ext(tx + 108, ty + 42, desc, text_sep, text_w);
+    draw_text_ext_transformed(tx + 108, ty + 42, desc,
+        text_sep, text_w / text_scale, text_scale, text_scale, 0);
 
     draw_set_color(c_white);
     draw_set_halign(fa_left);
