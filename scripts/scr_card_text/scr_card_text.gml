@@ -79,16 +79,52 @@ function card_wrap_text(_str, _n)
 // 返回 "" 表示这张牌暂时不画字
 function card_get_description(_inst)
 {
-    // 新卡先读取新描述表；没有新描述时再使用旧卡牌描述
-    var new_desc = card_get_description_new(_inst);
-
-    if (new_desc != "")
-    {
-        return new_desc;
-    }
-
     switch (_inst.card_id)
     {
+        // 苏灵兮新卡牌描述
+        case 5:  return "抽" + string(card_current_draw(_inst)) + "张牌。倒计时1：获得2费";
+        case 7:  return "每回合开始时，倒计时1：将一张随机的元素牌洗入你的抽牌堆";
+        case 11: return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲和"
+                      + string(card_current_armor_of(_inst, ArmorType.MAGIC)) + "点魔法护甲";
+        case 12: return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL))
+                      + "点护甲，直到下回合开始之前，当你损失护甲后，将一张【火球】置入抽牌堆";
+        case 13: return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL))
+                      + "点护甲，移动至前场，你的护甲可以保留至下回合";
+        case 14: return "倒计时1：移动至后场，发现一张本角色的牌";
+        case 15: return "获得1费。倒计时1：获得1费";
+        case 16: return "消耗，获得1点魔力，倒计时1：获得1点魔力。倒计时2：获得1点魔力";
+        case 17: return "移动，获得3点护甲。若你本回合使用过【风刃】，抽一张牌";
+        case 18: return "选择一张初始牌并将其置入你的手牌";
+        case 19: return "对敌方角色造成" + string(card_current_damage(_inst)) + "点伤害。若击杀目标则将一张0费的【火球】置入手牌";
+        case 21: return "抽一张牌，获得1点临时魔力。若你本回合使用过两种不同的初始牌，获得1点费用";
+        case 22: return "造成" + string(card_effect_at(_inst, 0)) + "点魔法伤害。若目标被冻结，则额外造成"
+                      + string(card_effect_at(_inst, 1)) + "点魔法伤害";
+        case 24: return "消耗一张【风刃】，令你手牌中的所有【火球】造成的伤害+3";
+        case 25: return "从抽牌堆抽取五张【风刃】";
+        case 26: return "本角色使用的下一张技能牌额外结算1次";
+        case 27: return "倒计时2：将三张【火球】置入手牌，并令其均变为0费和伤害+2";
+        case 23: return "你每回合打出的第一张初始牌视为进行一次合成强化";
+        case 28: return "获得五张伤害-2的【火球】，并将其依次打出";
+        case 29: return "消耗一张【火球】，对所有敌人造成等同于该【火球】的伤害";
+        case 30: return "消耗任意张【风刃】，获得等同于其伤害总和两倍的护甲";
+        case 31: return "消耗一张【风刃】，令敌方前排移动。本回合【风刃】伤害+2";
+        case 32: return "你使用的下一张【霜落】会对其他敌方角色各重复一次";
+        case 33: return "消耗一张【霜落】，令一名敌人获得冻结";
+        case 34: return "消耗一张【岩盾】，造成等同于你所有护甲总和的物理伤害";
+        case 36: return "令你手中的所有牌获得保留一回合";
+        case 35: return "将你的一张手牌变为【岩盾】。本回合【岩盾】还会令角色移动至前场，且获得的所有护甲翻倍";
+        case 37: return "回合开始时，发现一张本角色的牌，若你在本回合使用，获得1费";
+        case 39: return "令本角色所有的倒计时-1";
+        case 38: return "随机视为使用一张本角色的初始牌，并将该初始牌的复制置入手牌";
+        case 41: return "消耗，将本角色的所有初始牌各一张置入你的手牌，将其变为0费。然后回复5点体力值";
+        case 40: return "消耗。令你手牌、抽牌堆、弃牌堆中的所有苏灵兮初始牌各进行一次合成强化";
+        case 42: return "所有友方角色获得倒计时1：若本角色上回合没有使用过攻击牌，获得10点护甲";
+        case 43: return "在本局对战剩余时间内，每回合当本角色第一次从手牌中打出初始牌时，倒计时1：视为使用该初始牌";
+        case 45: return "将你手牌、抽牌堆和弃牌堆中的所有【火球】合成为一张，然后使用并消耗";
+        case 46: return "消耗。选择手牌中的一张初始牌，将其消耗。倒计时2：将一张其合成强化后的置入手牌";
+        case 44: return "将十张【风刃】置入你的手牌。每回合开始时，将一张【风刃】置入你的手牌";
+
+
         // 1号牌：对前场敌人造成 6 点法术伤害，对其他敌人造成 3 点法术伤害
         case 1:
             return "造成" + string(card_current_damage(_inst)) + "点法术伤害，"
@@ -117,14 +153,6 @@ function card_get_description(_inst)
 		case 4:
 			return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲和"
          + string(card_current_armor_of(_inst, ArmorType.PHYSICAL)) + "点物理护甲";
-        // 5号牌：抽 3 张牌，下回合额外获得 1 费
-        case 5:
-            return "抽" + string(card_current_draw(_inst)) + "张牌，"
-                 + "下回合额外获得" + string(card_current_next_energy(_inst)) + "费";
-// 7号牌：获得元素共鸣
-		case 7:
-			return "回合开始时，将一张随机的初始牌洗入你的抽牌堆";
-        // 11号牌：造成 8 点法术伤害
         case 101:
             return "造成" + string(card_current_damage(_inst)) + "点法术伤害";
 
