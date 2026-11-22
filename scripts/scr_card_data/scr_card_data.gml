@@ -616,10 +616,17 @@ function card_apply_effect(_e, _v, _target, _enemy)
 
         // 没写类型的伤害效果默认按物理伤害处理
         var dt = variable_struct_exists(_e, "dtype") ? _e.dtype : DamageType.PHYSICAL;
-        deal_damage(_enemy, _v, dt);
+        var damage_target = _enemy;
+        deal_damage(damage_target, _v, dt);
 
         // 击杀奖励：目标被击杀，把一张牌置入手牌
-        if (variable_struct_exists(_e, "on_kill_id") && !instance_exists(_enemy))
+        var target_killed = !instance_exists(damage_target);
+        if (!target_killed && instance_exists(damage_target))
+        {
+            target_killed = (damage_target.hp <= 0);
+        }
+
+        if (variable_struct_exists(_e, "on_kill_id") && target_killed)
         {
             with (obj_hand_controller)
             {
