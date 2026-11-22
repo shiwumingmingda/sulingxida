@@ -35,7 +35,9 @@ enum EffectType
 	CONSUME_FROM_HAND,   // 消耗手牌里一张指定编号的牌
 	BUFF_HAND_DAMAGE,    // 令手牌里指定编号的牌伤害 +N
 	DAMAGE_ARMOR_TOTAL,  // 造成等同于护甲总和的伤害
-	SHUFFLE_ELEMENT      // 随机一张元素牌（1~4）洗入抽牌堆
+	SHUFFLE_ELEMENT,     // 随机一张元素牌（1~4）洗入抽牌堆
+    ROTATE_SELF,         // 角色在前场和后场之间轮换
+    DRAW_IF_PLAYED       // 本回合打出过指定牌时抽牌
 }
 
 // 卡牌分类
@@ -825,6 +827,38 @@ case EffectType.SHUFFLE_ELEMENT:
     with (obj_hand_controller)
     {
         shuffle_into_deck(card_get_object(irandom_range(1, 4)));
+    }
+}
+break;
+
+case EffectType.ROTATE_SELF:
+{
+    var rotate_who = effect_target_char(_e, _target);
+    with (obj_hand_controller)
+    {
+        rotate_character(rotate_who);
+    }
+}
+break;
+
+case EffectType.DRAW_IF_PLAYED:
+{
+    var was_played = false;
+    for (var pi = 0; pi < array_length(obj_hand_controller.turn_played_ids); pi++)
+    {
+        if (obj_hand_controller.turn_played_ids[pi] == _e.card_id)
+        {
+            was_played = true;
+            break;
+        }
+    }
+
+    if (was_played)
+    {
+        with (obj_hand_controller)
+        {
+            draw_cards(_v);
+        }
     }
 }
 break;
