@@ -1452,6 +1452,8 @@ break;
                 case "star_walk":
                     dust.star_walk_active = true;
                     dust.starlight_unlimited = true;
+                    // 无限补费启用后，星光指示立即恢复为可用状态。
+                    dust.starlight_used = false;
                     break;
             }
         }
