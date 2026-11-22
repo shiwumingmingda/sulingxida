@@ -676,6 +676,9 @@ var front_enemy = (array_length(enemies) > 0) ? enemies[0] : noone;
 // 指向敌人的牌作用在选中的敌人身上，其他牌作用在前场敌人身上
 var hit_enemy = (target_enemy != noone) ? target_enemy : front_enemy;
 // 聚能：本角色使用的下一张技能牌额外结算 1 次
+// 保存初始牌本身的合成等级与效果，供女巫吟唱下一回合原样重放
+var starter_replay_entry = card_entry_from_instance(released_card);
+
 var repeat_n = 1;
 var card_owner = card_get_owner_instance(released_id);
 
@@ -729,7 +732,7 @@ if (first_hand_starter_this_turn && char_is_alive(card_owner)
 {
     witch_chant_used = true;
     countdown_add(card_get_owner(released_id), 1,
-        [ { type: EffectType.REPLAY_STARTER, amount: 1, card_id: released_id } ]);
+        [ { type: EffectType.REPLAY_STARTER, amount: 1, card_id: released_id, entry: starter_replay_entry } ]);
 }
 
 // 销毁打出的卡牌实例
