@@ -318,7 +318,8 @@ function card_state_is_permanent(_id)
 // 移除一张状态牌给这个角色带来的效果（图标也会消失）
 function state_remove(_char, _card_id)
 {
-    var effects = card_get_effects(_card_id);
+    var effects = card_get_effects_new(_card_id);
+    if (array_length(effects) <= 0) effects = card_get_effects(_card_id);
 
     for (var i = 0; i < array_length(effects); i++)
     {
