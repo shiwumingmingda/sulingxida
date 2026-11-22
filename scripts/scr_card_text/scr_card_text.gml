@@ -218,9 +218,6 @@ function card_get_description(_inst)
 
     return "";
 }
-// 绘制某张牌的文字
-// _inst：卡牌实例；_spr：正在画的图片（手牌用自己的图，预览用高清图）
-// _x、_y、_xs、_ys、_a：这张图的绘制位置、缩放和角度
 // 绘制某张牌的文字（费用 + 描述）
 // _inst：卡牌实例；_spr：正在画的图片（手牌用自己的图，预览用高清图）
 // _x、_y、_xs、_ys、_a：这张图的绘制位置、缩放和角度
@@ -258,7 +255,8 @@ function card_draw_text(_inst, _spr, _x, _y, _xs, _ys, _a)
     draw_set_valign(fa_middle);
     var p_cost = card_local_to_world(_spr, _x, _y, _xs, _ys, _a, 0.87, 0.09);
     var shown_cost = card_display_cost(_inst);
-var cost_col = (shown_cost > card_current_cost(_inst)) ? make_color_rgb(255, 90, 90) : c_white;
+var base_cost = card_current_cost(_inst);
+    var cost_col = (shown_cost > base_cost) ? make_color_rgb(255, 90, 90) : c_white;
 
 card_text_shadow(p_cost[0], p_cost[1],
     string(shown_cost), ts * 1.4, _a, cost_col);
