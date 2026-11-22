@@ -1382,9 +1382,9 @@ break;
                     for (var wt = 0; wt < 3; wt++)
                     {
                         var ids = [];
-                        for (var id = 101; id <= 152; id++)
-                            if (card_get_type(id) == wt && card_rarity(id) != Rarity.NONE && card_get_object(id) != -1)
-                                ids[array_length(ids)] = id;
+                        for (var wish_card_id = 101; wish_card_id <= 152; wish_card_id++)
+                            if (card_get_type(wish_card_id) == wt && card_rarity(wish_card_id) != Rarity.NONE && card_get_object(wish_card_id) != -1)
+                                ids[array_length(ids)] = wish_card_id;
                         if (array_length(ids) > 0)
                             wish_pool[array_length(wish_pool)] = card_get_object(ids[irandom(array_length(ids) - 1)]);
                     }
