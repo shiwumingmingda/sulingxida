@@ -637,7 +637,7 @@ if (card_owner_dead(drag_card.card_id))
 
 var target = noone;          // 指向我方角色的牌：选中的我方角色
 var target_enemy = noone;    // 指向敌方的牌：选中的敌人
-var try_play = false;
+var can_play = false;
 
 var tkind = card_target_kind(released_card.card_id);
 
@@ -645,7 +645,7 @@ if (tkind == TargetKind.FRIEND)
 {
     // 必须松手在我方角色身上才算打出
     target = instance_position(mx, my, obj_character_1);
-    try_play = (target != noone);
+    can_play = (target != noone);
 
     // 先把卡牌显示回来：打出会被销毁，没打出就飞回手牌
     released_card.visible = true;
@@ -654,7 +654,7 @@ else if (tkind == TargetKind.ENEMY)
 {
     // 必须松手在敌人身上才算打出（前场、后场的敌人都可以）
     target_enemy = instance_position(mx, my, obj_enemy_1);
-    try_play = (target_enemy != noone);
+    can_play = (target_enemy != noone);
 
     released_card.visible = true;
 }
@@ -662,28 +662,28 @@ else if (tkind == TargetKind.ENEMY)
 else
 {
     // 普通牌：卡牌中心高于屏幕中央才算打出
-    try_play = (released_card.y < room_height * 0.5);
+    can_play = (released_card.y < room_height * 0.5);
 }
 // 无法被打出的牌（猩红）：拖出去也回到手牌
-if (try_play && card_is_unplayable(released_card.card_id))
+if (can_play && card_is_unplayable(released_card.card_id))
 {
-    try_play = false;
+    can_play = false;
     warning_text = "无法打出";
     warning_timer = 90;
 }
 
 // 这张牌的拥有者已阵亡：无法使用（通用牌没有拥有者，不受影响）
-if (try_play && card_owner_dead(released_card.card_id))
+if (can_play && card_owner_dead(released_card.card_id))
 {
-    try_play = false;
+    can_play = false;
     warning_text = "该角色已阵亡";
     warning_timer = 90;
 }
 
 // 指向我方的牌不能指向已阵亡的角色
-if (try_play && target != noone && target.is_dead)
+if (can_play && target != noone && target.is_dead)
 {
-    try_play = false;
+    can_play = false;
     warning_text = "该角色已阵亡";
     warning_timer = 90;
 }
@@ -699,21 +699,21 @@ if (can_play && (released_card.card_id == 110 || released_card.card_id == 135 ||
 // 需要手牌里有指定的牌才能打出（比如风助火势需要风刃）
 var need_id = card_requirement(released_card.card_id);
 
-if (try_play && need_id > 0 && !hand_has_card(need_id, released_card))
+if (can_play && need_id > 0 && !hand_has_card(need_id, released_card))
 {
-    try_play = false;
+    can_play = false;
     warning_text = "手牌中没有所需的牌";
     warning_timer = 90;
 }
 
-if (try_play && released_card.card_id == 35 && array_length(hand) <= 1)
+if (can_play && released_card.card_id == 35 && array_length(hand) <= 1)
 {
-    try_play = false;
+    can_play = false;
     warning_text = "手牌中没有可转化的牌";
     warning_timer = 90;
 }
 
-if (try_play && released_card.card_id == 46)
+if (can_play && released_card.card_id == 46)
 {
     var has_sulingxi_starter = false;
     for (var si = 0; si < array_length(hand); si++)
@@ -728,12 +728,12 @@ if (try_play && released_card.card_id == 46)
     }
     if (!has_sulingxi_starter)
     {
-        try_play = false;
+        can_play = false;
         warning_text = "手牌中没有苏灵兮的初始牌";
         warning_timer = 90;
     }
 }
-if (try_play)
+if (can_play)
 {
         var released_id = released_card.card_id;
         var cost = card_current_cost(released_card) + first_cost_up;
