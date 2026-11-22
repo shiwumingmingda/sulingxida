@@ -64,6 +64,26 @@ function deal_damage(_target, _amount, _dtype)
         _amount += obj_hand_controller.char_2.enemy_damage_taken_bonus;
     }
 
+    // 此夜无人独行：友方任意角色每次受到攻击时，先获得5点通用护甲。
+    // 在常规护甲吸收前触发，因此本次攻击即可被新护甲抵消。
+    var is_friend_target = false;
+    if (instance_exists(obj_hand_controller))
+    {
+        for (var fi = 0; fi < array_length(obj_hand_controller.party_insts); fi++)
+        {
+            if (obj_hand_controller.party_insts[fi] == _target)
+            {
+                is_friend_target = true;
+                break;
+            }
+        }
+    }
+    if (is_friend_target && instance_exists(obj_hand_controller.char_2)
+    && obj_hand_controller.char_2.night_guard_active)
+    {
+        add_armor(_target, ArmorType.GENERAL, 5);
+    }
+
     var armor_before = unit_armor_total(_target);
     var remaining = _amount;
 
