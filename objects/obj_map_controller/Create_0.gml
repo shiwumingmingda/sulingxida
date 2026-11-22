@@ -49,7 +49,7 @@ var fi = clamp(global.map_floor, 1, 3) - 1;
 // 地图保存在全局变量里：进战斗再回来时不重新生成
 if (!variable_global_exists("map") || is_undefined(global.map))
 {
-    global.map = map_generate(floor_sizes[fi][0], floor_sizes[fi][1], floor_ap[fi], 0.62, 0.08, global.map_floor);
+    global.map = map_generate(floor_sizes[fi][0], floor_sizes[fi][1], floor_ap[fi], 0.85, 0.15, global.map_floor);
 }
 
 map = global.map;
