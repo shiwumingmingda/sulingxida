@@ -47,7 +47,19 @@ var floor_sizes = [[5, 6], [5, 6], [5, 6]];
 var floor_ap = [9, 11, 14];
 var fi = clamp(global.map_floor, 1, 3) - 1;
 // 地图保存在全局变量里：进战斗再回来时不重新生成
-if (!variable_global_exists("map") || is_undefined(global.map))
+// 地图生成版本不一致时重新生成，避免沿用旧版本的地图数据。
+var map_needs_generation = true;
+
+if (variable_global_exists("map") && !is_undefined(global.map) && is_struct(global.map))
+{
+    if (struct_exists(global.map, "generation_version")
+    &&  global.map.generation_version == 2)
+    {
+        map_needs_generation = false;
+    }
+}
+
+if (map_needs_generation)
 {
     global.map = map_generate(floor_sizes[fi][0], floor_sizes[fi][1], floor_ap[fi], 0.85, 0.15, global.map_floor);
 }
