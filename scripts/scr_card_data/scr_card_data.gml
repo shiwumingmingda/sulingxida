@@ -1174,6 +1174,7 @@ case EffectType.REPLAY_STARTER:
     if (obj_hand_controller.starfire_ready && get_status(replay_owner, StatusType.STARFIRE) > 0)
     {
         card_double_effects(replay_inst);
+        clear_status(replay_owner, StatusType.STARFIRE);
         obj_hand_controller.starfire_ready = false;
     }
 
