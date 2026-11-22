@@ -339,6 +339,76 @@ if (discover_active)
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 }
+// ---------------------------------
+// 通用手牌选择：暗色遮罩 + 可选手牌 + 确认按钮
+// ---------------------------------
+if (selection_active)
+{
+    draw_set_alpha(0.72);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, room_width, room_height, false);
+    draw_set_alpha(1);
+
+    draw_set_font(global.chinese_font);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(c_white);
+
+    var select_title = "请选择手牌";
+    switch (selection_action.kind)
+    {
+        case "fireball_aoe": select_title = "选择一张【火球】消耗"; break;
+        case "wind_shield": select_title = "选择任意张【风刃】消耗"; break;
+        case "wind_feather": select_title = "选择一张【风刃】消耗"; break;
+        case "convert_rockshield": select_title = "选择一张手牌，将其变为【岩盾】"; break;
+        case "compress": select_title = "选择一张初始牌消耗"; break;
+    }
+    draw_text_transformed(room_width * 0.5, room_height * 0.14, select_title, 1.5, 1.5, 0);
+
+    for (var qi = 0; qi < array_length(hand); qi++)
+    {
+        var qcard = hand[qi];
+        if (!instance_exists(qcard) || !selection_can_select(qcard)) continue;
+
+        var selected = selection_has(qcard);
+        var qy = qcard.y - (selected ? 35 : 0);
+        var qalpha = selected ? 1 : 0.82;
+
+        draw_set_alpha(qalpha);
+        draw_sprite_ext(qcard.sprite_index, qcard.image_index,
+            qcard.x, qy, qcard.image_xscale, qcard.image_yscale,
+            qcard.image_angle, c_white, 1);
+        card_draw_text(qcard, qcard.sprite_index,
+            qcard.x, qy, qcard.image_xscale, qcard.image_yscale, qcard.image_angle);
+        card_draw_merge_frame(qcard, qcard.sprite_index,
+            qcard.x, qy, qcard.image_xscale, qcard.image_yscale, qcard.image_angle);
+
+        if (selected)
+        {
+            draw_set_alpha(1);
+            draw_set_color(make_color_rgb(255, 220, 90));
+            draw_rectangle(qcard.bbox_left, qcard.bbox_top - 35,
+                qcard.bbox_right, qcard.bbox_bottom - 35, true);
+            draw_set_color(c_white);
+        }
+    }
+
+    draw_set_alpha(1);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(make_color_rgb(65, 125, 85));
+    draw_rectangle(end_button_x1, end_button_y1, end_button_x2, end_button_y2, false);
+    draw_set_color(c_white);
+    draw_rectangle(end_button_x1, end_button_y1, end_button_x2, end_button_y2, true);
+    draw_text((end_button_x1 + end_button_x2) * 0.5,
+        (end_button_y1 + end_button_y2) * 0.5, "确定 (" +
+        string(array_length(selection_cards)) + "/" +
+        ((selection_max >= 999) ? "任意" : string(selection_max)) + ")");
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_white);
+}
 if (turn_state == "won" || turn_state == "lost")
 {
     draw_set_font(global.chinese_font);
