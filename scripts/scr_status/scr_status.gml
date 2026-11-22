@@ -22,6 +22,10 @@ enum StatusType
 	WIND_COURT,   // 风息庭：每回合开始，将一张风刃置入手牌
 	READING,      // 阅读：每回合开始，发现一张本角色的牌
 	TEMP_MAGIC,   // 临时魔力：本回合魔法伤害 +1/层
+    STARFIRE,     // 星火与燎原：本回合第一张初始牌合成强化
+    FROST_RAIN,   // 冰寒·落雨：下一张霜落对其他敌人重复
+    ROCK_WALL,    // 地岳·镇垒：本回合岩盾前场化且护甲翻倍
+    WITCH_CHANT,  // 女巫吟唱：本局每回合第一次初始牌延迟重放
     COUNT        // 状态种类总数（放在最后，新状态加在它前面）
 	
 }
@@ -50,6 +54,10 @@ function status_get_sprite(_type)
 		case StatusType.WIND_COURT: return spr_sword_form;
 		case StatusType.READING:    return spr_star;
 		case StatusType.TEMP_MAGIC: return spr_status_magic_power;
+        case StatusType.STARFIRE: return spr_star;
+        case StatusType.FROST_RAIN: return spr_chill;
+        case StatusType.ROCK_WALL: return spr_dexterity;
+        case StatusType.WITCH_CHANT: return spr_sword_form;
     }
 
     return -1;
