@@ -687,9 +687,6 @@ var front_enemy = (array_length(enemies) > 0) ? enemies[0] : noone;
 // 指向敌人的牌作用在选中的敌人身上，其他牌作用在前场敌人身上
 var hit_enemy = (target_enemy != noone) ? target_enemy : front_enemy;
 // 聚能：本角色使用的下一张技能牌额外结算 1 次
-// 保存初始牌本身的合成等级与效果，供女巫吟唱下一回合原样重放
-var starter_replay_entry = card_entry_from_instance(released_card);
-
 var repeat_n = 1;
 var card_owner = card_get_owner_instance(released_id);
 
@@ -701,6 +698,9 @@ if (card_is_starter(released_id) && char_is_alive(card_owner)
     // 状态持续整个战斗；本回合触发后只关闭本回合的触发资格
     starfire_ready = false;
 }
+
+// 保存初始牌本身的当前合成等级与效果，供女巫吟唱下一回合原样重放
+var starter_replay_entry = card_entry_from_instance(released_card);
 
 if (ctype == CardType.SKILL && char_is_alive(card_owner) && get_status(card_owner, StatusType.OVERCHARGE) > 0)
 {
