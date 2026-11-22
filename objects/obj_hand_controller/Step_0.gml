@@ -87,16 +87,20 @@ if (selection_active && mouse_check_button_pressed(mb_left))
     }
 }
 if (warning_timer > 0) warning_timer--;
-// 延迟触发的卡牌效果（比如 2 号牌两次伤害之间的间隔）
-for (var di = array_length(pending_effects) - 1; di >= 0; di--)
+// 选择手牌期间暂停延迟效果，避免遮罩界面还未确认就发生战斗结算
+if (!selection_active && !selection_was_active)
 {
-    var pend = pending_effects[di];
-    pend.timer--;
-
-    if (pend.timer <= 0)
+    // 延迟触发的卡牌效果（比如 2 号牌两次伤害之间的间隔）
+    for (var di = array_length(pending_effects) - 1; di >= 0; di--)
     {
-        card_apply_effect(pend.effect, pend.value, pend.target, pend.enemy);
-        array_delete(pending_effects, di, 1);
+        var pend = pending_effects[di];
+        pend.timer--;
+
+        if (pend.timer <= 0)
+        {
+            card_apply_effect(pend.effect, pend.value, pend.target, pend.enemy);
+            array_delete(pending_effects, di, 1);
+        }
     }
 }
 
