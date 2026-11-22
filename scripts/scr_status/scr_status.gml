@@ -386,6 +386,15 @@ function state_remove(_char, _card_id)
         }
     }
 
+    // 元素共鸣被其他状态牌替换时，取消已经排队的随机元素牌倒计时
+    if (_card_id == 7 && instance_exists(obj_hand_controller))
+    {
+        with (obj_hand_controller)
+        {
+            countdown_remove_effect(1, EffectType.SHUFFLE_ELEMENT);
+        }
+    }
+
     // 以后状态牌有别的持续效果（不是状态图标的），在这里补上对应的移除
 }
 
