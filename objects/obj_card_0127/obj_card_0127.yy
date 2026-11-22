@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"Sprite7",
-    "path":"sprites/Sprite7/Sprite7.yy",
+    "name":"Spr_enemy1",
+    "path":"sprites/Spr_enemy1/Spr_enemy1.yy",
   },
   "spriteMaskId":null,
   "visible":true,

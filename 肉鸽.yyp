@@ -1,1674 +1,296 @@
 {
-  "$GMProject": "v1",
-  "%Name": "肉鸽",
-  "AudioGroups": [
-    {
-      "$GMAudioGroup": "v1",
-      "%Name": "audiogroup_default",
-      "exportDir": "",
-      "name": "audiogroup_default",
-      "resourceType": "GMAudioGroup",
-      "resourceVersion": "2.0",
-      "targets": -1
-    }
+  "$GMProject":"v1",
+  "%Name":"肉鸽",
+  "AudioGroups":[
+    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
-  "configs": {
-    "children": [],
-    "name": "Default"
+  "configs":{
+    "children":[],
+    "name":"Default",
   },
-  "defaultScriptType": 1,
-  "Folders": [
-    {
-      "$GMFolder": "",
-      "%Name": "card",
-      "folderPath": "folders/card.yy",
-      "name": "card",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "chen",
-      "folderPath": "folders/card/chen.yy",
-      "name": "chen",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "sulingxi",
-      "folderPath": "folders/card/sulingxi.yy",
-      "name": "sulingxi",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "xinyu",
-      "folderPath": "folders/card/xinyu.yy",
-      "name": "xinyu",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "xue",
-      "folderPath": "folders/card/xinyu/xue.yy",
-      "name": "xue",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "异常牌",
-      "folderPath": "folders/card/异常牌.yy",
-      "name": "异常牌",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "通用",
-      "folderPath": "folders/card/通用.yy",
-      "name": "通用",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "scr",
-      "folderPath": "folders/scr.yy",
-      "name": "scr",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "Spr_card",
-      "folderPath": "folders/Spr_card.yy",
-      "name": "Spr_card",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "Spr_character",
-      "folderPath": "folders/Spr_character.yy",
-      "name": "Spr_character",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "地图图标",
-      "folderPath": "folders/地图图标.yy",
-      "name": "地图图标",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "小东西",
-      "folderPath": "folders/小东西.yy",
-      "name": "小东西",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "敌人",
-      "folderPath": "folders/敌人.yy",
-      "name": "敌人",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "敌人图像",
-      "folderPath": "folders/敌人图像.yy",
-      "name": "敌人图像",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "敌人意图",
-      "folderPath": "folders/敌人意图.yy",
-      "name": "敌人意图",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "角色",
-      "folderPath": "folders/角色.yy",
-      "name": "角色",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "补给",
-      "folderPath": "folders/补给.yy",
-      "name": "补给",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    },
-    {
-      "$GMFolder": "",
-      "%Name": "药物",
-      "folderPath": "folders/补给/药物.yy",
-      "name": "药物",
-      "resourceType": "GMFolder",
-      "resourceVersion": "2.0"
-    }
+  "defaultScriptType":1,
+  "Folders":[
+    {"$GMFolder":"","%Name":"card","folderPath":"folders/card.yy","name":"card","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"chen","folderPath":"folders/card/chen.yy","name":"chen","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"sulingxi","folderPath":"folders/card/sulingxi.yy","name":"sulingxi","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"xinyu","folderPath":"folders/card/xinyu.yy","name":"xinyu","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"xue","folderPath":"folders/card/xinyu/xue.yy","name":"xue","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"异常牌","folderPath":"folders/card/异常牌.yy","name":"异常牌","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"通用","folderPath":"folders/card/通用.yy","name":"通用","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"scr","folderPath":"folders/scr.yy","name":"scr","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Spr_card","folderPath":"folders/Spr_card.yy","name":"Spr_card","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Spr_character","folderPath":"folders/Spr_character.yy","name":"Spr_character","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"地图图标","folderPath":"folders/地图图标.yy","name":"地图图标","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"小东西","folderPath":"folders/小东西.yy","name":"小东西","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"敌人","folderPath":"folders/敌人.yy","name":"敌人","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"敌人图像","folderPath":"folders/敌人图像.yy","name":"敌人图像","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"敌人意图","folderPath":"folders/敌人意图.yy","name":"敌人意图","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"补给","folderPath":"folders/补给.yy","name":"补给","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"药物","folderPath":"folders/补给/药物.yy","name":"药物","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"角色","folderPath":"folders/角色.yy","name":"角色","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
-  "ForcedPrefabProjectReferences": [],
-  "IncludedFiles": [
-    {
-      "$GMIncludedFile": "",
-      "%Name": "QingNiaoHuaGuangJianMeiHei-2.ttf",
-      "CopyToMask": -1,
-      "filePath": "datafiles",
-      "name": "QingNiaoHuaGuangJianMeiHei-2.ttf",
-      "resourceType": "GMIncludedFile",
-      "resourceVersion": "2.0"
-    }
+  "ForcedPrefabProjectReferences":[],
+  "IncludedFiles":[
+    {"$GMIncludedFile":"","%Name":"QingNiaoHuaGuangJianMeiHei-2.ttf","CopyToMask":-1,"filePath":"datafiles","name":"QingNiaoHuaGuangJianMeiHei-2.ttf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],
-  "isEcma": false,
-  "LibraryEmitters": [],
-  "MetaData": {
-    "IDEVersion": "2026.0.0.16"
+  "isEcma":false,
+  "LibraryEmitters":[],
+  "MetaData":{
+    "IDEVersion":"2026.0.0.16",
   },
-  "name": "肉鸽",
-  "resources": [
-    {
-      "id": {
-        "name": "obj_battle_table",
-        "path": "objects/obj_battle_table/obj_battle_table.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0001",
-        "path": "objects/obj_card_0001/obj_card_0001.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0002",
-        "path": "objects/obj_card_0002/obj_card_0002.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0003",
-        "path": "objects/obj_card_0003/obj_card_0003.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0004",
-        "path": "objects/obj_card_0004/obj_card_0004.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0005",
-        "path": "objects/obj_card_0005/obj_card_0005.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0007",
-        "path": "objects/obj_card_0007/obj_card_0007.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0011",
-        "path": "objects/obj_card_0011/obj_card_0011.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0012",
-        "path": "objects/obj_card_0012/obj_card_0012.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0013",
-        "path": "objects/obj_card_0013/obj_card_0013.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0014",
-        "path": "objects/obj_card_0014/obj_card_0014.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0015",
-        "path": "objects/obj_card_0015/obj_card_0015.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0016",
-        "path": "objects/obj_card_0016/obj_card_0016.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0017",
-        "path": "objects/obj_card_0017/obj_card_0017.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0018",
-        "path": "objects/obj_card_0018/obj_card_0018.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0019",
-        "path": "objects/obj_card_0019/obj_card_0019.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0020",
-        "path": "objects/obj_card_0020/obj_card_0020.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0021",
-        "path": "objects/obj_card_0021/obj_card_0021.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0022",
-        "path": "objects/obj_card_0022/obj_card_0022.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0023",
-        "path": "objects/obj_card_0023/obj_card_0023.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0024",
-        "path": "objects/obj_card_0024/obj_card_0024.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0025",
-        "path": "objects/obj_card_0025/obj_card_0025.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0026",
-        "path": "objects/obj_card_0026/obj_card_0026.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0027",
-        "path": "objects/obj_card_0027/obj_card_0027.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0028",
-        "path": "objects/obj_card_0028/obj_card_0028.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0029",
-        "path": "objects/obj_card_0029/obj_card_0029.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0030",
-        "path": "objects/obj_card_0030/obj_card_0030.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0031",
-        "path": "objects/obj_card_0031/obj_card_0031.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0032",
-        "path": "objects/obj_card_0032/obj_card_0032.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0033",
-        "path": "objects/obj_card_0033/obj_card_0033.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0034",
-        "path": "objects/obj_card_0034/obj_card_0034.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0035",
-        "path": "objects/obj_card_0035/obj_card_0035.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0036",
-        "path": "objects/obj_card_0036/obj_card_0036.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0037",
-        "path": "objects/obj_card_0037/obj_card_0037.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0038",
-        "path": "objects/obj_card_0038/obj_card_0038.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0039",
-        "path": "objects/obj_card_0039/obj_card_0039.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0040",
-        "path": "objects/obj_card_0040/obj_card_0040.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0041",
-        "path": "objects/obj_card_0041/obj_card_0041.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0042",
-        "path": "objects/obj_card_0042/obj_card_0042.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0043",
-        "path": "objects/obj_card_0043/obj_card_0043.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0044",
-        "path": "objects/obj_card_0044/obj_card_0044.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0045",
-        "path": "objects/obj_card_0045/obj_card_0045.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0046",
-        "path": "objects/obj_card_0046/obj_card_0046.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0101",
-        "path": "objects/obj_card_0101/obj_card_0101.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0102",
-        "path": "objects/obj_card_0102/obj_card_0102.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0103",
-        "path": "objects/obj_card_0103/obj_card_0103.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0104",
-        "path": "objects/obj_card_0104/obj_card_0104.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0105",
-        "path": "objects/obj_card_0105/obj_card_0105.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0106",
-        "path": "objects/obj_card_0106/obj_card_0106.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0107",
-        "path": "objects/obj_card_0107/obj_card_0107.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0108",
-        "path": "objects/obj_card_0108/obj_card_0108.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0109",
-        "path": "objects/obj_card_0109/obj_card_0109.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0110",
-        "path": "objects/obj_card_0110/obj_card_0110.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0111",
-        "path": "objects/obj_card_0111/obj_card_0111.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0112",
-        "path": "objects/obj_card_0112/obj_card_0112.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0113",
-        "path": "objects/obj_card_0113/obj_card_0113.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0114",
-        "path": "objects/obj_card_0114/obj_card_0114.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0115",
-        "path": "objects/obj_card_0115/obj_card_0115.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0116",
-        "path": "objects/obj_card_0116/obj_card_0116.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0117",
-        "path": "objects/obj_card_0117/obj_card_0117.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0118",
-        "path": "objects/obj_card_0118/obj_card_0118.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0119",
-        "path": "objects/obj_card_0119/obj_card_0119.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0120",
-        "path": "objects/obj_card_0120/obj_card_0120.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0121",
-        "path": "objects/obj_card_0121/obj_card_0121.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0122",
-        "path": "objects/obj_card_0122/obj_card_0122.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0123",
-        "path": "objects/obj_card_0123/obj_card_0123.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0124",
-        "path": "objects/obj_card_0124/obj_card_0124.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0125",
-        "path": "objects/obj_card_0125/obj_card_0125.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0126",
-        "path": "objects/obj_card_0126/obj_card_0126.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0127",
-        "path": "objects/obj_card_0127/obj_card_0127.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0128",
-        "path": "objects/obj_card_0128/obj_card_0128.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0129",
-        "path": "objects/obj_card_0129/obj_card_0129.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0130",
-        "path": "objects/obj_card_0130/obj_card_0130.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0131",
-        "path": "objects/obj_card_0131/obj_card_0131.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0132",
-        "path": "objects/obj_card_0132/obj_card_0132.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0133",
-        "path": "objects/obj_card_0133/obj_card_0133.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0134",
-        "path": "objects/obj_card_0134/obj_card_0134.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0135",
-        "path": "objects/obj_card_0135/obj_card_0135.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0136",
-        "path": "objects/obj_card_0136/obj_card_0136.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0137",
-        "path": "objects/obj_card_0137/obj_card_0137.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0138",
-        "path": "objects/obj_card_0138/obj_card_0138.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0139",
-        "path": "objects/obj_card_0139/obj_card_0139.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0140",
-        "path": "objects/obj_card_0140/obj_card_0140.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0141",
-        "path": "objects/obj_card_0141/obj_card_0141.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0142",
-        "path": "objects/obj_card_0142/obj_card_0142.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0143",
-        "path": "objects/obj_card_0143/obj_card_0143.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0144",
-        "path": "objects/obj_card_0144/obj_card_0144.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0145",
-        "path": "objects/obj_card_0145/obj_card_0145.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0146",
-        "path": "objects/obj_card_0146/obj_card_0146.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0147",
-        "path": "objects/obj_card_0147/obj_card_0147.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0148",
-        "path": "objects/obj_card_0148/obj_card_0148.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0149",
-        "path": "objects/obj_card_0149/obj_card_0149.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0150",
-        "path": "objects/obj_card_0150/obj_card_0150.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0151",
-        "path": "objects/obj_card_0151/obj_card_0151.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0152",
-        "path": "objects/obj_card_0152/obj_card_0152.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0201",
-        "path": "objects/obj_card_0201/obj_card_0201.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0202",
-        "path": "objects/obj_card_0202/obj_card_0202.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0203",
-        "path": "objects/obj_card_0203/obj_card_0203.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0204",
-        "path": "objects/obj_card_0204/obj_card_0204.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0205",
-        "path": "objects/obj_card_0205/obj_card_0205.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0206",
-        "path": "objects/obj_card_0206/obj_card_0206.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0207",
-        "path": "objects/obj_card_0207/obj_card_0207.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0208",
-        "path": "objects/obj_card_0208/obj_card_0208.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0209",
-        "path": "objects/obj_card_0209/obj_card_0209.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0210",
-        "path": "objects/obj_card_0210/obj_card_0210.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0301",
-        "path": "objects/obj_card_0301/obj_card_0301.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0302",
-        "path": "objects/obj_card_0302/obj_card_0302.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0303",
-        "path": "objects/obj_card_0303/obj_card_0303.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0304",
-        "path": "objects/obj_card_0304/obj_card_0304.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0305",
-        "path": "objects/obj_card_0305/obj_card_0305.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_0306",
-        "path": "objects/obj_card_0306/obj_card_0306.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_307",
-        "path": "objects/obj_card_307/obj_card_307.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_308",
-        "path": "objects/obj_card_308/obj_card_308.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_309",
-        "path": "objects/obj_card_309/obj_card_309.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_310",
-        "path": "objects/obj_card_310/obj_card_310.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_greed",
-        "path": "objects/obj_card_greed/obj_card_greed.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_parent",
-        "path": "objects/obj_card_parent/obj_card_parent.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_scarlet",
-        "path": "objects/obj_card_scarlet/obj_card_scarlet.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_xinyu_1",
-        "path": "objects/obj_card_xinyu_1/obj_card_xinyu_1.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_xinyu_2",
-        "path": "objects/obj_card_xinyu_2/obj_card_xinyu_2.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_xinyu_3",
-        "path": "objects/obj_card_xinyu_3/obj_card_xinyu_3.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_xinyu_4",
-        "path": "objects/obj_card_xinyu_4/obj_card_xinyu_4.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_xinyu_5",
-        "path": "objects/obj_card_xinyu_5/obj_card_xinyu_5.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_card_xinyu_6",
-        "path": "objects/obj_card_xinyu_6/obj_card_xinyu_6.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_character_1",
-        "path": "objects/obj_character_1/obj_character_1.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_character_2",
-        "path": "objects/obj_character_2/obj_character_2.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_character_3",
-        "path": "objects/obj_character_3/obj_character_3.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_character_4",
-        "path": "objects/obj_character_4/obj_character_4.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_damage_text",
-        "path": "objects/obj_damage_text/obj_damage_text.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_star_projectile",
-        "path": "objects/obj_star_projectile/obj_star_projectile.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_enemy_1",
-        "path": "objects/obj_enemy_1/obj_enemy_1.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_enemy_2",
-        "path": "objects/obj_enemy_2/obj_enemy_2.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_enemy_3",
-        "path": "objects/obj_enemy_3/obj_enemy_3.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_hand_controller",
-        "path": "objects/obj_hand_controller/obj_hand_controller.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_map_controller",
-        "path": "objects/obj_map_controller/obj_map_controller.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "obj_select_controller",
-        "path": "objects/obj_select_controller/obj_select_controller.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "rm_battle",
-        "path": "rooms/rm_battle/rm_battle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "rm_map",
-        "path": "rooms/rm_map/rm_map.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Room2",
-        "path": "rooms/Room2/Room2.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_arrow",
-        "path": "scripts/scr_arrow/scr_arrow.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_battle",
-        "path": "scripts/scr_battle/scr_battle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_card_data",
-        "path": "scripts/scr_card_data/scr_card_data.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_card_new",
-        "path": "scripts/scr_card_new/scr_card_new.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_card_text",
-        "path": "scripts/scr_card_text/scr_card_text.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_map",
-        "path": "scripts/scr_map/scr_map.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_monster",
-        "path": "scripts/scr_monster/scr_monster.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "scr_status",
-        "path": "scripts/scr_status/scr_status.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Script6",
-        "path": "scripts/Script6/Script6.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_blood",
-        "path": "sprites/spr_blood/spr_blood.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_1",
-        "path": "sprites/spr_card_1/spr_card_1.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_12",
-        "path": "sprites/spr_card_12/spr_card_12.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_2",
-        "path": "sprites/spr_card_2/spr_card_2.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_3",
-        "path": "sprites/spr_card_3/spr_card_3.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_4",
-        "path": "sprites/spr_card_4/spr_card_4.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_5",
-        "path": "sprites/spr_card_5/spr_card_5.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_greed",
-        "path": "sprites/spr_card_greed/spr_card_greed.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_xinyu_1",
-        "path": "sprites/spr_card_xinyu_1/spr_card_xinyu_1.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_xinyu_2",
-        "path": "sprites/spr_card_xinyu_2/spr_card_xinyu_2.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_xinyu_3",
-        "path": "sprites/spr_card_xinyu_3/spr_card_xinyu_3.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_xinyu_4",
-        "path": "sprites/spr_card_xinyu_4/spr_card_xinyu_4.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_xinyu_5",
-        "path": "sprites/spr_card_xinyu_5/spr_card_xinyu_5.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_xinyu_6",
-        "path": "sprites/spr_card_xinyu_6/spr_card_xinyu_6.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Spr_chen",
-        "path": "sprites/Spr_chen/Spr_chen.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_chill",
-        "path": "sprites/spr_chill/spr_chill.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_dexterity",
-        "path": "sprites/spr_dexterity/spr_dexterity.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_diligence",
-        "path": "sprites/spr_diligence/spr_diligence.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Spr_enemy1",
-        "path": "sprites/Spr_enemy1/Spr_enemy1.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_frozen",
-        "path": "sprites/spr_frozen/spr_frozen.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ink_bird",
-        "path": "sprites/spr_ink_bird/spr_ink_bird.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ink_fish",
-        "path": "sprites/spr_ink_fish/spr_ink_fish.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ink_frog",
-        "path": "sprites/spr_ink_frog/spr_ink_frog.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ink_pig",
-        "path": "sprites/spr_ink_pig/spr_ink_pig.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ink_wolf",
-        "path": "sprites/spr_ink_wolf/spr_ink_wolf.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_intent_buff",
-        "path": "sprites/spr_intent_buff/spr_intent_buff.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_intent_debuff",
-        "path": "sprites/spr_intent_debuff/spr_intent_debuff.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_intent_magic_aoe",
-        "path": "sprites/spr_intent_magic_aoe/spr_intent_magic_aoe.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_intent_magic",
-        "path": "sprites/spr_intent_magic/spr_intent_magic.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_intent_phys_aoe",
-        "path": "sprites/spr_intent_phys_aoe/spr_intent_phys_aoe.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_intent_phys",
-        "path": "sprites/spr_intent_phys/spr_intent_phys.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_magic_down",
-        "path": "sprites/spr_magic_down/spr_magic_down.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_monster_curser",
-        "path": "sprites/spr_monster_curser/spr_monster_curser.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_monster_firefly",
-        "path": "sprites/spr_monster_firefly/spr_monster_firefly.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_monster_robber",
-        "path": "sprites/spr_monster_robber/spr_monster_robber.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_monster_stone",
-        "path": "sprites/spr_monster_stone/spr_monster_stone.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_arena",
-        "path": "sprites/spr_node_arena/spr_node_arena.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_battle",
-        "path": "sprites/spr_node_battle/spr_node_battle.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_boss",
-        "path": "sprites/spr_node_boss/spr_node_boss.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_camp",
-        "path": "sprites/spr_node_camp/spr_node_camp.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_danger",
-        "path": "sprites/spr_node_danger/spr_node_danger.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_elite",
-        "path": "sprites/spr_node_elite/spr_node_elite.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_empty",
-        "path": "sprites/spr_node_empty/spr_node_empty.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_event",
-        "path": "sprites/spr_node_event/spr_node_event.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_fate",
-        "path": "sprites/spr_node_fate/spr_node_fate.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_hidden",
-        "path": "sprites/spr_node_hidden/spr_node_hidden.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_lookout",
-        "path": "sprites/spr_node_lookout/spr_node_lookout.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_merchant",
-        "path": "sprites/spr_node_merchant/spr_node_merchant.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_realm",
-        "path": "sprites/spr_node_realm/spr_node_realm.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_treasure",
-        "path": "sprites/spr_node_treasure/spr_node_treasure.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_node_tribe",
-        "path": "sprites/spr_node_tribe/spr_node_tribe.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_resonance",
-        "path": "sprites/spr_resonance/spr_resonance.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_star",
-        "path": "sprites/spr_star/spr_star.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_status_corpse",
-        "path": "sprites/spr_status_corpse/spr_status_corpse.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_status_ink",
-        "path": "sprites/spr_status_ink/spr_status_ink.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_status_magic_power",
-        "path": "sprites/spr_status_magic_power/spr_status_magic_power.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_strength_down",
-        "path": "sprites/spr_strength_down/spr_strength_down.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_strength",
-        "path": "sprites/spr_strength/spr_strength.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Spr_sulingxi",
-        "path": "sprites/Spr_sulingxi/Spr_sulingxi.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_sword_form",
-        "path": "sprites/spr_sword_form/spr_sword_form.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_vanguard",
-        "path": "sprites/spr_vanguard/spr_vanguard.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Spr_xinyu",
-        "path": "sprites/Spr_xinyu/Spr_xinyu.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite1",
-        "path": "sprites/Sprite1/Sprite1.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_103",
-        "path": "sprites/spr_card_103/spr_card_103.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite16",
-        "path": "sprites/Sprite16/Sprite16.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite2",
-        "path": "sprites/Sprite2/Sprite2.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite3",
-        "path": "sprites/Sprite3/Sprite3.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite35",
-        "path": "sprites/Sprite35/Sprite35.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite37",
-        "path": "sprites/Sprite37/Sprite37.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite6",
-        "path": "sprites/Sprite6/Sprite6.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite60",
-        "path": "sprites/Sprite60/Sprite60.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_101",
-        "path": "sprites/spr_card_101/spr_card_101.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite9",
-        "path": "sprites/Sprite9/Sprite9.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "Sprite80",
-        "path": "sprites/Sprite80/Sprite80.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_101_hd",
-        "path": "sprites/spr_card_101_hd/spr_card_101_hd.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_103_hd",
-        "path": "sprites/spr_card_103_hd/spr_card_103_hd.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_109",
-        "path": "sprites/spr_card_109/spr_card_109.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_109_hd",
-        "path": "sprites/spr_card_109_hd/spr_card_109_hd.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_40",
-        "path": "sprites/spr_card_40/spr_card_40.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_card_40_hd",
-        "path": "sprites/spr_card_40_hd/spr_card_40_hd.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_chongtuifenmo",
-        "path": "sprites/spr_chongtuifenmo/spr_chongtuifenmo.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ganludi",
-        "path": "sprites/spr_ganludi/spr_ganludi.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_huishengbohe",
-        "path": "sprites/spr_huishengbohe/spr_huishengbohe.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_jingmoyaoji",
-        "path": "sprites/spr_jingmoyaoji/spr_jingmoyaoji.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_kutang",
-        "path": "sprites/spr_kutang/spr_kutang.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_ningshenxiangxun",
-        "path": "sprites/spr_ningshenxiangxun/spr_ningshenxiangxun.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_nishengyaojiII",
-        "path": "sprites/spr_nishengyaojiII/spr_nishengyaojiII.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_qingliangningshengao",
-        "path": "sprites/spr_qingliangningshengao/spr_qingliangningshengao.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_qingxinlu",
-        "path": "sprites/spr_qingxinlu/spr_qingxinlu.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_tielinyaogao",
-        "path": "sprites/spr_tielinyaogao/spr_tielinyaogao.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_yuchuangshui",
-        "path": "sprites/spr_yuchuangshui/spr_yuchuangshui.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_yuehuamilu",
-        "path": "sprites/spr_yuehuamilu/spr_yuehuamilu.yy"
-      }
-    },
-    {
-      "id": {
-        "name": "spr_yuelu",
-        "path": "sprites/spr_yuelu/spr_yuelu.yy"
-      }
-    }
+  "name":"肉鸽",
+  "resources":[
+    {"id":{"name":"obj_battle_table","path":"objects/obj_battle_table/obj_battle_table.yy",},},
+    {"id":{"name":"obj_card_0001","path":"objects/obj_card_0001/obj_card_0001.yy",},},
+    {"id":{"name":"obj_card_0002","path":"objects/obj_card_0002/obj_card_0002.yy",},},
+    {"id":{"name":"obj_card_0003","path":"objects/obj_card_0003/obj_card_0003.yy",},},
+    {"id":{"name":"obj_card_0004","path":"objects/obj_card_0004/obj_card_0004.yy",},},
+    {"id":{"name":"obj_card_0005","path":"objects/obj_card_0005/obj_card_0005.yy",},},
+    {"id":{"name":"obj_card_0007","path":"objects/obj_card_0007/obj_card_0007.yy",},},
+    {"id":{"name":"obj_card_0011","path":"objects/obj_card_0011/obj_card_0011.yy",},},
+    {"id":{"name":"obj_card_0012","path":"objects/obj_card_0012/obj_card_0012.yy",},},
+    {"id":{"name":"obj_card_0013","path":"objects/obj_card_0013/obj_card_0013.yy",},},
+    {"id":{"name":"obj_card_0014","path":"objects/obj_card_0014/obj_card_0014.yy",},},
+    {"id":{"name":"obj_card_0015","path":"objects/obj_card_0015/obj_card_0015.yy",},},
+    {"id":{"name":"obj_card_0016","path":"objects/obj_card_0016/obj_card_0016.yy",},},
+    {"id":{"name":"obj_card_0017","path":"objects/obj_card_0017/obj_card_0017.yy",},},
+    {"id":{"name":"obj_card_0018","path":"objects/obj_card_0018/obj_card_0018.yy",},},
+    {"id":{"name":"obj_card_0019","path":"objects/obj_card_0019/obj_card_0019.yy",},},
+    {"id":{"name":"obj_card_0020","path":"objects/obj_card_0020/obj_card_0020.yy",},},
+    {"id":{"name":"obj_card_0021","path":"objects/obj_card_0021/obj_card_0021.yy",},},
+    {"id":{"name":"obj_card_0022","path":"objects/obj_card_0022/obj_card_0022.yy",},},
+    {"id":{"name":"obj_card_0023","path":"objects/obj_card_0023/obj_card_0023.yy",},},
+    {"id":{"name":"obj_card_0024","path":"objects/obj_card_0024/obj_card_0024.yy",},},
+    {"id":{"name":"obj_card_0025","path":"objects/obj_card_0025/obj_card_0025.yy",},},
+    {"id":{"name":"obj_card_0026","path":"objects/obj_card_0026/obj_card_0026.yy",},},
+    {"id":{"name":"obj_card_0027","path":"objects/obj_card_0027/obj_card_0027.yy",},},
+    {"id":{"name":"obj_card_0028","path":"objects/obj_card_0028/obj_card_0028.yy",},},
+    {"id":{"name":"obj_card_0029","path":"objects/obj_card_0029/obj_card_0029.yy",},},
+    {"id":{"name":"obj_card_0030","path":"objects/obj_card_0030/obj_card_0030.yy",},},
+    {"id":{"name":"obj_card_0031","path":"objects/obj_card_0031/obj_card_0031.yy",},},
+    {"id":{"name":"obj_card_0032","path":"objects/obj_card_0032/obj_card_0032.yy",},},
+    {"id":{"name":"obj_card_0033","path":"objects/obj_card_0033/obj_card_0033.yy",},},
+    {"id":{"name":"obj_card_0034","path":"objects/obj_card_0034/obj_card_0034.yy",},},
+    {"id":{"name":"obj_card_0035","path":"objects/obj_card_0035/obj_card_0035.yy",},},
+    {"id":{"name":"obj_card_0036","path":"objects/obj_card_0036/obj_card_0036.yy",},},
+    {"id":{"name":"obj_card_0037","path":"objects/obj_card_0037/obj_card_0037.yy",},},
+    {"id":{"name":"obj_card_0038","path":"objects/obj_card_0038/obj_card_0038.yy",},},
+    {"id":{"name":"obj_card_0039","path":"objects/obj_card_0039/obj_card_0039.yy",},},
+    {"id":{"name":"obj_card_0040","path":"objects/obj_card_0040/obj_card_0040.yy",},},
+    {"id":{"name":"obj_card_0041","path":"objects/obj_card_0041/obj_card_0041.yy",},},
+    {"id":{"name":"obj_card_0042","path":"objects/obj_card_0042/obj_card_0042.yy",},},
+    {"id":{"name":"obj_card_0043","path":"objects/obj_card_0043/obj_card_0043.yy",},},
+    {"id":{"name":"obj_card_0044","path":"objects/obj_card_0044/obj_card_0044.yy",},},
+    {"id":{"name":"obj_card_0045","path":"objects/obj_card_0045/obj_card_0045.yy",},},
+    {"id":{"name":"obj_card_0046","path":"objects/obj_card_0046/obj_card_0046.yy",},},
+    {"id":{"name":"obj_card_0101","path":"objects/obj_card_0101/obj_card_0101.yy",},},
+    {"id":{"name":"obj_card_0102","path":"objects/obj_card_0102/obj_card_0102.yy",},},
+    {"id":{"name":"obj_card_0103","path":"objects/obj_card_0103/obj_card_0103.yy",},},
+    {"id":{"name":"obj_card_0104","path":"objects/obj_card_0104/obj_card_0104.yy",},},
+    {"id":{"name":"obj_card_0105","path":"objects/obj_card_0105/obj_card_0105.yy",},},
+    {"id":{"name":"obj_card_0106","path":"objects/obj_card_0106/obj_card_0106.yy",},},
+    {"id":{"name":"obj_card_0107","path":"objects/obj_card_0107/obj_card_0107.yy",},},
+    {"id":{"name":"obj_card_0108","path":"objects/obj_card_0108/obj_card_0108.yy",},},
+    {"id":{"name":"obj_card_0109","path":"objects/obj_card_0109/obj_card_0109.yy",},},
+    {"id":{"name":"obj_card_0110","path":"objects/obj_card_0110/obj_card_0110.yy",},},
+    {"id":{"name":"obj_card_0111","path":"objects/obj_card_0111/obj_card_0111.yy",},},
+    {"id":{"name":"obj_card_0112","path":"objects/obj_card_0112/obj_card_0112.yy",},},
+    {"id":{"name":"obj_card_0113","path":"objects/obj_card_0113/obj_card_0113.yy",},},
+    {"id":{"name":"obj_card_0114","path":"objects/obj_card_0114/obj_card_0114.yy",},},
+    {"id":{"name":"obj_card_0115","path":"objects/obj_card_0115/obj_card_0115.yy",},},
+    {"id":{"name":"obj_card_0116","path":"objects/obj_card_0116/obj_card_0116.yy",},},
+    {"id":{"name":"obj_card_0117","path":"objects/obj_card_0117/obj_card_0117.yy",},},
+    {"id":{"name":"obj_card_0118","path":"objects/obj_card_0118/obj_card_0118.yy",},},
+    {"id":{"name":"obj_card_0119","path":"objects/obj_card_0119/obj_card_0119.yy",},},
+    {"id":{"name":"obj_card_0120","path":"objects/obj_card_0120/obj_card_0120.yy",},},
+    {"id":{"name":"obj_card_0121","path":"objects/obj_card_0121/obj_card_0121.yy",},},
+    {"id":{"name":"obj_card_0122","path":"objects/obj_card_0122/obj_card_0122.yy",},},
+    {"id":{"name":"obj_card_0123","path":"objects/obj_card_0123/obj_card_0123.yy",},},
+    {"id":{"name":"obj_card_0124","path":"objects/obj_card_0124/obj_card_0124.yy",},},
+    {"id":{"name":"obj_card_0125","path":"objects/obj_card_0125/obj_card_0125.yy",},},
+    {"id":{"name":"obj_card_0126","path":"objects/obj_card_0126/obj_card_0126.yy",},},
+    {"id":{"name":"obj_card_0127","path":"objects/obj_card_0127/obj_card_0127.yy",},},
+    {"id":{"name":"obj_card_0128","path":"objects/obj_card_0128/obj_card_0128.yy",},},
+    {"id":{"name":"obj_card_0129","path":"objects/obj_card_0129/obj_card_0129.yy",},},
+    {"id":{"name":"obj_card_0130","path":"objects/obj_card_0130/obj_card_0130.yy",},},
+    {"id":{"name":"obj_card_0131","path":"objects/obj_card_0131/obj_card_0131.yy",},},
+    {"id":{"name":"obj_card_0132","path":"objects/obj_card_0132/obj_card_0132.yy",},},
+    {"id":{"name":"obj_card_0133","path":"objects/obj_card_0133/obj_card_0133.yy",},},
+    {"id":{"name":"obj_card_0134","path":"objects/obj_card_0134/obj_card_0134.yy",},},
+    {"id":{"name":"obj_card_0135","path":"objects/obj_card_0135/obj_card_0135.yy",},},
+    {"id":{"name":"obj_card_0136","path":"objects/obj_card_0136/obj_card_0136.yy",},},
+    {"id":{"name":"obj_card_0137","path":"objects/obj_card_0137/obj_card_0137.yy",},},
+    {"id":{"name":"obj_card_0138","path":"objects/obj_card_0138/obj_card_0138.yy",},},
+    {"id":{"name":"obj_card_0139","path":"objects/obj_card_0139/obj_card_0139.yy",},},
+    {"id":{"name":"obj_card_0140","path":"objects/obj_card_0140/obj_card_0140.yy",},},
+    {"id":{"name":"obj_card_0141","path":"objects/obj_card_0141/obj_card_0141.yy",},},
+    {"id":{"name":"obj_card_0142","path":"objects/obj_card_0142/obj_card_0142.yy",},},
+    {"id":{"name":"obj_card_0143","path":"objects/obj_card_0143/obj_card_0143.yy",},},
+    {"id":{"name":"obj_card_0144","path":"objects/obj_card_0144/obj_card_0144.yy",},},
+    {"id":{"name":"obj_card_0145","path":"objects/obj_card_0145/obj_card_0145.yy",},},
+    {"id":{"name":"obj_card_0146","path":"objects/obj_card_0146/obj_card_0146.yy",},},
+    {"id":{"name":"obj_card_0147","path":"objects/obj_card_0147/obj_card_0147.yy",},},
+    {"id":{"name":"obj_card_0148","path":"objects/obj_card_0148/obj_card_0148.yy",},},
+    {"id":{"name":"obj_card_0149","path":"objects/obj_card_0149/obj_card_0149.yy",},},
+    {"id":{"name":"obj_card_0150","path":"objects/obj_card_0150/obj_card_0150.yy",},},
+    {"id":{"name":"obj_card_0151","path":"objects/obj_card_0151/obj_card_0151.yy",},},
+    {"id":{"name":"obj_card_0152","path":"objects/obj_card_0152/obj_card_0152.yy",},},
+    {"id":{"name":"obj_card_0201","path":"objects/obj_card_0201/obj_card_0201.yy",},},
+    {"id":{"name":"obj_card_0202","path":"objects/obj_card_0202/obj_card_0202.yy",},},
+    {"id":{"name":"obj_card_0203","path":"objects/obj_card_0203/obj_card_0203.yy",},},
+    {"id":{"name":"obj_card_0204","path":"objects/obj_card_0204/obj_card_0204.yy",},},
+    {"id":{"name":"obj_card_0205","path":"objects/obj_card_0205/obj_card_0205.yy",},},
+    {"id":{"name":"obj_card_0206","path":"objects/obj_card_0206/obj_card_0206.yy",},},
+    {"id":{"name":"obj_card_0207","path":"objects/obj_card_0207/obj_card_0207.yy",},},
+    {"id":{"name":"obj_card_0208","path":"objects/obj_card_0208/obj_card_0208.yy",},},
+    {"id":{"name":"obj_card_0209","path":"objects/obj_card_0209/obj_card_0209.yy",},},
+    {"id":{"name":"obj_card_0210","path":"objects/obj_card_0210/obj_card_0210.yy",},},
+    {"id":{"name":"obj_card_0301","path":"objects/obj_card_0301/obj_card_0301.yy",},},
+    {"id":{"name":"obj_card_0302","path":"objects/obj_card_0302/obj_card_0302.yy",},},
+    {"id":{"name":"obj_card_0303","path":"objects/obj_card_0303/obj_card_0303.yy",},},
+    {"id":{"name":"obj_card_0304","path":"objects/obj_card_0304/obj_card_0304.yy",},},
+    {"id":{"name":"obj_card_0305","path":"objects/obj_card_0305/obj_card_0305.yy",},},
+    {"id":{"name":"obj_card_0306","path":"objects/obj_card_0306/obj_card_0306.yy",},},
+    {"id":{"name":"obj_card_307","path":"objects/obj_card_307/obj_card_307.yy",},},
+    {"id":{"name":"obj_card_308","path":"objects/obj_card_308/obj_card_308.yy",},},
+    {"id":{"name":"obj_card_309","path":"objects/obj_card_309/obj_card_309.yy",},},
+    {"id":{"name":"obj_card_310","path":"objects/obj_card_310/obj_card_310.yy",},},
+    {"id":{"name":"obj_card_greed","path":"objects/obj_card_greed/obj_card_greed.yy",},},
+    {"id":{"name":"obj_card_parent","path":"objects/obj_card_parent/obj_card_parent.yy",},},
+    {"id":{"name":"obj_card_scarlet","path":"objects/obj_card_scarlet/obj_card_scarlet.yy",},},
+    {"id":{"name":"obj_card_xinyu_1","path":"objects/obj_card_xinyu_1/obj_card_xinyu_1.yy",},},
+    {"id":{"name":"obj_card_xinyu_2","path":"objects/obj_card_xinyu_2/obj_card_xinyu_2.yy",},},
+    {"id":{"name":"obj_card_xinyu_3","path":"objects/obj_card_xinyu_3/obj_card_xinyu_3.yy",},},
+    {"id":{"name":"obj_card_xinyu_4","path":"objects/obj_card_xinyu_4/obj_card_xinyu_4.yy",},},
+    {"id":{"name":"obj_card_xinyu_5","path":"objects/obj_card_xinyu_5/obj_card_xinyu_5.yy",},},
+    {"id":{"name":"obj_card_xinyu_6","path":"objects/obj_card_xinyu_6/obj_card_xinyu_6.yy",},},
+    {"id":{"name":"obj_character_1","path":"objects/obj_character_1/obj_character_1.yy",},},
+    {"id":{"name":"obj_character_2","path":"objects/obj_character_2/obj_character_2.yy",},},
+    {"id":{"name":"obj_character_3","path":"objects/obj_character_3/obj_character_3.yy",},},
+    {"id":{"name":"obj_character_4","path":"objects/obj_character_4/obj_character_4.yy",},},
+    {"id":{"name":"obj_damage_text","path":"objects/obj_damage_text/obj_damage_text.yy",},},
+    {"id":{"name":"obj_enemy_1","path":"objects/obj_enemy_1/obj_enemy_1.yy",},},
+    {"id":{"name":"obj_enemy_2","path":"objects/obj_enemy_2/obj_enemy_2.yy",},},
+    {"id":{"name":"obj_enemy_3","path":"objects/obj_enemy_3/obj_enemy_3.yy",},},
+    {"id":{"name":"obj_hand_controller","path":"objects/obj_hand_controller/obj_hand_controller.yy",},},
+    {"id":{"name":"obj_map_controller","path":"objects/obj_map_controller/obj_map_controller.yy",},},
+    {"id":{"name":"obj_select_controller","path":"objects/obj_select_controller/obj_select_controller.yy",},},
+    {"id":{"name":"obj_star_projectile","path":"objects/obj_star_projectile/obj_star_projectile.yy",},},
+    {"id":{"name":"rm_battle","path":"rooms/rm_battle/rm_battle.yy",},},
+    {"id":{"name":"rm_map","path":"rooms/rm_map/rm_map.yy",},},
+    {"id":{"name":"Room2","path":"rooms/Room2/Room2.yy",},},
+    {"id":{"name":"scr_arrow","path":"scripts/scr_arrow/scr_arrow.yy",},},
+    {"id":{"name":"scr_battle","path":"scripts/scr_battle/scr_battle.yy",},},
+    {"id":{"name":"scr_card_data","path":"scripts/scr_card_data/scr_card_data.yy",},},
+    {"id":{"name":"scr_card_new","path":"scripts/scr_card_new/scr_card_new.yy",},},
+    {"id":{"name":"scr_card_text","path":"scripts/scr_card_text/scr_card_text.yy",},},
+    {"id":{"name":"scr_map","path":"scripts/scr_map/scr_map.yy",},},
+    {"id":{"name":"scr_monster","path":"scripts/scr_monster/scr_monster.yy",},},
+    {"id":{"name":"scr_status","path":"scripts/scr_status/scr_status.yy",},},
+    {"id":{"name":"Script6","path":"scripts/Script6/Script6.yy",},},
+    {"id":{"name":"spr_blood","path":"sprites/spr_blood/spr_blood.yy",},},
+    {"id":{"name":"spr_card_1","path":"sprites/spr_card_1/spr_card_1.yy",},},
+    {"id":{"name":"spr_card_101_hd","path":"sprites/spr_card_101_hd/spr_card_101_hd.yy",},},
+    {"id":{"name":"spr_card_101","path":"sprites/spr_card_101/spr_card_101.yy",},},
+    {"id":{"name":"spr_card_103_hd","path":"sprites/spr_card_103_hd/spr_card_103_hd.yy",},},
+    {"id":{"name":"spr_card_103","path":"sprites/spr_card_103/spr_card_103.yy",},},
+    {"id":{"name":"spr_card_109_hd","path":"sprites/spr_card_109_hd/spr_card_109_hd.yy",},},
+    {"id":{"name":"spr_card_109","path":"sprites/spr_card_109/spr_card_109.yy",},},
+    {"id":{"name":"spr_card_12","path":"sprites/spr_card_12/spr_card_12.yy",},},
+    {"id":{"name":"spr_card_2","path":"sprites/spr_card_2/spr_card_2.yy",},},
+    {"id":{"name":"spr_card_3","path":"sprites/spr_card_3/spr_card_3.yy",},},
+    {"id":{"name":"spr_card_4","path":"sprites/spr_card_4/spr_card_4.yy",},},
+    {"id":{"name":"spr_card_40_hd","path":"sprites/spr_card_40_hd/spr_card_40_hd.yy",},},
+    {"id":{"name":"spr_card_40","path":"sprites/spr_card_40/spr_card_40.yy",},},
+    {"id":{"name":"spr_card_5","path":"sprites/spr_card_5/spr_card_5.yy",},},
+    {"id":{"name":"spr_card_greed","path":"sprites/spr_card_greed/spr_card_greed.yy",},},
+    {"id":{"name":"spr_card_xinyu_1","path":"sprites/spr_card_xinyu_1/spr_card_xinyu_1.yy",},},
+    {"id":{"name":"spr_card_xinyu_2","path":"sprites/spr_card_xinyu_2/spr_card_xinyu_2.yy",},},
+    {"id":{"name":"spr_card_xinyu_3","path":"sprites/spr_card_xinyu_3/spr_card_xinyu_3.yy",},},
+    {"id":{"name":"spr_card_xinyu_4","path":"sprites/spr_card_xinyu_4/spr_card_xinyu_4.yy",},},
+    {"id":{"name":"spr_card_xinyu_5","path":"sprites/spr_card_xinyu_5/spr_card_xinyu_5.yy",},},
+    {"id":{"name":"spr_card_xinyu_6","path":"sprites/spr_card_xinyu_6/spr_card_xinyu_6.yy",},},
+    {"id":{"name":"Spr_chen","path":"sprites/Spr_chen/Spr_chen.yy",},},
+    {"id":{"name":"spr_chill","path":"sprites/spr_chill/spr_chill.yy",},},
+    {"id":{"name":"spr_chongtuifenmo","path":"sprites/spr_chongtuifenmo/spr_chongtuifenmo.yy",},},
+    {"id":{"name":"spr_dexterity","path":"sprites/spr_dexterity/spr_dexterity.yy",},},
+    {"id":{"name":"spr_diligence","path":"sprites/spr_diligence/spr_diligence.yy",},},
+    {"id":{"name":"Spr_enemy1","path":"sprites/Spr_enemy1/Spr_enemy1.yy",},},
+    {"id":{"name":"spr_frozen","path":"sprites/spr_frozen/spr_frozen.yy",},},
+    {"id":{"name":"spr_ganludi","path":"sprites/spr_ganludi/spr_ganludi.yy",},},
+    {"id":{"name":"spr_huishengbohe","path":"sprites/spr_huishengbohe/spr_huishengbohe.yy",},},
+    {"id":{"name":"spr_ink_bird","path":"sprites/spr_ink_bird/spr_ink_bird.yy",},},
+    {"id":{"name":"spr_ink_fish","path":"sprites/spr_ink_fish/spr_ink_fish.yy",},},
+    {"id":{"name":"spr_ink_frog","path":"sprites/spr_ink_frog/spr_ink_frog.yy",},},
+    {"id":{"name":"spr_ink_pig","path":"sprites/spr_ink_pig/spr_ink_pig.yy",},},
+    {"id":{"name":"spr_ink_wolf","path":"sprites/spr_ink_wolf/spr_ink_wolf.yy",},},
+    {"id":{"name":"spr_intent_buff","path":"sprites/spr_intent_buff/spr_intent_buff.yy",},},
+    {"id":{"name":"spr_intent_debuff","path":"sprites/spr_intent_debuff/spr_intent_debuff.yy",},},
+    {"id":{"name":"spr_intent_magic_aoe","path":"sprites/spr_intent_magic_aoe/spr_intent_magic_aoe.yy",},},
+    {"id":{"name":"spr_intent_magic","path":"sprites/spr_intent_magic/spr_intent_magic.yy",},},
+    {"id":{"name":"spr_intent_phys_aoe","path":"sprites/spr_intent_phys_aoe/spr_intent_phys_aoe.yy",},},
+    {"id":{"name":"spr_intent_phys","path":"sprites/spr_intent_phys/spr_intent_phys.yy",},},
+    {"id":{"name":"spr_jingmoyaoji","path":"sprites/spr_jingmoyaoji/spr_jingmoyaoji.yy",},},
+    {"id":{"name":"spr_kutang","path":"sprites/spr_kutang/spr_kutang.yy",},},
+    {"id":{"name":"spr_magic_down","path":"sprites/spr_magic_down/spr_magic_down.yy",},},
+    {"id":{"name":"spr_monster_curser","path":"sprites/spr_monster_curser/spr_monster_curser.yy",},},
+    {"id":{"name":"spr_monster_firefly","path":"sprites/spr_monster_firefly/spr_monster_firefly.yy",},},
+    {"id":{"name":"spr_monster_robber","path":"sprites/spr_monster_robber/spr_monster_robber.yy",},},
+    {"id":{"name":"spr_monster_stone","path":"sprites/spr_monster_stone/spr_monster_stone.yy",},},
+    {"id":{"name":"spr_ningshenxiangxun","path":"sprites/spr_ningshenxiangxun/spr_ningshenxiangxun.yy",},},
+    {"id":{"name":"spr_nishengyaojiII","path":"sprites/spr_nishengyaojiII/spr_nishengyaojiII.yy",},},
+    {"id":{"name":"spr_node_arena","path":"sprites/spr_node_arena/spr_node_arena.yy",},},
+    {"id":{"name":"spr_node_battle","path":"sprites/spr_node_battle/spr_node_battle.yy",},},
+    {"id":{"name":"spr_node_boss","path":"sprites/spr_node_boss/spr_node_boss.yy",},},
+    {"id":{"name":"spr_node_camp","path":"sprites/spr_node_camp/spr_node_camp.yy",},},
+    {"id":{"name":"spr_node_danger","path":"sprites/spr_node_danger/spr_node_danger.yy",},},
+    {"id":{"name":"spr_node_elite","path":"sprites/spr_node_elite/spr_node_elite.yy",},},
+    {"id":{"name":"spr_node_empty","path":"sprites/spr_node_empty/spr_node_empty.yy",},},
+    {"id":{"name":"spr_node_event","path":"sprites/spr_node_event/spr_node_event.yy",},},
+    {"id":{"name":"spr_node_fate","path":"sprites/spr_node_fate/spr_node_fate.yy",},},
+    {"id":{"name":"spr_node_hidden","path":"sprites/spr_node_hidden/spr_node_hidden.yy",},},
+    {"id":{"name":"spr_node_lookout","path":"sprites/spr_node_lookout/spr_node_lookout.yy",},},
+    {"id":{"name":"spr_node_merchant","path":"sprites/spr_node_merchant/spr_node_merchant.yy",},},
+    {"id":{"name":"spr_node_realm","path":"sprites/spr_node_realm/spr_node_realm.yy",},},
+    {"id":{"name":"spr_node_treasure","path":"sprites/spr_node_treasure/spr_node_treasure.yy",},},
+    {"id":{"name":"spr_node_tribe","path":"sprites/spr_node_tribe/spr_node_tribe.yy",},},
+    {"id":{"name":"spr_qingliangningshengao","path":"sprites/spr_qingliangningshengao/spr_qingliangningshengao.yy",},},
+    {"id":{"name":"spr_qingxinlu","path":"sprites/spr_qingxinlu/spr_qingxinlu.yy",},},
+    {"id":{"name":"spr_resonance","path":"sprites/spr_resonance/spr_resonance.yy",},},
+    {"id":{"name":"spr_star","path":"sprites/spr_star/spr_star.yy",},},
+    {"id":{"name":"spr_status_corpse","path":"sprites/spr_status_corpse/spr_status_corpse.yy",},},
+    {"id":{"name":"spr_status_ink","path":"sprites/spr_status_ink/spr_status_ink.yy",},},
+    {"id":{"name":"spr_status_magic_power","path":"sprites/spr_status_magic_power/spr_status_magic_power.yy",},},
+    {"id":{"name":"spr_strength_down","path":"sprites/spr_strength_down/spr_strength_down.yy",},},
+    {"id":{"name":"spr_strength","path":"sprites/spr_strength/spr_strength.yy",},},
+    {"id":{"name":"Spr_sulingxi","path":"sprites/Spr_sulingxi/Spr_sulingxi.yy",},},
+    {"id":{"name":"spr_sword_form","path":"sprites/spr_sword_form/spr_sword_form.yy",},},
+    {"id":{"name":"spr_tielinyaogao","path":"sprites/spr_tielinyaogao/spr_tielinyaogao.yy",},},
+    {"id":{"name":"spr_vanguard","path":"sprites/spr_vanguard/spr_vanguard.yy",},},
+    {"id":{"name":"Spr_xinyu","path":"sprites/Spr_xinyu/Spr_xinyu.yy",},},
+    {"id":{"name":"spr_yuchuangshui","path":"sprites/spr_yuchuangshui/spr_yuchuangshui.yy",},},
+    {"id":{"name":"spr_yuehuamilu","path":"sprites/spr_yuehuamilu/spr_yuehuamilu.yy",},},
+    {"id":{"name":"spr_yuelu","path":"sprites/spr_yuelu/spr_yuelu.yy",},},
+    {"id":{"name":"Sprite1","path":"sprites/Sprite1/Sprite1.yy",},},
+    {"id":{"name":"Sprite16","path":"sprites/Sprite16/Sprite16.yy",},},
+    {"id":{"name":"Sprite2","path":"sprites/Sprite2/Sprite2.yy",},},
+    {"id":{"name":"Sprite3","path":"sprites/Sprite3/Sprite3.yy",},},
+    {"id":{"name":"Sprite35","path":"sprites/Sprite35/Sprite35.yy",},},
+    {"id":{"name":"Sprite37","path":"sprites/Sprite37/Sprite37.yy",},},
+    {"id":{"name":"Sprite6","path":"sprites/Sprite6/Sprite6.yy",},},
+    {"id":{"name":"Sprite60","path":"sprites/Sprite60/Sprite60.yy",},},
+    {"id":{"name":"Sprite80","path":"sprites/Sprite80/Sprite80.yy",},},
+    {"id":{"name":"Sprite9","path":"sprites/Sprite9/Sprite9.yy",},},
   ],
-  "resourceType": "GMProject",
-  "resourceVersion": "2.0",
-  "RoomOrderNodes": [
-    {
-      "roomId": {
-        "name": "Room2",
-        "path": "rooms/Room2/Room2.yy"
-      }
-    },
-    {
-      "roomId": {
-        "name": "rm_battle",
-        "path": "rooms/rm_battle/rm_battle.yy"
-      }
-    },
-    {
-      "roomId": {
-        "name": "rm_map",
-        "path": "rooms/rm_map/rm_map.yy"
-      }
-    }
+  "resourceType":"GMProject",
+  "resourceVersion":"2.0",
+  "RoomOrderNodes":[
+    {"roomId":{"name":"Room2","path":"rooms/Room2/Room2.yy",},},
+    {"roomId":{"name":"rm_battle","path":"rooms/rm_battle/rm_battle.yy",},},
+    {"roomId":{"name":"rm_map","path":"rooms/rm_map/rm_map.yy",},},
   ],
-  "templateType": "game",
-  "TextureGroups": [
-    {
-      "$GMTextureGroup": "",
-      "%Name": "Default",
-      "autocrop": true,
-      "border": 2,
-      "compressFormat": "bz2",
-      "customOptions": "",
-      "directory": "",
-      "groupParent": null,
-      "isScaled": true,
-      "loadType": "default",
-      "mipsToGenerate": 0,
-      "name": "Default",
-      "resourceType": "GMTextureGroup",
-      "resourceVersion": "2.0",
-      "targets": -1
-    }
-  ]
+  "templateType":"game",
+  "TextureGroups":[
+    {"$GMTextureGroup":"","%Name":"Default","autocrop":true,"border":2,"compressFormat":"bz2","customOptions":"","directory":"","groupParent":null,"isScaled":true,"loadType":"default","mipsToGenerate":0,"name":"Default","resourceType":"GMTextureGroup","resourceVersion":"2.0","targets":-1,},
+  ],
 }

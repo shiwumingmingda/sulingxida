@@ -23,7 +23,7 @@
   ],
   "name":"Spr_enemy1",
   "nineSlice":null,
-  "origin":7,
+  "origin":4,
   "parent":{
     "name":"肉鸽",
     "path":"肉鸽.yyp",
@@ -76,7 +76,7 @@
     "visibleRange":null,
     "volume":1.0,
     "xorigin":75,
-    "yorigin":200,
+    "yorigin":100,
   },
   "swatchColours":null,
   "swfPrecision":0.5,
