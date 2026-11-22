@@ -281,6 +281,8 @@ function draw_countdown_icons(_owner, _x, _y)
                         part = "将" + string(n) + "张牌置入手牌";
                     break;
                     case EffectType.STATUS: part = "获得状态"; break;
+                    case EffectType.REPLAY_STARTER: part = "视为使用一张初始牌"; break;
+                    case EffectType.SHUFFLE_ELEMENT: part = "将一张随机元素牌洗入抽牌堆"; break;
                 }
 
                 if (detail != "") detail += "；";
