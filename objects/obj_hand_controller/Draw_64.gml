@@ -486,10 +486,10 @@ if (scry_active)
     draw_set_alpha(1);
 
     draw_set_color(make_color_rgb(32, 42, 65));
-    draw_roundrect(room_width * 0.06, room_height * 0.12,
+    draw_rectangle(room_width * 0.06, room_height * 0.12,
         room_width * 0.94, room_height * 0.53, false);
     draw_set_color(make_color_rgb(65, 45, 55));
-    draw_roundrect(room_width * 0.06, room_height * 0.56,
+    draw_rectangle(room_width * 0.06, room_height * 0.56,
         room_width * 0.94, room_height * 0.82, false);
 
     draw_set_font(global.chinese_font);
@@ -531,9 +531,9 @@ if (scry_active)
 
     // 确认按钮
     draw_set_color(make_color_rgb(45, 105, 145));
-    draw_roundrect(scry_confirm_x1, scry_confirm_y1, scry_confirm_x2, scry_confirm_y2, false);
+    draw_rectangle(scry_confirm_x1, scry_confirm_y1, scry_confirm_x2, scry_confirm_y2, false);
     draw_set_color(c_white);
-    draw_roundrect(scry_confirm_x1, scry_confirm_y1, scry_confirm_x2, scry_confirm_y2, true);
+    draw_rectangle(scry_confirm_x1, scry_confirm_y1, scry_confirm_x2, scry_confirm_y2, true);
     draw_text((scry_confirm_x1 + scry_confirm_x2) * 0.5,
         (scry_confirm_y1 + scry_confirm_y2) * 0.5, "确认");
 
