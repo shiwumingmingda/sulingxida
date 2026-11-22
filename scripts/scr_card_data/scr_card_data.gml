@@ -905,6 +905,164 @@ case EffectType.ADD_ENTRY_TO_HAND:
     }
 }
 break;
+
+case EffectType.FIREBALL_VOLLEY:
+{
+    var fire_obj = card_get_object(1);
+    var free_slots = max(obj_hand_controller.max_hand_size - array_length(obj_hand_controller.hand), 0);
+    var use_count = min(_e.amount, free_slots);
+    var volley_target = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
+
+    for (var vi = 0; vi < _e.amount; vi++)
+    {
+        var fire_entry = card_make_entry(fire_obj);
+        fire_entry.effects = effects_add_damage(card_get_effects(1), _e.damage_bonus);
+
+        if (vi < use_count)
+        {
+            var fire_inst = card_spawn_from_entry(fire_entry, -1000, -1000);
+            card_play_effects(fire_inst, _target, volley_target);
+            with (fire_inst) instance_destroy();
+        }
+        else
+        {
+            obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = fire_entry;
+        }
+    }
+}
+break;
+
+case EffectType.RANDOM_STARTER:
+{
+    var random_id = irandom_range(1, 4);
+    var random_obj = card_get_object(random_id);
+    var random_entry = card_make_entry(random_obj);
+    var random_inst = card_spawn_from_entry(random_entry, -1000, -1000);
+    var random_owner = effect_target_char(_e, _target);
+    var random_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
+
+    card_play_effects(random_inst, random_owner, random_enemy);
+    with (random_inst) instance_destroy();
+
+    with (obj_hand_controller)
+    {
+        add_card_to_hand_id(random_id, -1, 0);
+    }
+}
+break;
+
+case EffectType.UPGRADE_ALL_STARTERS:
+{
+    // 手牌中的初始牌直接强化
+    for (var hi = 0; hi < array_length(obj_hand_controller.hand); hi++)
+    {
+        var hand_card = obj_hand_controller.hand[hi];
+        if (instance_exists(hand_card) && hand_card.card_id >= 1 && hand_card.card_id <= 4)
+        {
+            card_double_effects(hand_card);
+        }
+    }
+
+    // 抽牌堆和弃牌堆中的初始牌通过临时实例强化，再保存回牌堆记录
+    for (var di = obj_hand_controller.deck_index; di < array_length(obj_hand_controller.deck); di++)
+    {
+        var deck_entry = obj_hand_controller.deck[di];
+        if (deck_entry.obj == card_get_object(1) || deck_entry.obj == card_get_object(2)
+        ||  deck_entry.obj == card_get_object(3) || deck_entry.obj == card_get_object(4))
+        {
+            var deck_inst = card_spawn_from_entry(deck_entry, -1000, -1000);
+            card_double_effects(deck_inst);
+            obj_hand_controller.deck[di] = card_entry_from_instance(deck_inst);
+            with (deck_inst) instance_destroy();
+        }
+    }
+
+    for (var di = 0; di < array_length(obj_hand_controller.discard_pile); di++)
+    {
+        var discard_entry = obj_hand_controller.discard_pile[di];
+        if (discard_entry.obj == card_get_object(1) || discard_entry.obj == card_get_object(2)
+        ||  discard_entry.obj == card_get_object(3) || discard_entry.obj == card_get_object(4))
+        {
+            var discard_inst = card_spawn_from_entry(discard_entry, -1000, -1000);
+            card_double_effects(discard_inst);
+            obj_hand_controller.discard_pile[di] = card_entry_from_instance(discard_inst);
+            with (discard_inst) instance_destroy();
+        }
+    }
+}
+break;
+
+case EffectType.COUNTDOWN_ALL_FRIENDS:
+{
+    with (obj_hand_controller)
+    {
+        for (var fi = 1; fi <= 3; fi++)
+        {
+            var friend_inst = variable_instance_get(id, "char_" + string(fi));
+            if (char_is_alive(friend_inst))
+            {
+                countdown_add(fi, _e.amount, _e.effects);
+            }
+        }
+    }
+}
+break;
+
+case EffectType.MERGE_ALL_FIREBALLS:
+{
+    var fire_obj = card_get_object(1);
+    var fire_count = 0;
+
+    // 消耗手牌中的火球
+    for (var hi = array_length(obj_hand_controller.hand) - 1; hi >= 0; hi--)
+    {
+        var hcard = obj_hand_controller.hand[hi];
+        if (instance_exists(hcard) && hcard.card_id == 1)
+        {
+            fire_count++;
+            obj_hand_controller.remove_card_from_hand(hcard);
+        }
+    }
+
+    // 消耗尚未抽取的抽牌堆火球
+    for (var di = array_length(obj_hand_controller.deck) - 1; di >= obj_hand_controller.deck_index; di--)
+    {
+        if (obj_hand_controller.deck[di].obj == fire_obj)
+        {
+            fire_count++;
+            array_delete(obj_hand_controller.deck, di, 1);
+        }
+    }
+
+    // 消耗弃牌堆火球
+    for (var di = array_length(obj_hand_controller.discard_pile) - 1; di >= 0; di--)
+    {
+        if (obj_hand_controller.discard_pile[di].obj == fire_obj)
+        {
+            fire_count++;
+            array_delete(obj_hand_controller.discard_pile, di, 1);
+        }
+    }
+
+    if (fire_count > 0)
+    {
+        var merge_level = 0;
+        var remaining = fire_count;
+        while (remaining > 1)
+        {
+            remaining = ceil(remaining / 3);
+            merge_level++;
+        }
+
+        var merged_inst = card_spawn_from_entry(card_make_entry(fire_obj), -1000, -1000);
+        repeat (merge_level) card_double_effects(merged_inst);
+
+        var merged_target = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
+        card_play_effects(merged_inst, _target, merged_target);
+        with (merged_inst) instance_destroy();
+    }
+}
+break;
     }
 }
 
