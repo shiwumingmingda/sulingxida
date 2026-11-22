@@ -560,6 +560,152 @@ discover_46_unlocked = false;
 discover_active = false;    // 发现界面是否打开
 discover_options = [];      // 三张备选牌（卡牌实例，不可见，由 Draw GUI 画出）
 discover_scale = 1.5;       // 备选牌的显示大小（相对于手牌原始大小）
+
+// ---------- 通用手牌选择界面 ----------
+selection_active = false;
+selection_mode = "single";
+selection_filter_id = 0;       // 0=任意牌，-1=苏灵兮初始牌，正数=指定牌编号
+selection_min = 1;
+selection_max = 1;
+selection_cards = [];
+selection_action = { kind: "" };
+
+selection_has = function(_card)
+{
+    for (var i = 0; i < array_length(selection_cards); i++)
+    {
+        if (selection_cards[i] == _card) return true;
+    }
+    return false;
+};
+
+selection_can_select = function(_card)
+{
+    if (!instance_exists(_card)) return false;
+    if (selection_filter_id == -1) return card_is_starter(_card.card_id);
+    if (selection_filter_id > 0) return _card.card_id == selection_filter_id;
+    return true;
+};
+
+selection_start = function(_filter, _mode, _min, _max, _action)
+{
+    selection_active = true;
+    selection_filter_id = _filter;
+    selection_mode = _mode;
+    selection_min = _min;
+    selection_max = _max;
+    selection_cards = [];
+    selection_action = _action;
+    drag_card = noone;
+    hover_card = noone;
+    hand_collapsed = false;
+};
+
+selection_toggle = function(_card)
+{
+    if (!selection_can_select(_card)) return;
+
+    var found = -1;
+    for (var i = 0; i < array_length(selection_cards); i++)
+    {
+        if (selection_cards[i] == _card) { found = i; break; }
+    }
+
+    if (found >= 0)
+    {
+        array_delete(selection_cards, found, 1);
+        return;
+    }
+
+    if (array_length(selection_cards) >= selection_max) return;
+    selection_cards[array_length(selection_cards)] = _card;
+};
+
+selection_finish = function()
+{
+    if (array_length(selection_cards) < selection_min)
+    {
+        warning_text = "请至少选择" + string(selection_min) + "张牌";
+        warning_timer = 60;
+        return;
+    }
+
+    var picked = copy_array(selection_cards);
+    var action = selection_action;
+
+    switch (action.kind)
+    {
+        case "fireball_aoe":
+        {
+            var damage = card_current_damage(picked[0]);
+            remove_card_from_hand(picked[0]);
+            var all_en = copy_array(enemies);
+            for (var i = 0; i < array_length(all_en); i++)
+            {
+                if (instance_exists(all_en[i])) deal_damage(all_en[i], damage, DamageType.MAGIC);
+            }
+        }
+        break;
+
+        case "wind_shield":
+        {
+            var total = 0;
+            for (var i = 0; i < array_length(picked); i++)
+            {
+                if (instance_exists(picked[i])) total += card_current_damage(picked[i]);
+            }
+            for (var i = 0; i < array_length(picked); i++) remove_card_from_hand(picked[i]);
+            add_armor(char_1, ArmorType.GENERAL, total * 2);
+        }
+        break;
+
+        case "wind_feather":
+        {
+            remove_card_from_hand(picked[0]);
+            if (array_length(enemies) > 1)
+            {
+                var front_enemy = enemies[0];
+                array_delete(enemies, 0, 1);
+                enemies[array_length(enemies)] = front_enemy;
+            }
+            wind_blade_bonus += 2;
+        }
+        break;
+
+        case "convert_rockshield":
+        {
+            var chosen = picked[0];
+            chosen.card_id = 4;
+            chosen.sprite_index = object_get_sprite(card_get_object(4));
+            chosen.image_index = 0;
+            chosen.effects = card_copy_effects(card_get_effects(4));
+            chosen.merge_level = 0;
+            chosen.cost = card_get_cost(4);
+        }
+        break;
+
+        case "compress":
+        {
+            var chosen = picked[0];
+            var entry = card_entry_from_instance(chosen);
+            var upgraded = card_spawn_from_entry(entry, -1000, -1000);
+            card_double_effects(upgraded);
+            var upgraded_entry = card_entry_from_instance(upgraded);
+            with (upgraded) instance_destroy();
+            remove_card_from_hand(chosen);
+            countdown_add(1, 2, [
+                { type: EffectType.ADD_ENTRY_TO_HAND, entry: upgraded_entry }
+            ]);
+        }
+        break;
+    }
+
+    selection_active = false;
+    selection_cards = [];
+    selection_action = { kind: "" };
+};
+
+wind_blade_bonus = 0;
 // 左下：抽牌按钮（在"抽牌堆/弃牌堆"文字上方）
 button_x1 = 25;
 button_x2 = 190;
