@@ -1421,3 +1421,14 @@ finish_reward = function(_chosen)
 
     room_goto(rm_map);
 };
+
+// 开局第一回合也触发苏灵兮天赋；后续回合由 Step 中的回合开始逻辑触发。
+if (char_is_alive(char_1))
+{
+    request_discover([
+        card_get_object(1),
+        card_get_object(2),
+        card_get_object(3),
+        card_get_object(4)
+    ], 4, "sulingxi_talent");
+}
