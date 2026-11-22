@@ -699,7 +699,12 @@ selection_finish = function()
                 if (instance_exists(picked[i])) total += card_current_damage(picked[i]);
             }
             for (var i = 0; i < array_length(picked); i++) remove_card_from_hand(picked[i]);
-            add_armor(char_1, ArmorType.GENERAL, total * 2);
+
+            var shield_amount = card_effect_value({ type: EffectType.ARMOR, amount: total * 2 });
+            shield_amount += get_status(char_1, StatusType.DEXTERITY);
+            if (get_status(char_1, StatusType.ROCK_WALL) > 0) shield_amount *= 2;
+
+            add_armor(char_1, ArmorType.GENERAL, shield_amount);
         }
         break;
 
