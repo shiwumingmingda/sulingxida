@@ -541,3 +541,52 @@ if (scry_active)
     draw_set_valign(fa_top);
     draw_set_color(c_white);
 }
+
+
+// ---------------------------------
+// 拾愿：从弃牌堆随机展示五张并选择至多两张
+// ---------------------------------
+if (discard_choice_active)
+{
+    draw_set_alpha(0.94);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, room_width, room_height, false);
+    draw_set_alpha(1);
+
+    draw_set_font(global.chinese_font);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(c_white);
+    draw_text_transformed(room_width * 0.5, room_height * 0.16, "拾愿", 1.8, 1.8, 0);
+    draw_text(room_width * 0.5, room_height * 0.25, "选择至多两张置入手牌");
+
+    for (var i = 0; i < array_length(discard_choice_options); i++)
+    {
+        var opt = discard_choice_options[i];
+        if (!instance_exists(opt.card)) continue;
+        var card = opt.card;
+        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
+            discard_choice_scale, discard_choice_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, card.sprite_index, card.x, card.y,
+            discard_choice_scale, discard_choice_scale, card.image_angle);
+        if (opt.selected)
+        {
+            var w = sprite_get_width(card.sprite_index) * discard_choice_scale * 0.5;
+            var h = sprite_get_height(card.sprite_index) * discard_choice_scale * 0.5;
+            draw_set_color(make_color_rgb(255, 220, 100));
+            draw_rectangle(card.x - w, card.y - h, card.x + w, card.y + h, true);
+            draw_set_color(c_white);
+            draw_text(card.x, card.y - h - 24, "已选择");
+        }
+    }
+
+    draw_set_color(make_color_rgb(45, 105, 145));
+    draw_rectangle(discard_choice_x1, discard_choice_y1, discard_choice_x2, discard_choice_y2, false);
+    draw_set_color(c_white);
+    draw_rectangle(discard_choice_x1, discard_choice_y1, discard_choice_x2, discard_choice_y2, true);
+    draw_text((discard_choice_x1 + discard_choice_x2) * 0.5,
+        (discard_choice_y1 + discard_choice_y2) * 0.5, "确认");
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_white);
+}
