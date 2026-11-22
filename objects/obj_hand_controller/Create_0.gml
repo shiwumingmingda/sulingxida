@@ -884,10 +884,16 @@ check_merge = function()
 
                 // 取前三张，其中数值最大的一张翻倍
                 var best = group[0];
+                var reading_bonus_in_group = false;
 
-                for (var t = 1; t < 3; t++)
+                for (var t = 0; t < 3; t++)
                 {
-                    if (card_power(group[t]) > card_power(best))
+                    if (variable_instance_exists(group[t], "reading_bonus") && group[t].reading_bonus)
+                    {
+                        reading_bonus_in_group = true;
+                    }
+
+                    if (t > 0 && card_power(group[t]) > card_power(best))
                     {
                         best = group[t];
                     }
@@ -902,8 +908,9 @@ check_merge = function()
                     }
                 }
 
-                // 合成等级 +1
+                // 合成等级 +1；如果三张里有阅读发现牌，合成后仍保留本回合的加费资格
                 card_double_effects(best);
+                if (reading_bonus_in_group) best.reading_bonus = true;
 
                 merged_any = true;
                 break;
