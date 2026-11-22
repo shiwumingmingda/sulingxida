@@ -201,11 +201,16 @@ function spawn_float_text(_target, _text, _col)
 // 失去生命：直接扣血，不吃护甲
 function lose_hp(_target, _amount)
 {
+    // 先确认目标实例有效，避免对 noone / 已销毁实例进行生命结算。
+    if (!instance_exists(_target)) return;
     if (unit_is_dead(_target)) return;
 
-    _target.hp = max(_target.hp - _amount, 0);
-    spawn_float_text(_target, "-" + string(_amount), make_color_rgb(255, 70, 70));
-	battle_check_death(_target);
+    var hp_loss = max(_amount, 0);
+    if (hp_loss <= 0) return;
+
+    _target.hp = max(_target.hp - hp_loss, 0);
+    spawn_float_text(_target, "-" + string(hp_loss), make_color_rgb(255, 70, 70));
+    battle_check_death(_target);
 }
 
 // 回复生命：不超过最大生命
