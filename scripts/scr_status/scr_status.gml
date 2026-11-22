@@ -312,7 +312,7 @@ function draw_countdown_icons(_owner, _x, _y)
 // 永久状态牌：不占状态位置，也不会被顶掉
 function card_state_is_permanent(_id)
 {
-    return (_id == 10 || _id == 209);
+    return (_id == 10 || _id == 209 || _id == 43);
 }
 
 // 移除一张状态牌给这个角色带来的效果（图标也会消失）
