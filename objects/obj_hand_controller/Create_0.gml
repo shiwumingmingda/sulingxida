@@ -80,6 +80,19 @@ hand = [];
 // 弃牌堆：保存卡牌对象，而不是卡牌实例
 discard_pile = [];
 
+// 占卜界面状态
+scry_active = false;
+scry_top = [];
+scry_bottom = [];
+scry_drag_card = noone;
+scry_followups = [];
+scry_scale = 0.46;
+scry_confirm_x1 = room_width * 0.40;
+scry_confirm_x2 = room_width * 0.60;
+scry_confirm_y1 = room_height * 0.88;
+scry_confirm_y2 = room_height * 0.96;
+last_scry_bottom_count = 0;
+
 // 当前正在拖动的卡牌
 drag_card = noone;
 drag_offset_x = 0;
@@ -334,6 +347,23 @@ enemy_rotate_delay = 30;   // 出手后多少帧开始轮换（enemy_delay 是�
 
 
 character_in_back = true;
+// 固有牌优先放到牌堆顶，确保开局抽到。
+var innate_ids = [115, 138, 146];
+var innate_pos = 0;
+for (var ii = 0; ii < array_length(innate_ids); ii++)
+{
+    var innate_obj = card_get_object(innate_ids[ii]);
+    for (var di = innate_pos; di < array_length(deck); di++)
+    {
+        if (deck[di].obj != innate_obj) continue;
+        var innate_entry = deck[di];
+        array_delete(deck, di, 1);
+        array_insert(deck, innate_pos, innate_entry);
+        innate_pos++;
+        break;
+    }
+}
+
 // 初始抽取五张
 for (var i = 0; i < 5 && deck_index < array_length(deck); i++)
 {
@@ -342,6 +372,7 @@ for (var i = 0; i < 5 && deck_index < array_length(deck); i++)
 
     card.is_dealing = false;
     hand[array_length(hand)] = card;
+    card_on_draw(card);
 }
 // 延迟触发的效果队列
 pending_effects = [];
@@ -366,15 +397,172 @@ draw_cards = function(_n)
         }
 
         // 有牌才抽
-       if (deck_index < array_length(deck))
-{
-    var new_card = card_spawn_from_entry(deck[deck_index], room_width * 0.5, room_height - 115);
-    deck_index++;
+        if (deck_index < array_length(deck))
+        {
+            var new_card = card_spawn_from_entry(deck[deck_index], room_width * 0.5, room_height - 115);
+            deck_index++;
 
-    new_card.is_dealing = true;
-    hand[array_length(hand)] = new_card;
-}
+            new_card.is_dealing = true;
+            hand[array_length(hand)] = new_card;
+            card_on_draw(new_card);
+        }
     }    // 抽完牌后检查有没有可以合成的
+    check_merge();
+};
+
+
+scry_layout = function()
+{
+    var n_top = array_length(scry_top);
+    var n_bottom = array_length(scry_bottom);
+    var gap_top = min(165, room_width * 0.78 / max(n_top, 1));
+    var gap_bottom = min(165, room_width * 0.78 / max(n_bottom, 1));
+
+    for (var i = 0; i < n_top; i++)
+    {
+        var c = scry_top[i];
+        if (!instance_exists(c) || c == scry_drag_card) continue;
+        c.x = room_width * 0.5 + (i - (n_top - 1) * 0.5) * gap_top;
+        c.y = room_height * 0.35;
+        c.image_xscale = scry_scale;
+        c.image_yscale = scry_scale;
+    }
+
+    for (var i = 0; i < n_bottom; i++)
+    {
+        var c = scry_bottom[i];
+        if (!instance_exists(c) || c == scry_drag_card) continue;
+        c.x = room_width * 0.5 + (i - (n_bottom - 1) * 0.5) * gap_bottom;
+        c.y = room_height * 0.69;
+        c.image_xscale = scry_scale;
+        c.image_yscale = scry_scale;
+    }
+};
+
+scry_start = function(_count)
+{
+    if (scry_active) return;
+
+    if (deck_index >= array_length(deck) && array_length(discard_pile) > 0)
+    {
+        deck = array_shuffle(discard_pile);
+        deck_index = 0;
+        discard_pile = [];
+    }
+
+    var count = min(_count, array_length(deck) - deck_index);
+    if (count <= 0)
+    {
+        var pending = scry_followups;
+        scry_followups = [];
+        for (var i = 0; i < array_length(pending); i++)
+            card_apply_effect(pending[i].effect, pending[i].value, pending[i].target, pending[i].enemy);
+        return;
+    }
+
+    scry_top = [];
+    scry_bottom = [];
+    repeat (count)
+    {
+        var entry = deck[deck_index++];
+        var c = card_spawn_from_entry(entry, room_width * 0.5, room_height * 0.35);
+        c.scry_entry = entry;
+        c.visible = false;
+        c.image_xscale = scry_scale;
+        c.image_yscale = scry_scale;
+        scry_top[array_length(scry_top)] = c;
+    }
+
+    scry_active = true;
+    scry_drag_card = noone;
+    hand_collapsed = false;
+    scry_layout();
+};
+
+scry_finish = function()
+{
+    var top_entries = [];
+    var bottom_entries = [];
+    var to_hand = [];
+    var bottom_count = 0;
+
+    for (var i = 0; i < array_length(scry_top); i++)
+    {
+        var c = scry_top[i];
+        if (instance_exists(c)) top_entries[array_length(top_entries)] = card_entry_from_instance(c);
+    }
+
+    for (var i = 0; i < array_length(scry_bottom); i++)
+    {
+        var c = scry_bottom[i];
+        if (!instance_exists(c)) continue;
+        var entry = card_entry_from_instance(c);
+
+        // 步天：放到牌堆底时改为置入手牌。
+        if (c.card_id == 116)
+        {
+            to_hand[array_length(to_hand)] = entry;
+            continue;
+        }
+
+        // 司怪：放到牌堆底时伤害提高3点。
+        if (c.card_id == 137)
+        {
+            var temp = card_spawn_from_entry(entry, -1000, -1000);
+            var updated_effects = card_copy_effects(card_current_effects(temp));
+            if (array_length(updated_effects) > 0) updated_effects[0].amount += 3;
+            temp.effects = updated_effects;
+            entry = card_entry_from_instance(temp);
+            with (temp) instance_destroy();
+        }
+
+        bottom_entries[array_length(bottom_entries)] = entry;
+        bottom_count++;
+    }
+
+    for (var i = 0; i < array_length(scry_top); i++)
+        if (instance_exists(scry_top[i])) with (scry_top[i]) instance_destroy();
+    for (var i = 0; i < array_length(scry_bottom); i++)
+        if (instance_exists(scry_bottom[i])) with (scry_bottom[i]) instance_destroy();
+
+    // 左边第一张牌是下一张抽到的牌。
+    var rebuilt = [];
+    for (var i = 0; i < array_length(top_entries); i++) rebuilt[array_length(rebuilt)] = top_entries[i];
+    for (var i = deck_index; i < array_length(deck); i++) rebuilt[array_length(rebuilt)] = deck[i];
+    for (var i = 0; i < array_length(bottom_entries); i++) rebuilt[array_length(rebuilt)] = bottom_entries[i];
+    deck = rebuilt;
+    deck_index = 0;
+
+    for (var i = 0; i < array_length(to_hand); i++)
+    {
+        if (array_length(hand) >= max_hand_size)
+            discard_pile[array_length(discard_pile)] = to_hand[i];
+        else
+        {
+            var returned = card_spawn_from_entry(to_hand[i], room_width * 0.5, room_height - 115);
+            returned.is_dealing = true;
+            hand[array_length(hand)] = returned;
+        }
+    }
+
+    last_scry_bottom_count = bottom_count;
+    scry_top = [];
+    scry_bottom = [];
+    scry_drag_card = noone;
+    scry_active = false;
+
+    var followups = scry_followups;
+    scry_followups = [];
+    for (var i = 0; i < array_length(followups); i++)
+    {
+        var q = followups[i];
+        var value = q.value;
+        if (q.effect.type == EffectType.STAR_PROJECTILE
+        && variable_struct_exists(q.effect, "bottom_count"))
+            value = bottom_count;
+        card_apply_effect(q.effect, value, q.target, q.enemy);
+    }
+
     check_merge();
 };
 
@@ -600,6 +788,7 @@ selection_can_select = function(_card)
 {
     if (!instance_exists(_card)) return false;
     if (selection_filter_id == -1) return (_card.card_id >= 1 && _card.card_id <= 4);
+    if (selection_filter_id == -2) return (card_get_owner(_card.card_id) > 0 && card_get_owner(_card.card_id) != 2);
     if (selection_filter_id > 0) return _card.card_id == selection_filter_id;
     return true;
 };
@@ -615,6 +804,7 @@ selection_start = function(_filter, _mode, _min, _max, _action)
 
         var allowed = (_filter == 0)
             || (_filter == -1 && candidate.card_id >= 1 && candidate.card_id <= 4)
+            || (_filter == -2 && card_get_owner(candidate.card_id) > 0 && card_get_owner(candidate.card_id) != 2)
             || (_filter > 0 && candidate.card_id == _filter);
 
         if (allowed) available++;
@@ -740,6 +930,24 @@ selection_finish = function()
             check_merge();
         }
         break;
+
+
+        case "discard_starmark":
+        {
+            for (var i = 0; i < array_length(picked); i++)
+            {
+                if (!instance_exists(picked[i])) continue;
+                var entry = card_entry_from_instance(picked[i]);
+                entry.star_marked = true;
+                discard_pile[array_length(discard_pile)] = entry;
+                remove_card_from_hand(picked[i]);
+            }
+        }
+        break;
+
+        case "starlight_enable":
+            if (instance_exists(picked[0])) picked[0].starlight_enabled = true;
+            break;
 
         case "compress":
         {
@@ -1015,11 +1223,10 @@ pick_discover = function(_chosen)
 
         hand[array_length(hand)] = _chosen;
 
-        // 阅读发现的牌：本回合打出时额外获得1费
-        if (discover_tag == "reading")
-        {
-            _chosen.reading_bonus = true;
-        }
+        // 阅读发现的牌：本回合打出时额外获得1费。
+        if (discover_tag == "reading") _chosen.reading_bonus = true;
+        // 祈愿发现的牌保留一回合。
+        if (discover_tag == "retain_once") _chosen.retain_once = true;
 
         check_merge();
     }
@@ -1310,6 +1517,7 @@ draw_specific = function(_card_id, _n)
         var c = card_spawn_from_entry(deck[i], room_width * 0.5, room_height - 115);
         c.is_dealing = true;
         hand[array_length(hand)] = c;
+        card_on_draw(c);
 
         array_delete(deck, i, 1);
         got++;
@@ -1319,6 +1527,32 @@ draw_specific = function(_card_id, _n)
 };
 
 // 移动至后场：后场上方的角色上场，前场的这个角色退到后场
+
+bring_enemy_to_front = function(_enemy)
+{
+    for (var i = 0; i < array_length(enemies); i++)
+    {
+        if (enemies[i] != _enemy) continue;
+        array_delete(enemies, i, 1);
+        array_insert(enemies, 0, _enemy);
+        break;
+    }
+};
+
+mark_random_deck_card = function()
+{
+    if (deck_index < array_length(deck))
+    {
+        var pick = irandom_range(deck_index, array_length(deck) - 1);
+        deck[pick].star_marked = true;
+    }
+    else if (array_length(discard_pile) > 0)
+    {
+        var pick = irandom(array_length(discard_pile) - 1);
+        discard_pile[pick].star_marked = true;
+    }
+};
+
 send_to_back = function(_char)
 {
     if (!char_is_alive(_char)) return;
