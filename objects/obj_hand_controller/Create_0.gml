@@ -595,7 +595,7 @@ selection_has = function(_card)
 selection_can_select = function(_card)
 {
     if (!instance_exists(_card)) return false;
-    if (selection_filter_id == -1) return card_is_starter(_card.card_id);
+    if (selection_filter_id == -1) return (_card.card_id >= 1 && _card.card_id <= 4);
     if (selection_filter_id > 0) return _card.card_id == selection_filter_id;
     return true;
 };
