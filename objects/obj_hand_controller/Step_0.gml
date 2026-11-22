@@ -135,7 +135,10 @@ if (turn_state == "enemy")
 
             enemy_phase = "attack";
         }
-        turn_state = "player";
+        // 只有所有敌人都行动完毕，才开始新一轮玩家回合
+        if (!enemies_any_pending())
+        {
+            turn_state = "player";
 
 // 战斗回合数 +1，按遭遇表让增援入场
 battle_round++;
@@ -223,6 +226,7 @@ if (char_is_alive(char_3))
 
 // 抽 5 张牌
 draw_cards(5);
+        }
     }
 }
 
