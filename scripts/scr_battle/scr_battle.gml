@@ -44,10 +44,22 @@ function deal_damage(_target, _amount, _dtype)
 {
     if (unit_is_dead(_target)) return;
 
-    // 星印：敌方接下来的两个行动回合中受到的伤害提高
-    if (instance_exists(obj_hand_controller.char_2)
-    && obj_hand_controller.char_2.enemy_debuff_turns > 0
-    && !variable_instance_exists(_target, "is_dead"))
+    // 星印：只对敌方角色增加受到的伤害。
+    var is_enemy_target = false;
+    if (instance_exists(obj_hand_controller))
+    {
+        for (var ei = 0; ei < array_length(obj_hand_controller.enemies); ei++)
+        {
+            if (obj_hand_controller.enemies[ei] == _target)
+            {
+                is_enemy_target = true;
+                break;
+            }
+        }
+    }
+
+    if (is_enemy_target && instance_exists(obj_hand_controller.char_2)
+    && obj_hand_controller.char_2.enemy_debuff_turns > 0)
     {
         _amount += obj_hand_controller.char_2.enemy_damage_taken_bonus;
     }
