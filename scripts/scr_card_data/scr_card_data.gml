@@ -66,6 +66,9 @@ function card_get_type(_id)
 // 卡牌费用
 function card_get_cost(_id)
 {
+    // 风刃（2号牌）固定为0费，必须放在 card_info 查询之前
+    if (_id == 2) return 0;
+
     var info = card_info(_id);
     if (!is_undefined(info)) return info.cost;
 
