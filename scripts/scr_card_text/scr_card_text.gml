@@ -85,6 +85,15 @@ function card_wrap_text(_str, _n)
 // 返回 "" 表示这张牌暂时不画字
 function card_get_description(_inst)
 {
+    // 优先读取新卡牌的描述
+    var new_desc = card_get_description_new(_inst);
+
+    if (new_desc != "")
+    {
+        return new_desc;
+    }
+
+    // 新卡牌没有描述时，再读取旧卡牌描述
     switch (_inst.card_id)
     {
         // 苏灵兮新卡牌描述

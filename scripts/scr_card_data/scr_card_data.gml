@@ -324,7 +324,7 @@ function card_get_cost(_id)
     if (_id == 102 || _id == 105 || _id == 210) return 2;
 
     // 1 费：1~3、101、103、104、201~206、208、301、302、304
-    if ((_id >= 1 && _id <= 3) || _id == 101 || _id == 103 || _id == 104
+    if (_id == 1 || _id == 3 || _id == 101 || _id == 103 || _id == 104
     ||  (_id >= 201 && _id <= 206) || _id == 208
     ||  _id == 301 || _id == 302 || _id == 304)
     {
@@ -870,11 +870,33 @@ function card_get_effects(_id)
 // 读取这张牌"当前"的效果列表（优先用牌自己的，没有就查表）
 function card_current_effects(_inst)
 {
+<<<<<<< Updated upstream
     // 合成、强化或其他效果修改过的卡牌，优先读取实例自身保存的效果
     if (variable_instance_exists(_inst, "effects")) return _inst.effects;
 
     // 所有卡牌统一从效果表读取
     return card_get_effects(_inst.card_id);
+=======
+    // 优先使用卡牌实例自身的效果
+    if (variable_instance_exists(_inst, "effects"))
+    {
+        if (array_length(_inst.effects) > 0)
+        {
+            return _inst.effects;
+        }
+    }
+
+    // 先读取旧卡牌效果
+    var old_effects = card_get_effects(_inst.card_id);
+
+    if (array_length(old_effects) > 0)
+    {
+        return old_effects;
+    }
+
+    // 旧卡牌没有效果时，再读取新卡牌效果
+    return card_get_effects_new(_inst.card_id);
+>>>>>>> Stashed changes
 }
 
 // 计算一个效果实际生效的数值（在这里统一加上各种加成）
@@ -932,7 +954,27 @@ function card_get_owner(_id)
 
     return 0;                                 // 通用牌、其他异常牌
 }
+// 根据卡牌编号，获取对应角色的实例
+// 通用牌或角色不存在时返回 noone
+function card_get_owner_instance(_id)
+{
+    var owner_num = card_get_owner(_id);
 
+    if (owner_num == 0) return noone;
+
+    if (!instance_exists(obj_hand_controller))
+        return noone;
+
+    switch (owner_num)
+    {
+        case 1: return obj_hand_controller.char_1;
+        case 2: return obj_hand_controller.char_2;
+        case 3: return obj_hand_controller.char_3;
+        case 4: return obj_hand_controller.char_4;
+    }
+
+    return noone;
+}
 // 一个效果的最终数值：基础数值 + 全局加成 + 力量 / 敏捷 / 剑招
 // _inst：这张牌；_receiver：接收护甲的角色（显示卡面数字时传 noone，按牌的拥有者算）
 function card_effect_final(_e, _inst, _receiver)
@@ -2206,6 +2248,7 @@ function card_get_object(_n)
         case 25: return obj_card_0025;
         case 26: return obj_card_0026;
         case 27: return obj_card_0027;
+<<<<<<< Updated upstream
         case 28: return obj_card_0028;
         case 29: return obj_card_0029;
         case 30: return obj_card_0030;
@@ -2225,6 +2268,15 @@ function card_get_object(_n)
         case 44: return obj_card_0044;
         case 45: return obj_card_0045;
         case 46: return obj_card_0046;
+=======
+        case 33: return obj_card_0033;
+        case 34: return obj_card_0034;
+        case 36: return obj_card_0036;
+        case 37: return obj_card_0037;
+        case 39: return obj_card_0039;
+        case 41: return obj_card_0041;
+        case 44: return obj_card_0044;
+>>>>>>> Stashed changes
 
         // 尘
         case 101: return obj_card_0101;
