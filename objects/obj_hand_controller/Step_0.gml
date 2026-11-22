@@ -216,7 +216,7 @@ if (char_is_alive(char_1))
     // 阅读：每回合开始，发现一张本角色的牌
     repeat (get_status(char_1, StatusType.READING))
     {
-        request_discover(discover_pool_char(1), 3);
+        request_discover(discover_pool_char(1), 3, "reading");
     }
 
     // 风息庭：每回合开始，将一张风刃置入手牌
