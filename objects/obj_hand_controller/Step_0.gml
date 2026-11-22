@@ -821,7 +821,7 @@ else
 {
     energy -= min(energy, cost);
     if (total_star_pay > 0) char_2.starlight -= total_star_pay;
-    if (star_conversion > 0) char_2.starlight_used = true;
+    if (star_conversion > 0 && !char_2.starlight_unlimited) char_2.starlight_used = true;
 	first_cost_up = 0;   // 本回合使用的第一张牌已经用掉了这个费用加成
 	turn_played_ids[array_length(turn_played_ids)] = released_id;   // 记录本回合打出的牌
 
