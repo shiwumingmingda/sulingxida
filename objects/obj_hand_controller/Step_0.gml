@@ -169,7 +169,7 @@ next_turn_energy_bonus = 0;
 turn_played_ids = [];
 wind_blade_bonus = 0;
 witch_chant_used = false;
-starter_played_this_turn = array_create(4, false);
+starter_played_this_turn = array_create(5, false);
 starfire_ready = (get_status(char_1, StatusType.STARFIRE) > 0);
 
 // 新回合：护甲清零（疾风步的"护甲保留"这一次不清零）；临时魔力、熔岩加护结束
@@ -339,7 +339,7 @@ if (front_char == noone || !instance_exists(front_char))
 
         // 记录本回合每个角色是否使用过攻击牌，供下一回合倒计时判断
 attack_used_last_turn = copy_array(attack_used_this_turn);
-attack_used_this_turn = array_create(4, false);
+attack_used_this_turn = array_create(5, false);
 
 // 轮到敌人
 
@@ -622,6 +622,7 @@ if (released_id == 23)
             if (target == char_1) attack_used_this_turn[1] = true;
             else if (target == char_2) attack_used_this_turn[2] = true;
             else if (target == char_3) attack_used_this_turn[3] = true;
+            else if (target == char_4) attack_used_this_turn[4] = true;
         }
     }
 
