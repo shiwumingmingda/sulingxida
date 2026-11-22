@@ -79,6 +79,14 @@ function card_wrap_text(_str, _n)
 // 返回 "" 表示这张牌暂时不画字
 function card_get_description(_inst)
 {
+    // 新卡先读取新描述表；没有新描述时再使用旧卡牌描述
+    var new_desc = card_get_description_new(_inst);
+
+    if (new_desc != "")
+    {
+        return new_desc;
+    }
+
     switch (_inst.card_id)
     {
         // 1号牌：对前场敌人造成 6 点法术伤害，对其他敌人造成 3 点法术伤害
