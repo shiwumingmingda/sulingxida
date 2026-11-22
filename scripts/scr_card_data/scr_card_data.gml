@@ -560,6 +560,27 @@ function card_current_armor_of(_inst, _armor_type)
 
     return total;
 }
+// 从手牌中消耗一张指定编号的牌；返回是否成功
+function card_try_consume_from_hand(_card_id)
+{
+    var controller = instance_find(obj_hand_controller, 0);
+    if (!instance_exists(controller)) return false;
+
+    for (var i = 0; i < array_length(controller.hand); i++)
+    {
+        var hand_card = controller.hand[i];
+
+        if (instance_exists(hand_card) && hand_card.card_id == _card_id)
+        {
+            array_delete(controller.hand, i, 1);
+            with (hand_card) instance_destroy();
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // 执行一张牌的所有效果
 // 立即执行一个效果
 function card_apply_effect(_e, _v, _target, _enemy)
@@ -818,10 +839,8 @@ break;
 
 case EffectType.CONSUME_FROM_HAND:
 {
-    with (obj_hand_controller)
-    {
-        consume_from_hand(_e.card_id);
-    }
+    // 消耗材料失败时，中止这次牌的后续效果（例如聚能的第二次结算）
+    if (!card_try_consume_from_hand(_e.card_id)) return false;
 }
 break;
 
@@ -1241,6 +1260,8 @@ case EffectType.REPLAY_STARTER:
 }
 break;
     }
+
+    return true;
 }
 
 // 执行一张牌的所有效果（带 delay 的效果放进等待队列，稍后触发）
@@ -1283,7 +1304,10 @@ function card_play_effects(_card, _target, _enemy)
             }
             else
             {
-                card_apply_effect(e, v, _target, _enemy);
+                if (card_apply_effect(e, v, _target, _enemy) == false)
+                {
+                    return;
+                }
             }
         }
     }
