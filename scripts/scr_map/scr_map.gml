@@ -188,280 +188,296 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
         pos: 0
     };
 
-    // 1. 连线（和节点类型无关）：每条相邻的线，以 _link_chance 的概率存在
+    // 1. 随机生成线路。先随机抽取边，再用并查集补线，保证全图连通。
+    // 较低的连线概率会留下更多岔路、死路和绕行路线，而不是整张图变成密集网格。
     for (var gy = 0; gy < _h; gy++)
     {
         for (var gx = 0; gx < _w; gx++)
         {
-            var i = gy * _w + gx;
+            var cell_i = gy * _w + gx;
 
             if (gx < _w - 1 && random(1) < _link_chance)
-            {
-                map_add_link(map, i, i + 1, 1);
-            }
+                map_add_link(map, cell_i, cell_i + 1, 1);
 
             if (gy < _h - 1 && random(1) < _link_chance)
-            {
-                map_add_link(map, i, i + _w, 2);
-            }
+                map_add_link(map, cell_i, cell_i + _w, 2);
         }
     }
 
-    // 保证整张图连通：先把已有的线合并成区域
     var parent = array_create(n);
+    for (var init_i = 0; init_i < n; init_i++) parent[init_i] = init_i;
 
-    for (var i = 0; i < n; i++)
+    for (var merge_i = 0; merge_i < n; merge_i++)
     {
-        parent[i] = i;
+        if (map_has_link(map, merge_i, 1))
+            parent[uf_find(parent, merge_i)] = uf_find(parent, merge_i + 1);
+
+        if (map_has_link(map, merge_i, 2))
+            parent[uf_find(parent, merge_i)] = uf_find(parent, merge_i + _w);
     }
 
-    for (var i = 0; i < n; i++)
-    {
-        if (map_has_link(map, i, 1))
-        {
-            parent[uf_find(parent, i)] = uf_find(parent, i + 1);
-        }
-
-        if (map_has_link(map, i, 2))
-        {
-            parent[uf_find(parent, i)] = uf_find(parent, i + _w);
-        }
-    }
-
-    // 只要还有"相邻但不连通"的格子，就随机补一条线把两个区域接起来
+    // 每次随机挑选两个不同连通区域之间的相邻边，直到全图连通。
     var guard = 0;
-
-    while (guard < 1000)
+    while (guard < n * 8)
     {
         guard++;
-
         var bridges = [];
 
-        for (var gy = 0; gy < _h; gy++)
+        for (var by = 0; by < _h; by++)
         {
-            for (var gx = 0; gx < _w; gx++)
+            for (var bx = 0; bx < _w; bx++)
             {
-                var i = gy * _w + gx;
+                var bi = by * _w + bx;
 
-                if (gx < _w - 1 && uf_find(parent, i) != uf_find(parent, i + 1))
-                {
-                    bridges[array_length(bridges)] = [i, i + 1, 1];
-                }
+                if (bx < _w - 1 && uf_find(parent, bi) != uf_find(parent, bi + 1))
+                    bridges[array_length(bridges)] = [bi, bi + 1, 1];
 
-                if (gy < _h - 1 && uf_find(parent, i) != uf_find(parent, i + _w))
-                {
-                    bridges[array_length(bridges)] = [i, i + _w, 2];
-                }
+                if (by < _h - 1 && uf_find(parent, bi) != uf_find(parent, bi + _w))
+                    bridges[array_length(bridges)] = [bi, bi + _w, 2];
             }
         }
 
         if (array_length(bridges) == 0) break;
 
-        var b = bridges[irandom(array_length(bridges) - 1)];
-
-        map_add_link(map, b[0], b[1], b[2]);
-        parent[uf_find(parent, b[0])] = uf_find(parent, b[1]);
+        var bridge = bridges[irandom(array_length(bridges) - 1)];
+        map_add_link(map, bridge[0], bridge[1], bridge[2]);
+        parent[uf_find(parent, bridge[0])] = uf_find(parent, bridge[1]);
     }
 
-    // 2. 起点随机：尽量挑一个在线路上能走出 6 步以上的位置；没有就取最远的
-    var min_dist = 6;
-    var start_i = 0;
-    var best_far = -1;
+    // 2. 随机选择起点和首领。
+    // 先用曼哈顿距离筛选：只有几何距离至少 6 格的首领候选才会入池，
+    // 因此无论线路如何生成，首领的实际线路距离都不会小于 6。
+    var start_candidates = [];
 
-    for (var attempt = 0; attempt < 60; attempt++)
+    for (var si = 0; si < n; si++)
     {
-        var s = irandom(n - 1);
-        var dist_s = map_distance_field(map, s);
-        var far = 0;
+        var sx = si mod _w;
+        var sy = si div _w;
+        var far_manhattan = max(sx + sy,
+            max((_w - 1 - sx) + sy,
+                max(sx + (_h - 1 - sy), (_w - 1 - sx) + (_h - 1 - sy))));
 
-        for (var i = 0; i < n; i++)
-        {
-            far = max(far, dist_s[i]);
-        }
+        if (far_manhattan >= 6)
+            start_candidates[array_length(start_candidates)] = si;
+    }
 
-        if (far > best_far)
-        {
-            best_far = far;
-            start_i = s;
-        }
+    start_candidates = array_shuffle(start_candidates);
+    var start_i = start_candidates[0];
+    var start_dist = map_distance_field(map, start_i);
+    var boss_candidates = [];
 
-        if (far >= min_dist)
+    for (var boss_check = 0; boss_check < n; boss_check++)
+    {
+        var bx2 = boss_check mod _w;
+        var by2 = boss_check div _w;
+        var sx2 = start_i mod _w;
+        var sy2 = start_i div _w;
+        var manhattan = abs(bx2 - sx2) + abs(by2 - sy2);
+
+        if (boss_check != start_i && manhattan >= 6 && start_dist[boss_check] >= 0)
+            boss_candidates[array_length(boss_candidates)] = boss_check;
+    }
+
+    // 所有尺寸均足以找到至少一个满足距离要求的首领位置。
+    // 若以后调整尺寸导致候选为空，则用最远的可达格子兜底。
+    if (array_length(boss_candidates) == 0)
+    {
+        var farthest = -1;
+        for (var far_i = 0; far_i < n; far_i++)
+            farthest = max(farthest, start_dist[far_i]);
+
+        for (var fallback_i = 0; fallback_i < n; fallback_i++)
         {
-            start_i = s;
-            break;
+            if (fallback_i != start_i && start_dist[fallback_i] == farthest)
+                boss_candidates[array_length(boss_candidates)] = fallback_i;
         }
     }
 
     map.start_i = start_i;
     map.pos = start_i;
-
-    var start_dist = map_distance_field(map, start_i);
-
-    // 首领：随机选一个距离起点至少 6 步的格子；没有这样的格子就选最远的那些
-    var far_max = 0;
-
-    for (var i = 0; i < n; i++)
-    {
-        far_max = max(far_max, start_dist[i]);
-    }
-
-    var need = min(min_dist, far_max);
-    var boss_candidates = [];
-
-    for (var i = 0; i < n; i++)
-    {
-        if (i != start_i && start_dist[i] >= need)
-        {
-            boss_candidates[array_length(boss_candidates)] = i;
-        }
-    }
-
     map.boss_i = boss_candidates[irandom(array_length(boss_candidates) - 1)];
 
-    // 3. 起点上下左右有线连着的第一个节点，必定是普通战斗
+    // 3. 起点直接连着的节点必定是普通战斗，确保开局附近有敌人。
     var forced_n = 0;
-
-    for (var d = 0; d < 4; d++)
+    for (var dir = 0; dir < 4; dir++)
     {
-        if (!map_has_link(map, start_i, d)) continue;
+        if (!map_has_link(map, start_i, dir)) continue;
 
-        var nb = map_neighbor(map, start_i, d);
-
-        if (nb != map.boss_i)
+        var near_i = map_neighbor(map, start_i, dir);
+        if (near_i != map.boss_i)
         {
-            map.type[nb] = NodeType.BATTLE;
+            map.type[near_i] = NodeType.BATTLE;
             forced_n++;
         }
     }
 
-    // 4. 其余格子（除起点、首领、必定战斗的格子）打乱顺序
+    // 4. 保留约 20% 空地（起点也计入空地比例），其余格子用于放置节点。
     var cells = [];
-
-    for (var i = 0; i < n; i++)
+    for (var collect_i = 0; collect_i < n; collect_i++)
     {
-        if (i != start_i && i != map.boss_i && map.type[i] == NodeType.EMPTY)
-        {
-            cells[array_length(cells)] = i;
-        }
+        if (collect_i != start_i && collect_i != map.boss_i
+        && map.type[collect_i] == NodeType.EMPTY)
+            cells[array_length(cells)] = collect_i;
     }
 
     cells = array_shuffle(cells);
-
-    // 前 empty_n 个是空地（起点本身也是空地，算在 20% 里），其余是有内容的节点
     var empty_n = min(max(round(n * _empty_ratio) - 1, 0), array_length(cells));
-    var m = array_length(cells) - empty_n;
+    var available = [];
 
-    // 有内容的节点（含必定战斗的）：60% 战斗类，40% 隐秘类
-    var combat_n = clamp(round((m + forced_n) * 0.6) - forced_n, 0, m);
+    for (var cell_k = empty_n; cell_k < array_length(cells); cell_k++)
+        available[array_length(available)] = cells[cell_k];
 
-    for (var k = 0; k < m; k++)
+    // 5. 先保证每层的最低节点数量。每次从剩余格子随机挑选位置，
+    // 所以固定的是数量下限，不是节点在地图上的位置。
+    var min_camp = _floor;
+    var min_elite = _floor;
+    var min_treasure = 2;
+
+    var required_types = [
+        [NodeType.TREASURE, min_treasure],
+        [NodeType.CAMP, min_camp],
+        [NodeType.ELITE, min_elite],
+        [NodeType.MERCHANT, 1],
+        [NodeType.TRIBE, 1]
+    ];
+
+    for (var req_i = 0; req_i < array_length(required_types); req_i++)
     {
-        var idx = cells[empty_n + k];
+        var req_type = required_types[req_i][0];
+        var req_count = required_types[req_i][1];
 
-        if (k < combat_n)
+        for (var req_k = 0; req_k < req_count; req_k++)
         {
-            map.type[idx] = map_random_combat(_floor);
+            if (array_length(available) <= 0) break;
+
+            var pick_at = irandom(array_length(available) - 1);
+            var picked_cell = available[pick_at];
+
+            map.type[picked_cell] = req_type;
+            available = array_delete(available, pick_at, 1);
         }
+    }
+
+    // 2、3 层各自有 50% 概率出现一个秘境；不会出现第二个。
+    if (_floor >= 2 && array_length(available) > 0 && random(1) < 0.5)
+    {
+        var realm_at = irandom(array_length(available) - 1);
+        map.type[available[realm_at]] = NodeType.REALM;
+        available = array_delete(available, realm_at, 1);
+    }
+
+    // 6. 填充剩余位置。战斗和事件是绝对主体，其余节点只占较小比例。
+    // 1 层不生成擂台、瞭望点、秘境和首领先锋。
+    for (var fill_i = 0; fill_i < array_length(available); fill_i++)
+    {
+        var roll = irandom(99);
+        var new_type = NodeType.BATTLE;
+
+        if (roll < 43)
+            new_type = NodeType.BATTLE;
+        else if (roll < 78)
+            new_type = NodeType.EVENT;
+        else if (roll < 83)
+            new_type = NodeType.CAMP;
+        else if (roll < 87)
+            new_type = NodeType.TREASURE;
+        else if (roll < 92)
+            new_type = NodeType.ELITE;
+        else if (_floor >= 2 && roll < 95)
+            new_type = NodeType.LOOKOUT;
+        else if (_floor >= 2 && roll < 98)
+            new_type = NodeType.ARENA;
+        else if (roll < 99)
+            new_type = NodeType.MERCHANT;
         else
-        {
-            map.type[idx] = map_random_hidden(_floor);
-        }
-    }
+            new_type = NodeType.TRIBE;
 
-    // 5. 保证刷新的节点：改写最前面几个隐秘类节点
-    var hs = combat_n;
-
-    // 1 层：行商和部落至少刷新一个，且只会刷新其中之一
-    if (_floor == 1 && hs < m)
-    {
-        map.type[cells[empty_n + hs]] = choose(NodeType.MERCHANT, NodeType.TRIBE);
-        hs++;
-    }
-
-    // 2、3 层：秘境 50% 概率出现一个
-    if (_floor >= 2 && hs < m && random(1) < 0.5)
-    {
-        map.type[cells[empty_n + hs]] = NodeType.REALM;
-        hs++;
+        map.type[available[fill_i]] = new_type;
     }
 
     map.type[map.boss_i] = NodeType.BOSS;
 
-    // 6. 进入地图时揭露：空地、首领
-    for (var i = 0; i < n; i++)
+    // 7. 进入地图时揭露所有空地和首领。
+    for (var reveal_i = 0; reveal_i < n; reveal_i++)
     {
-        if (map.type[i] == NodeType.EMPTY || map.type[i] == NodeType.BOSS)
-        {
-            map.revealed[i] = true;
-        }
+        if (map.type[reveal_i] == NodeType.EMPTY || map.type[reveal_i] == NodeType.BOSS)
+            map.revealed[reveal_i] = true;
     }
 
-    // 瞭望点：进入地图时揭露自身上下左右的节点
-    var ddx = [0, 1, 0, -1];
-    var ddy = [-1, 0, 1, 0];
-
-    for (var i = 0; i < n; i++)
+    // 瞭望点：进入地图时揭露自身 3x3 范围内的格子。
+    for (var lookout_i = 0; lookout_i < n; lookout_i++)
     {
-        if (map.type[i] != NodeType.LOOKOUT) continue;
+        if (map.type[lookout_i] != NodeType.LOOKOUT) continue;
 
-        for (var d = 0; d < 4; d++)
+        var lx = lookout_i mod _w;
+        var ly = lookout_i div _w;
+
+        for (var oy = -1; oy <= 1; oy++)
         {
-            var nx = (i mod _w) + ddx[d];
-            var ny = (i div _w) + ddy[d];
-
-            if (nx >= 0 && nx < _w && ny >= 0 && ny < _h)
+            for (var ox = -1; ox <= 1; ox++)
             {
-                map.revealed[ny * _w + nx] = true;
+                var nx = lx + ox;
+                var ny = ly + oy;
+
+                if (nx >= 0 && nx < _w && ny >= 0 && ny < _h)
+                    map.revealed[ny * _w + nx] = true;
             }
         }
     }
 
-    // 7. 首领先锋：2 层 1 个，3 层 3 个，在线路上离起点至少 3 步，不在首领上
+    // 8. 首领先锋：2 层 1 个，3 层 3 个；1 层不生成。
     var pursuer_n = (_floor == 2) ? 1 : ((_floor == 3) ? 3 : 0);
     var spawn_cells = [];
 
-    for (var i = 0; i < n; i++)
+    for (var spawn_i = 0; spawn_i < n; spawn_i++)
     {
-        if (i != map.boss_i && start_dist[i] >= 3)
-        {
-            spawn_cells[array_length(spawn_cells)] = i;
-        }
+        if (spawn_i != map.start_i && spawn_i != map.boss_i && start_dist[spawn_i] >= 3)
+            spawn_cells[array_length(spawn_cells)] = spawn_i;
     }
 
     spawn_cells = array_shuffle(spawn_cells);
 
-    for (var k = 0; k < min(pursuer_n, array_length(spawn_cells)); k++)
-    {
-        map.pursuers[k] = { pos: spawn_cells[k] };
-    }
+    for (var pursuer_i = 0; pursuer_i < min(pursuer_n, array_length(spawn_cells)); pursuer_i++)
+        map.pursuers[pursuer_i] = { pos: spawn_cells[pursuer_i] };
 
-    // 调试输出：实际的平均连线数、首领距离
+    // 调试信息：便于确认每次生成的地图确实不同，并核对核心规则。
     var deg_all = 0;
-    var deg_inner = 0;
-    var inner_n = 0;
+    var empty_total = 0;
+    var battle_event_total = 0;
+    var camp_total = 0;
+    var elite_total = 0;
+    var treasure_total = 0;
+    var merchant_total = 0;
+    var tribe_total = 0;
 
-    for (var gy = 0; gy < _h; gy++)
+    for (var stat_i = 0; stat_i < n; stat_i++)
     {
-        for (var gx = 0; gx < _w; gx++)
+        deg_all += map_degree(map, stat_i);
+
+        switch (map.type[stat_i])
         {
-            var i = gy * _w + gx;
-            var dg = map_degree(map, i);
-
-            deg_all += dg;
-
-            if (gx > 0 && gx < _w - 1 && gy > 0 && gy < _h - 1)
-            {
-                deg_inner += dg;
-                inner_n++;
-            }
+            case NodeType.EMPTY: empty_total++; break;
+            case NodeType.BATTLE:
+            case NodeType.EVENT: battle_event_total++; break;
+            case NodeType.CAMP: camp_total++; break;
+            case NodeType.ELITE: elite_total++; break;
+            case NodeType.TREASURE: treasure_total++; break;
+            case NodeType.MERCHANT: merchant_total++; break;
+            case NodeType.TRIBE: tribe_total++; break;
         }
     }
 
-    show_debug_message("地图 " + string(_w) + "x" + string(_h) + " 第" + string(_floor) + "层"
-        + "  空地 " + string(empty_n + 1)
-        + "  首领距离 " + string(start_dist[map.boss_i])
-        + "  平均连线数(全部) " + string(deg_all / n)
-        + "  平均连线数(内部) " + string(inner_n > 0 ? deg_inner / inner_n : 0));
+    show_debug_message("地图 " + string(_w) + "x" + string(_h)
+        + " 第" + string(_floor) + "层"
+        + " 空地:" + string(empty_total)
+        + " 战斗/事件:" + string(battle_event_total)
+        + " 营地:" + string(camp_total)
+        + " 精英:" + string(elite_total)
+        + " 珍宝:" + string(treasure_total)
+        + " 行商:" + string(merchant_total)
+        + " 部落:" + string(tribe_total)
+        + " 首领距离:" + string(start_dist[map.boss_i])
+        + " 平均连线数:" + string(deg_all / n));
 
     return map;
 }
