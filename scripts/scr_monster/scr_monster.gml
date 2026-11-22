@@ -295,10 +295,10 @@ function monster_setup(_e, _id)
 // 攻击的实际每次伤害：基础 + 力量（物理）/ 魔力（魔法）- 力量下降 / 魔力下降，最低为 0
 function monster_attack_damage(_e, _p)
 {
-    var power = (_p.dtype == DamageType.PHYSICAL) ? StatusType.STRENGTH : StatusType.MAGIC_POWER;
+    var attack_status = (_p.dtype == DamageType.PHYSICAL) ? StatusType.STRENGTH : StatusType.MAGIC_POWER;
     var weakened = (_p.dtype == DamageType.PHYSICAL) ? StatusType.STRENGTH_DOWN : StatusType.MAGIC_DOWN;
 
-    return max(_p.dmg + get_status(_e, power) - get_status(_e, weakened), 0);
+    return max(_p.dmg + get_status(_e, attack_status) - get_status(_e, weakened), 0);
 }
 
 // 我方存活角色里生命最低的
