@@ -1017,6 +1017,7 @@ case EffectType.RANDOM_STARTER:
     var random_entry = card_make_entry(random_obj);
     var random_inst = card_spawn_from_entry(random_entry, -1000, -1000);
     var random_owner = effect_target_char(_e, _target);
+    var random_card_owner = card_get_owner_instance(random_id);
 
     // 岩盾需要友方目标；随机选择一名存活队友，而不是固定选择 char_1
     if (random_id == 4)
@@ -1048,7 +1049,7 @@ case EffectType.RANDOM_STARTER:
     }
 
     // 星火与燎原也会作用于这次视为使用的初始牌
-    if (obj_hand_controller.starfire_ready && get_status(random_owner, StatusType.STARFIRE) > 0)
+    if (obj_hand_controller.starfire_ready && get_status(random_card_owner, StatusType.STARFIRE) > 0)
     {
         card_double_effects(random_inst);
         obj_hand_controller.starfire_ready = false;
@@ -1251,7 +1252,8 @@ case EffectType.REPLAY_STARTER:
     var replay_obj = card_get_object(_e.card_id);
     var replay_entry = variable_struct_exists(_e, "entry") ? _e.entry : card_make_entry(replay_obj);
     var replay_inst = card_spawn_from_entry(replay_entry, -1000, -1000);
-    var replay_owner = card_get_owner_instance(_e.card_id);
+    var replay_card_owner = card_get_owner_instance(_e.card_id);
+    var replay_owner = replay_card_owner;
 
     // 岩盾的延迟重放同样需要友方目标，随机选取存活队友
     if (_e.card_id == 4)
@@ -1282,7 +1284,7 @@ case EffectType.REPLAY_STARTER:
         add_status(replay_owner, StatusType.ROCK_WALL, 1);
     }
 
-    if (obj_hand_controller.starfire_ready && get_status(replay_owner, StatusType.STARFIRE) > 0)
+    if (obj_hand_controller.starfire_ready && get_status(replay_card_owner, StatusType.STARFIRE) > 0)
     {
         card_double_effects(replay_inst);
         obj_hand_controller.starfire_ready = false;
