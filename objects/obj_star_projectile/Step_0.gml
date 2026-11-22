@@ -41,6 +41,6 @@ if (distance <= projectile_speed)
 }
 else
 {
-    x += lengthdir_x(projectile_speed, direction);
-    y += lengthdir_y(projectile_speed, direction);
+    x += lengthdir_x(projectile_speed, aim_dir);
+    y += lengthdir_y(projectile_speed, aim_dir);
 }
