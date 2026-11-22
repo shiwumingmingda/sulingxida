@@ -43,9 +43,34 @@ if (discard_choice_active)
     exit;
 }
 
-// 占卜界面：暂停其他操作，只处理拖动、排序和确认。
+// 占卜界面：暂停其他操作，只处理悬停、拖动、排序和确认。
 if (scry_active)
 {
+    scry_hover_card = noone;
+
+    // 从最上层开始检测鼠标悬停的卡牌。
+    if (!instance_exists(scry_drag_card))
+    {
+        for (var si = 1; si >= 0 && scry_hover_card == noone; si--)
+        {
+            var list = (si == 0) ? scry_top : scry_bottom;
+            for (var ci = array_length(list) - 1; ci >= 0; ci--)
+            {
+                var card = list[ci];
+                if (!instance_exists(card)) continue;
+
+                var hw = sprite_get_width(card.sprite_index) * scry_scale * 0.5;
+                var hh = sprite_get_height(card.sprite_index) * scry_scale * 0.5;
+                if (point_in_rectangle(mx, my, card.x - hw, card.y - hh,
+                    card.x + hw, card.y + hh))
+                {
+                    scry_hover_card = card;
+                    break;
+                }
+            }
+        }
+    }
+
     if (mouse_check_button_pressed(mb_left))
     {
         if (mx >= scry_confirm_x1 && mx <= scry_confirm_x2
@@ -68,6 +93,7 @@ if (scry_active)
                 if (point_in_rectangle(mx, my, card.x - hw, card.y - hh, card.x + hw, card.y + hh))
                 {
                     scry_drag_card = card;
+                    scry_hover_card = noone;
                     break;
                 }
             }
