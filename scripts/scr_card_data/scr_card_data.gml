@@ -939,17 +939,30 @@ function card_get_object(_n)
         case 19: return obj_card_0019;
         case 21: return obj_card_0021;
         case 22: return obj_card_0022;
+        case 23: return obj_card_0023;
         case 24: return obj_card_0024;
         case 25: return obj_card_0025;
         case 26: return obj_card_0026;
         case 27: return obj_card_0027;
+        case 28: return obj_card_0028;
+        case 29: return obj_card_0029;
+        case 30: return obj_card_0030;
+        case 31: return obj_card_0031;
+        case 32: return obj_card_0032;
         case 33: return obj_card_0033;
         case 34: return obj_card_0034;
+        case 35: return obj_card_0035;
         case 36: return obj_card_0036;
         case 37: return obj_card_0037;
+        case 38: return obj_card_0038;
         case 39: return obj_card_0039;
         case 41: return obj_card_0041;
+        case 40: return obj_card_0040;
+        case 42: return obj_card_0042;
+        case 43: return obj_card_0043;
         case 44: return obj_card_0044;
+        case 45: return obj_card_0045;
+        case 46: return obj_card_0046;
 
         // 尘
         case 101: return obj_card_0101;
