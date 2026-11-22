@@ -147,3 +147,5 @@ if (total_armor > 0)
 }
 
 draw_status_icons(id, bar_x, status_y);
+// 倒计时图标显示在状态图标的下一行
+draw_countdown_icons(id == obj_hand_controller.char_1 ? 1 : (id == obj_hand_controller.char_2 ? 2 : 3), bar_x, status_y + 30);
