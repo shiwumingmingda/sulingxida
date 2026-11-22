@@ -27,6 +27,7 @@ function card_info(_id)
         case 14: return card_make_info(CardType.SKILL,  0, Rarity.COMMON, false, TargetKind.NONE, 0);    // 品尝美食
         case 15: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0);    // 召集元素
         case 16: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, true,  TargetKind.NONE, 0);    // 凝聚魔力
+        case 17: return card_make_info(CardType.SKILL,  0, Rarity.COMMON, false, TargetKind.NONE, 0);    // 风回
         case 18: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0);    // 四象
         case 19: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.ENEMY, 0);   // 引燃
         case 21: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0);    // 元素更迭
@@ -199,6 +200,14 @@ function card_get_effects_new(_id)
                   effects: [ { type: EffectType.STATUS, status: StatusType.MAGIC_POWER, amount: 1, on_char: 1 } ] }
             ];
 
+        // 17 风回：移动，获得3点护甲；若本回合使用过风刃，抽一张牌
+        case 17:
+            return [
+                { type: EffectType.ROTATE_SELF, amount: 1, on_char: 1 },
+                { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 3, on_char: 1 },
+                { type: EffectType.DRAW_IF_PLAYED, amount: 1, card_id: 2 }
+            ];
+
         // 18 四象：选择一张初始牌并将其置入你的手牌
         case 18:
             return [
@@ -323,6 +332,7 @@ function card_get_description_new(_inst)
         case 14: return "倒计时1：移动至后场，发现一张本角色的牌";
         case 15: return "获得1费。倒计时1：获得1费";
         case 16: return "消耗，获得1点魔力，倒计时1：获得1点魔力。倒计时2：获得1点魔力";
+        case 17: return "移动，获得3点护甲。若你本回合使用过【风刃】，抽一张牌";
         case 18: return "选择一张初始牌并将其置入你的手牌";
         case 19: return "对敌方角色造成" + string(card_current_damage(_inst)) + "点伤害。若击杀目标则将一张0费的【火球】置入手牌";
         case 21: return "抽一张牌，获得1点临时魔力。若你本回合使用过两种不同的初始牌，获得1点费用";
