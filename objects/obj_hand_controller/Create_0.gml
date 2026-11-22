@@ -474,6 +474,13 @@ reset_cards_to_battle_start = function()
 	countdowns = [];
 turn_played_ids = [];
 discover_queue = [];
+attack_used_this_turn = array_create(4, false);
+attack_used_last_turn = array_create(4, false);
+witch_chant_used = false;
+wind_blade_bonus = 0;
+selection_active = false;
+selection_cards = [];
+selection_action = { kind: "" };
     // 销毁手上所有卡牌实例
     for (var i = 0; i < array_length(hand); i++)
     {
@@ -516,6 +523,10 @@ for (var ci = 1; ci <= 4; ci++)
         clear_status(cc, StatusType.SWORD_FORM);
 		clear_status(cc, StatusType.BLOOD);
 		clear_status(cc, StatusType.DILIGENCE);
+        clear_status(cc, StatusType.STARFIRE);
+        clear_status(cc, StatusType.FROST_RAIN);
+        clear_status(cc, StatusType.ROCK_WALL);
+        clear_status(cc, StatusType.WITCH_CHANT);
     }
 }
 	// 发现界面和计数也一起重置
