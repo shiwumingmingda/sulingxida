@@ -282,6 +282,7 @@ function draw_countdown_icons(_owner, _x, _y)
                     break;
                     case EffectType.STATUS: part = "获得状态"; break;
                     case EffectType.REPLAY_STARTER: part = "视为使用一张初始牌"; break;
+                    case EffectType.ADD_ENTRY_TO_HAND: part = "将强化后的牌加入手牌"; break;
                     case EffectType.SHUFFLE_ELEMENT: part = "将一张随机元素牌洗入抽牌堆"; break;
                 }
 
