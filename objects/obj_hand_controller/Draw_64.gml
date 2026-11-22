@@ -374,17 +374,20 @@ if (selection_active)
         if (!instance_exists(qcard) || !selection_can_select(qcard)) continue;
 
         var selected = selection_has(qcard);
-        var qy = qcard.y;
+        var hovered = (qcard == selection_hover_card);
+        var qy = qcard.y - (hovered ? 22 : 0);
+        var qscale = hovered ? 1.12 : 1;
+        var qxs = qcard.image_xscale * qscale;
+        var qys = qcard.image_yscale * qscale;
         var qalpha = selected ? 1 : 0.82;
 
         draw_set_alpha(qalpha);
         draw_sprite_ext(qcard.sprite_index, qcard.image_index,
-            qcard.x, qy, qcard.image_xscale, qcard.image_yscale,
-            qcard.image_angle, c_white, 1);
+            qcard.x, qy, qxs, qys, qcard.image_angle, c_white, 1);
         card_draw_text(qcard, qcard.sprite_index,
-            qcard.x, qy, qcard.image_xscale, qcard.image_yscale, qcard.image_angle);
+            qcard.x, qy, qxs, qys, qcard.image_angle);
         card_draw_merge_frame(qcard, qcard.sprite_index,
-            qcard.x, qy, qcard.image_xscale, qcard.image_yscale, qcard.image_angle);
+            qcard.x, qy, qxs, qys, qcard.image_angle);
 
         if (selected)
         {
