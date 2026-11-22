@@ -473,3 +473,71 @@ if (turn_state == "reward")
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 }
+
+
+// ---------------------------------
+// 尘：占卜界面
+// ---------------------------------
+if (scry_active)
+{
+    draw_set_alpha(0.94);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, room_width, room_height, false);
+    draw_set_alpha(1);
+
+    draw_set_color(make_color_rgb(32, 42, 65));
+    draw_roundrect(room_width * 0.06, room_height * 0.12,
+        room_width * 0.94, room_height * 0.53, false);
+    draw_set_color(make_color_rgb(65, 45, 55));
+    draw_roundrect(room_width * 0.06, room_height * 0.56,
+        room_width * 0.94, room_height * 0.82, false);
+
+    draw_set_font(global.chinese_font);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(c_white);
+    draw_text_transformed(room_width * 0.5, room_height * 0.075, "占卜", 1.8, 1.8, 0);
+    draw_text(room_width * 0.5, room_height * 0.16, "牌堆顶  ·  从左往右依次抽取");
+    draw_text(room_width * 0.5, room_height * 0.59, "牌堆底");
+
+    // 牌堆顶区域
+    for (var i = 0; i < array_length(scry_top); i++)
+    {
+        var card = scry_top[i];
+        if (!instance_exists(card) || card == scry_drag_card) continue;
+        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
+            scry_scale, scry_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, card.sprite_index, card.x, card.y, scry_scale, scry_scale, card.image_angle);
+    }
+
+    // 牌堆底区域
+    for (var i = 0; i < array_length(scry_bottom); i++)
+    {
+        var card = scry_bottom[i];
+        if (!instance_exists(card) || card == scry_drag_card) continue;
+        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
+            scry_scale, scry_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, card.sprite_index, card.x, card.y, scry_scale, scry_scale, card.image_angle);
+    }
+
+    // 正在拖动的牌绘制在最上层。
+    if (instance_exists(scry_drag_card))
+    {
+        var card = scry_drag_card;
+        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
+            scry_scale, scry_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, card.sprite_index, card.x, card.y, scry_scale, scry_scale, card.image_angle);
+    }
+
+    // 确认按钮
+    draw_set_color(make_color_rgb(45, 105, 145));
+    draw_roundrect(scry_confirm_x1, scry_confirm_y1, scry_confirm_x2, scry_confirm_y2, false);
+    draw_set_color(c_white);
+    draw_roundrect(scry_confirm_x1, scry_confirm_y1, scry_confirm_x2, scry_confirm_y2, true);
+    draw_text((scry_confirm_x1 + scry_confirm_x2) * 0.5,
+        (scry_confirm_y1 + scry_confirm_y2) * 0.5, "确认");
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_white);
+}
