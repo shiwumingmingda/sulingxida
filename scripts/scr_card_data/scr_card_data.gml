@@ -1251,6 +1251,10 @@ break;
             var dust = obj_hand_controller.char_2;
             switch (_e.action)
             {
+                case "discard_choose":
+                    obj_hand_controller.discard_choice_start(5, _v);
+                    break;
+
                 case "starseal":
                     dust.enemy_debuff_turns = 2;
                     break;
