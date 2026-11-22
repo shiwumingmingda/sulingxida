@@ -269,7 +269,16 @@ function draw_countdown_icons(_owner, _x, _y)
 
                 switch (e.type)
                 {
-                    case EffectType.ARMOR: part = "获得" + string(e.amount) + "点护甲"; break;
+                    case EffectType.ARMOR:
+                        if (variable_struct_exists(e, "conditional_no_attack") && e.conditional_no_attack)
+                        {
+                            part = "若上回合未使用攻击牌，获得" + string(e.amount) + "点护甲";
+                        }
+                        else
+                        {
+                            part = "获得" + string(e.amount) + "点护甲";
+                        }
+                    break;
                     case EffectType.GAIN_ENERGY: part = "获得" + string(e.amount) + "费"; break;
                     case EffectType.DRAW: part = "抽" + string(e.amount) + "张牌"; break;
                     case EffectType.DAMAGE: part = "造成" + string(e.amount) + "点伤害"; break;
