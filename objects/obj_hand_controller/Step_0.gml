@@ -868,12 +868,6 @@ if (first_hand_starter_this_turn && char_is_alive(card_owner)
         [ { type: EffectType.REPLAY_STARTER, amount: 1, card_id: released_id, entry: starter_replay_entry } ]);
 }
 
-// 销毁打出的卡牌实例
-with (released_card)
-{
-    instance_destroy();
-}
-
 // 尘的群星因你我而相连：每名友方角色每回合第一次使用攻击/技能牌，尘额外结算一次。
 if (char_is_alive(char_2) && char_2.team_echo_active && (ctype == CardType.ATTACK || ctype == CardType.SKILL))
 {
@@ -919,6 +913,16 @@ if (ctype == CardType.ATTACK && released_id >= 101 && released_id <= 200
 // 星灭：使用后自身费用提高1点，并保存在弃牌堆记录中。
 if (released_id == 134 && !card_is_exhaust(released_id) && array_length(discard_pile) > 0)
     discard_pile[array_length(discard_pile) - 1].cost = card_current_cost(released_card) + 1;
+
+// 星灭：使用后自身费用提高1点，并保存在弃牌堆记录中。
+if (released_id == 134 && !card_is_exhaust(released_id) && array_length(discard_pile) > 0)
+    discard_pile[array_length(discard_pile) - 1].cost = card_current_cost(released_card) + 1;
+
+// 销毁打出的卡牌实例
+with (released_card)
+{
+    instance_destroy();
+}
 
 // 角色3的天赋：打出攻击牌 +1，累计到上限就归零并触发（发现）
 if (char_is_alive(char_3) && card_counts_for_discover(released_id))
