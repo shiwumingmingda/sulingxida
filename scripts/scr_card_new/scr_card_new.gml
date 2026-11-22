@@ -288,15 +288,15 @@ function card_get_effects_new(_id)
 
         // 29 火凝·燎原：消耗一张火球，对所有敌人造成等同于火球的伤害
         case 29:
-            return [ { type: EffectType.SELECT_HAND, filter_id: 1, mode: "single", min: 1, max: 1, action: { kind: "fireball_aoe" } } ];
+            return [ { type: EffectType.SELECT_HAND, amount: 1, filter_id: 1, mode: "single", min: 1, max: 1, action: { kind: "fireball_aoe" } } ];
 
         // 30 狂风·凝盾：消耗任意张风刃，获得其伤害总和两倍的护甲
         case 30:
-            return [ { type: EffectType.SELECT_HAND, filter_id: 2, mode: "multi", min: 0, max: 999, action: { kind: "wind_shield" } } ];
+            return [ { type: EffectType.SELECT_HAND, amount: 1, filter_id: 2, mode: "multi", min: 0, max: 999, action: { kind: "wind_shield" } } ];
 
         // 31 狂风·流羽：消耗一张风刃，敌方前排移动；本回合风刃伤害+2
         case 31:
-            return [ { type: EffectType.SELECT_HAND, filter_id: 2, mode: "single", min: 1, max: 1, action: { kind: "wind_feather" } } ];
+            return [ { type: EffectType.SELECT_HAND, amount: 1, filter_id: 2, mode: "single", min: 1, max: 1, action: { kind: "wind_feather" } } ];
 
         // 32 冰寒·落雨：下一张霜落会对其他敌人各重复一次
         case 32:
@@ -318,7 +318,7 @@ function card_get_effects_new(_id)
         // 36 安宁：令你手中的所有牌获得保留一回合
         // 35 地岳·镇垒：将一张手牌变为岩盾
         case 35:
-            return [ { type: EffectType.SELECT_HAND, filter_id: 0, mode: "single", min: 1, max: 1, action: { kind: "convert_rockshield" } } ];
+            return [ { type: EffectType.SELECT_HAND, amount: 1, filter_id: 0, mode: "single", min: 1, max: 1, action: { kind: "convert_rockshield" } } ];
 
         case 36:
             return [
@@ -371,7 +371,7 @@ function card_get_effects_new(_id)
 
         // 46 压缩：消耗一张初始牌，倒计时2将其强化后的版本加入手牌
         case 46:
-            return [ { type: EffectType.SELECT_HAND, filter_id: -1, mode: "single", min: 1, max: 1, action: { kind: "compress" } } ];
+            return [ { type: EffectType.SELECT_HAND, amount: 1, filter_id: -1, mode: "single", min: 1, max: 1, action: { kind: "compress" } } ];
 
         case 44:
             return [
