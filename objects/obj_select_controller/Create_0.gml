@@ -1,6 +1,9 @@
 /// obj_select_controller - Create
 
 display_set_gui_size(room_width, room_height);
+
+// 每次进入选人界面时重新初始化随机数种子，避免每次新开局生成相同地图。
+randomize();
 max_party = 2;   // 最多选 2 个角色
 // 中文字体只加载一次（别处已经加载过就跳过）
 if (!variable_global_exists("chinese_font"))
