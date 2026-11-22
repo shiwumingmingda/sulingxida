@@ -34,7 +34,6 @@ function card_info(_id)
         case 22: return card_make_info(CardType.ATTACK, 2, Rarity.COMMON, false, TargetKind.NONE, 0);    // 霜碎
         case 23: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 星火与燎原
 
-        case 23: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 星火与燎原
 
         // ---- 稀有 ----
         case 7:  return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);      // 元素共鸣
@@ -48,34 +47,22 @@ function card_info(_id)
         case 31: return card_make_info(CardType.ATTACK, 0, Rarity.RARE, false, TargetKind.NONE, 0);       // 狂风·流羽
         case 32: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 冰寒·落雨
 
-        case 28: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.NONE, 0);       // 火凝·连珠
-        case 29: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 火凝·燎原
-        case 30: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 狂风·凝盾
-        case 31: return card_make_info(CardType.ATTACK, 0, Rarity.RARE, false, TargetKind.NONE, 0);       // 狂风·流羽
-        case 32: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);       // 冰寒·落雨
         case 35: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);       // 地岳·镇垒
         case 33: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.ENEMY, 3);     // 冰寒·霜索（需要霜落）
-        case 35: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);       // 地岳·镇垒
         case 34: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 4);      // 地岳·磐缚（需要岩盾）
         case 36: return card_make_info(CardType.SKILL,  0, Rarity.RARE, false, TargetKind.NONE, 0);      // 安宁
         case 37: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);      // 阅读
         case 39: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 灵光一现
         case 38: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 随性发挥
-        case 38: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);      // 随性发挥
 
         // ---- 传说 ----
         case 40: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, true, TargetKind.NONE, 0); // 元素亲和
         case 41: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, true,  TargetKind.NONE, 0); // 唯魔法与美食不可辜负
-        case 40: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, true, TargetKind.NONE, 0); // 元素亲和
         case 42: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 平凡即安乐
         case 43: return card_make_info(CardType.STATUS, 1, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 女巫吟唱
         case 45: return card_make_info(CardType.ATTACK, 2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);  // 吃我火球术哒！
         case 46: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, true, TargetKind.NONE, 0);  // 压缩
 
-        case 42: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 平凡即安乐
-        case 43: return card_make_info(CardType.STATUS, 1, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 女巫吟唱
-        case 45: return card_make_info(CardType.ATTACK, 2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);  // 吃我火球术哒！
-        case 46: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, true, TargetKind.NONE, 0);  // 压缩
         case 44: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0); // 风息庭
     }
 
