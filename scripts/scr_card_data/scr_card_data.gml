@@ -880,7 +880,9 @@ function card_current_effects(_inst)
 // 计算一个效果实际生效的数值（在这里统一加上各种加成）
 function card_effect_value(_effect)
 {
-    var v = _effect.amount;
+    // 部分特殊效果只携带 action / card_id 等参数，不一定有 amount。
+    // 缺少数值时按 0 处理，避免读取不存在的 struct 成员导致整张牌结算中断。
+    var v = variable_struct_exists(_effect, "amount") ? _effect.amount : 0;
 
     // 护甲加成：之后"提高获得护甲值"的效果改 global.armor_bonus
     if (_effect.type == EffectType.ARMOR)
