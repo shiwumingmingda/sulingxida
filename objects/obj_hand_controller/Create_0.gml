@@ -483,6 +483,7 @@ wind_blade_bonus = 0;
 selection_active = false;
 selection_cards = [];
 selection_action = { kind: "" };
+selection_queue = [];
     // 销毁手上所有卡牌实例
     for (var i = 0; i < array_length(hand); i++)
     {
@@ -582,6 +583,7 @@ selection_min = 1;
 selection_max = 1;
 selection_cards = [];
 selection_action = { kind: "" };
+selection_queue = [];
 
 selection_has = function(_card)
 {
@@ -602,6 +604,14 @@ selection_can_select = function(_card)
 
 selection_start = function(_filter, _mode, _min, _max, _action)
 {
+    if (selection_active)
+    {
+        selection_queue[array_length(selection_queue)] = {
+            filter_id: _filter, mode: _mode, min: _min, max: _max, action: _action
+        };
+        return;
+    }
+
     selection_active = true;
     selection_filter_id = _filter;
     selection_mode = _mode;
@@ -717,6 +727,15 @@ selection_finish = function()
     selection_active = false;
     selection_cards = [];
     selection_action = { kind: "" };
+
+    // 聚能等效果可能连续要求选择多次，完成当前选择后继续下一项
+    if (array_length(selection_queue) > 0)
+    {
+        var next_selection = selection_queue[0];
+        array_delete(selection_queue, 0, 1);
+        selection_start(next_selection.filter_id, next_selection.mode,
+            next_selection.min, next_selection.max, next_selection.action);
+    }
 };
 
 wind_blade_bonus = 0;
