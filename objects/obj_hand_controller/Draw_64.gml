@@ -229,6 +229,9 @@ if (drag_card != noone && instance_exists(drag_card))
         // 指向我方的牌高亮我方角色，指向敌方的牌高亮敌人
 		var tobj = (card_target_kind(drag_card.card_id) == TargetKind.ENEMY) ? obj_enemy_1 : obj_character_1;
 		var tgt = instance_position(amx, amy, tobj);
+        if (card_requires_other_friend(drag_card.card_id)
+        && tgt == obj_hand_controller.char_2)
+            tgt = noone;
 
         var arrow_col = c_white;
 
