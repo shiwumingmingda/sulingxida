@@ -191,6 +191,11 @@ with (obj_character_1)
     clear_status(id, StatusType.ROCK_WALL);
 }
 
+// 地岳·镇垒给予目标角色的护甲翻倍只持续到这次玩家回合开始
+if (instance_exists(char_2)) clear_status(char_2, StatusType.ROCK_WALL);
+if (instance_exists(char_3)) clear_status(char_3, StatusType.ROCK_WALL);
+if (instance_exists(char_4)) clear_status(char_4, StatusType.ROCK_WALL);
+
 // 新回合：星光可以再次使用
 if (instance_exists(char_2))
 {
