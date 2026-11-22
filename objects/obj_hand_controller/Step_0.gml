@@ -604,9 +604,19 @@ if (released_id == 23)
 
     // 记录各角色本回合是否打出过攻击牌
     var attack_owner_n = card_get_owner(released_id);
-    if (ctype == CardType.ATTACK && attack_owner_n > 0)
+    if (ctype == CardType.ATTACK)
     {
-        attack_used_this_turn[attack_owner_n] = true;
+        if (attack_owner_n > 0)
+        {
+            attack_used_this_turn[attack_owner_n] = true;
+        }
+        else if (target != noone)
+        {
+            // 通用攻击牌把攻击记录到被指定的友方角色名下
+            if (target == char_1) attack_used_this_turn[1] = true;
+            else if (target == char_2) attack_used_this_turn[2] = true;
+            else if (target == char_3) attack_used_this_turn[3] = true;
+        }
     }
 
 // 攻击牌：对应角色先进入前场
