@@ -838,9 +838,23 @@ case EffectType.DAMAGE_ARMOR_TOTAL:
 {
     var armor_who = effect_target_char(_e, _target);
 
-    if (_enemy != noone && armor_who != noone)
+    if (instance_exists(_enemy) && instance_exists(armor_who))
     {
-        deal_damage(_enemy, unit_armor_total(armor_who), _e.dtype);
+        var armor_damage = unit_armor_total(armor_who);
+        var armor_damage_type = variable_struct_exists(_e, "dtype") ? _e.dtype : DamageType.PHYSICAL;
+
+        // 将护甲总量作为基础伤害，之后仍按物理/魔法伤害结算角色属性加成
+        if (armor_damage_type == DamageType.PHYSICAL)
+        {
+            armor_damage += get_status(armor_who, StatusType.STRENGTH);
+        }
+        else
+        {
+            armor_damage += get_status(armor_who, StatusType.MAGIC_POWER)
+                          + get_status(armor_who, StatusType.TEMP_MAGIC);
+        }
+
+        deal_damage(_enemy, armor_damage, armor_damage_type);
     }
 }
 break;
