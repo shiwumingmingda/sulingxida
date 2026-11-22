@@ -993,7 +993,6 @@ case EffectType.FIREBALL_VOLLEY:
             if (obj_hand_controller.starfire_ready && get_status(fire_owner, StatusType.STARFIRE) > 0)
             {
                 card_double_effects(fire_inst);
-                clear_status(fire_owner, StatusType.STARFIRE);
                 obj_hand_controller.starfire_ready = false;
             }
 
@@ -1052,7 +1051,6 @@ case EffectType.RANDOM_STARTER:
     if (obj_hand_controller.starfire_ready && get_status(random_owner, StatusType.STARFIRE) > 0)
     {
         card_double_effects(random_inst);
-        clear_status(random_owner, StatusType.STARFIRE);
         obj_hand_controller.starfire_ready = false;
     }
 
@@ -1238,7 +1236,6 @@ case EffectType.MERGE_ALL_FIREBALLS:
         if (obj_hand_controller.starfire_ready && get_status(fire_owner, StatusType.STARFIRE) > 0)
         {
             card_double_effects(merged_inst);
-            clear_status(fire_owner, StatusType.STARFIRE);
             obj_hand_controller.starfire_ready = false;
         }
 
@@ -1288,7 +1285,6 @@ case EffectType.REPLAY_STARTER:
     if (obj_hand_controller.starfire_ready && get_status(replay_owner, StatusType.STARFIRE) > 0)
     {
         card_double_effects(replay_inst);
-        clear_status(replay_owner, StatusType.STARFIRE);
         obj_hand_controller.starfire_ready = false;
     }
 
