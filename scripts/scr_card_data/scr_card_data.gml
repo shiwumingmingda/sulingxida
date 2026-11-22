@@ -927,9 +927,9 @@ break;
 case EffectType.DRAW_IF_PLAYED:
 {
     var was_played = false;
-    for (var pi = 0; pi < array_length(obj_hand_controller.turn_played_ids); pi++)
+    for (var played_index = 0; played_index < array_length(obj_hand_controller.turn_played_ids); played_index++)
     {
-        if (obj_hand_controller.turn_played_ids[pi] == _e.card_id)
+        if (obj_hand_controller.turn_played_ids[played_index] == _e.card_id)
         {
             was_played = true;
             break;
