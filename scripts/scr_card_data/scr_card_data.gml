@@ -45,7 +45,12 @@ enum EffectType
     UPGRADE_ALL_STARTERS,// 强化所有区域里的苏灵兮初始牌
     COUNTDOWN_ALL_FRIENDS,// 给所有友方角色添加倒计时
     MERGE_ALL_FIREBALLS, // 消耗所有火球并合成后使用
-    REPLAY_STARTER       // 倒计时后视为再次使用一张初始牌
+    REPLAY_STARTER,      // 倒计时后视为再次使用一张初始牌
+    SCRY,                 // 占卜：查看并重新排列牌堆顶牌
+    STAR_PROJECTILE,      // 星星投射伤害
+    ARMOR_BACKLINE,       // 给后场角色增加护甲
+    RANDOM_DAMAGE,        // 随机敌人受到多段伤害
+    CUSTOM                // 角色专属机制
 }
 
 // 新卡牌基础资料、稀有度与通用查询
@@ -61,13 +66,76 @@ enum Rarity
 // 基础信息：类型、费用、稀有度、是否消耗、指向类型、需要手牌里有的牌编号（0 = 不需要）
 function card_make_info(_type, _cost, _rarity, _exhaust, _target, _need)
 {
-    return { type: _type, cost: _cost, rarity: _rarity, exhaust: _exhaust, target: _target, need: _need };
+    return {
+        type: _type, cost: _cost, rarity: _rarity, exhaust: _exhaust,
+        target: _target, need: _need,
+        star_cost: (argument_count > 6) ? argument[6] : 0,
+        innate: (argument_count > 7) ? argument[7] : false
+    };
 }
 
 function card_info(_id)
 {
     switch (_id)
     {
+
+        // 尘：星星的孩子
+        case 101: return card_make_info(CardType.ATTACK, 1, Rarity.NONE, false, TargetKind.NONE, 0);
+        case 102: return card_make_info(CardType.ATTACK, 2, Rarity.NONE, false, TargetKind.NONE, 0);
+        case 103: return card_make_info(CardType.SKILL,  2, Rarity.NONE, false, TargetKind.NONE, 0);
+        case 104: return card_make_info(CardType.SKILL,  0, Rarity.NONE, false, TargetKind.NONE, 0, 1);
+        // 普通
+        case 105: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 106: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 107: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 108: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 109: return card_make_info(CardType.ATTACK, 3, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 110: return card_make_info(CardType.SKILL,  0, Rarity.COMMON, false, TargetKind.FRIEND, 0);
+        case 111: return card_make_info(CardType.ATTACK, 2, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 112: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.ENEMY, 0);
+        case 113: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 114: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 115: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0, 0, true);
+        // 稀有
+        case 116: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 117: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 118: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 119: return card_make_info(CardType.SKILL,  0, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 120: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 121: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0, 1);
+        case 122: return card_make_info(CardType.ATTACK, 3, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 123: return card_make_info(CardType.STATUS, 0, Rarity.RARE, false, TargetKind.NONE, 0, 1);
+        case 124: return card_make_info(CardType.SKILL,  1, Rarity.RARE, true,  TargetKind.FRIEND, 0, 1);
+        case 125: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.ENEMY, 0);
+        case 126: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.ENEMY, 0);
+        case 127: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.ENEMY, 0);
+        case 128: return card_make_info(CardType.SKILL,  2, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 129: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 130: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.ENEMY, 0);
+        case 131: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 132: return card_make_info(CardType.ATTACK, 7, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 133: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 134: return card_make_info(CardType.SKILL,  0, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 135: return card_make_info(CardType.SKILL,  0, Rarity.RARE, false, TargetKind.FRIEND, 0);
+        case 136: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 137: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);
+        // 传说
+        case 138: return card_make_info(CardType.SKILL,  0, Rarity.LEGENDARY, false, TargetKind.NONE, 0, 0, true);
+        case 139: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, false, TargetKind.FRIEND, 0);
+        case 140: return card_make_info(CardType.SKILL,  0, Rarity.LEGENDARY, true, TargetKind.NONE, 0, 4);
+        case 141: return card_make_info(CardType.SKILL,  1, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 142: return card_make_info(CardType.SKILL,  0, Rarity.LEGENDARY, false, TargetKind.NONE, 0, 1);
+        case 143: return card_make_info(CardType.ATTACK, 2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);
+        case 144: return card_make_info(CardType.STATUS, 0, Rarity.LEGENDARY, false, TargetKind.NONE, 0, 2);
+        case 145: return card_make_info(CardType.SKILL,  2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);
+        case 146: return card_make_info(CardType.SKILL,  0, Rarity.LEGENDARY, true, TargetKind.NONE, 0, 0, true);
+        case 147: return card_make_info(CardType.STATUS, 3, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 148: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, true, TargetKind.NONE, 0);
+        case 149: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 150: return card_make_info(CardType.SKILL,  2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);
+        case 151: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 152: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+
         // ---- 普通 ----
         case 5:  return card_make_info(CardType.SKILL,  2, Rarity.COMMON, false, TargetKind.NONE, 0);    // 专注
         case 11: return card_make_info(CardType.SKILL,  2, Rarity.COMMON, false, TargetKind.NONE, 0);    // 风墙
@@ -116,6 +184,19 @@ function card_info(_id)
     }
 
     return undefined;
+}
+
+
+function card_star_cost(_id)
+{
+    var info = card_info(_id);
+    return is_undefined(info) ? 0 : info.star_cost;
+}
+
+function card_is_innate(_id)
+{
+    var info = card_info(_id);
+    return !is_undefined(info) && info.innate;
 }
 
 // 稀有度：新卡牌看 card_info，旧卡牌：初始牌、特殊牌、通用牌、异常牌不进奖励，其余当作普通
@@ -324,24 +405,6 @@ function card_get_effects(_id)
     ];
 
        // 11号牌：造成 8 点法术伤害
-		case 101:
-			return [
-				 { type: EffectType.DAMAGE, amount: 8, dtype: DamageType.MAGIC }
-    ];
-			
-			// 12号牌：造成物理伤害，获得 1 点星光
-			case 102:
-				return [
-					{ type: EffectType.DAMAGE,    amount: 6, dtype: DamageType.PHYSICAL },
-				 { type: EffectType.STARLIGHT, amount: 1 }
-				];
-
-        // 15号牌：获得 2 点星光
-        case 105:
-            return [
-                { type: EffectType.STARLIGHT, amount: 2 }
-            ];
-			// 21 击：剑招，造成 6 点物理伤害
 		case 201:
 			return [
 				{ type: EffectType.DAMAGE, amount: 6, dtype: DamageType.PHYSICAL }
@@ -691,7 +754,111 @@ function card_get_effects(_id)
                 { type: EffectType.ADD_TO_HAND, amount: 1, card_id: 2, count: 10 },
                 { type: EffectType.STATUS,      status: StatusType.WIND_COURT, amount: 1, on_char: 1 }
             ];
-}
+
+
+        // 尘：星星的孩子
+        case 101: return [ { type: EffectType.DAMAGE, amount: 8, dtype: DamageType.MAGIC } ];
+        case 102: return [
+            { type: EffectType.DAMAGE, amount: 6, dtype: DamageType.MAGIC },
+            { type: EffectType.DAMAGE_OTHERS, amount: 6, dtype: DamageType.MAGIC }
+        ];
+        case 103: return [ { type: EffectType.STARLIGHT, amount: 2 } ];
+        case 104: return [ { type: EffectType.CUSTOM, action: "starseal", amount: 1 } ];
+        case 105: return [ { type: EffectType.DAMAGE, amount: 3, dtype: DamageType.MAGIC, other_attack_bonus: 6 } ];
+        case 106: return [
+            { type: EffectType.DAMAGE, amount: 4, dtype: DamageType.PHYSICAL },
+            { type: EffectType.ARMOR_BACKLINE, amount: 4, armor: ArmorType.GENERAL }
+        ];
+        case 107: return [
+            { type: EffectType.SCRY, amount: 5 },
+            { type: EffectType.DRAW, amount: 2 }
+        ];
+        case 108: return [
+            { type: EffectType.SCRY, amount: 3 },
+            { type: EffectType.STAR_PROJECTILE, amount: 0, bottom_count: true }
+        ];
+        case 109: return [ { type: EffectType.DAMAGE, amount: 25, dtype: DamageType.PHYSICAL } ];
+        case 110: return [ { type: EffectType.CUSTOM, action: "both_armor", amount: 3 } ];
+        case 111: return [
+            { type: EffectType.DAMAGE, amount: 7, dtype: DamageType.PHYSICAL },
+            { type: EffectType.STARLIGHT, amount: 1 }
+        ];
+        case 112: return [ { type: EffectType.CUSTOM, action: "pull_and_damage", amount: 6 } ];
+        case 113: return [ { type: EffectType.CUSTOM, action: "discard_choose", amount: 2 } ];
+        case 114: return [ { type: EffectType.DAMAGE, amount: 6, dtype: DamageType.MAGIC, bonus_starlight: true } ];
+        case 115: return [
+            { type: EffectType.DAMAGE, amount: 6, dtype: DamageType.PHYSICAL },
+            { type: EffectType.STARLIGHT, amount: 1, first_card_only: true }
+        ];
+        case 116: return [
+            { type: EffectType.STARLIGHT, amount: 1 },
+            { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 5, on_char: 2 },
+            { type: EffectType.BRING_TO_FRONT, amount: 1, on_char: 2 }
+        ];
+        case 117: return [
+            { type: EffectType.DRAW, amount: 2 },
+            { type: EffectType.SELECT_HAND, filter_id: 0, mode: "multi", min: 2, max: 2, action: { kind: "discard_starmark" } }
+        ];
+        case 118: return [ { type: EffectType.STATUS, status: StatusType.DEXTERITY, amount: 2, on_char: 2 } ];
+        case 119: return [ { type: EffectType.SELECT_HAND, filter_id: -2, mode: "single", min: 1, max: 1, action: { kind: "starlight_enable" } } ];
+        case 120: return [ { type: EffectType.CUSTOM, action: "purple_star", amount: 1 } ];
+        case 121: return [
+            { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 8, on_char: 2 },
+            { type: EffectType.NEXT_ENERGY, amount: 1 }
+        ];
+        case 122: return [
+            { type: EffectType.DAMAGE, amount: 15, dtype: DamageType.MAGIC, on_kill_starlight: 1 },
+            { type: EffectType.DAMAGE_OTHERS, amount: 15, dtype: DamageType.MAGIC, on_kill_starlight: 1 }
+        ];
+        case 123: return [ { type: EffectType.CUSTOM, action: "star_aura", amount: 2 } ];
+        case 124: return [ { type: EffectType.CUSTOM, action: "long_life", amount: 1 } ];
+        case 125: return [ { type: EffectType.CUSTOM, action: "retreat_mark", amount: 1 } ];
+        case 126: return [ { type: EffectType.DAMAGE, amount: 12, dtype: DamageType.PHYSICAL } ];
+        case 127: return [ { type: EffectType.CUSTOM, action: "front_lock", amount: 1 } ];
+        case 128: return [
+            { type: EffectType.ARMOR, armor: ArmorType.PHYSICAL, amount: 10, on_char: 2 },
+            { type: EffectType.ARMOR, armor: ArmorType.MAGIC, amount: 10, on_char: 2 }
+        ];
+        case 129: return [ { type: EffectType.CUSTOM, action: "temp_allies", amount: 3 } ];
+        case 130: return [ { type: EffectType.CUSTOM, action: "remove_armor", amount: 12 } ];
+        case 131: return [ { type: EffectType.RANDOM_DAMAGE, amount: 1, times: 7, dtype: DamageType.MAGIC } ];
+        case 132: return [ { type: EffectType.DAMAGE, amount: 28, dtype: DamageType.PHYSICAL } ];
+        case 133: return [ { type: EffectType.CUSTOM, action: "showmanship", amount: 5 } ];
+        case 134: return [ { type: EffectType.CUSTOM, action: "weaken_enemies", amount: 3 } ];
+        case 135: return [ { type: EffectType.CUSTOM, action: "ally_rotate_temp_magic", amount: 2 } ];
+        case 136: return [ { type: EffectType.CUSTOM, action: "rotate_and_mark", amount: 1 } ];
+        case 137: return [ { type: EffectType.DAMAGE, amount: 6, dtype: DamageType.MAGIC, bottom_bonus: 3 } ];
+        case 138: return [ { type: EffectType.CUSTOM, action: "next_attack_bonus", amount: 5 } ];
+        case 139: return [ { type: EffectType.CUSTOM, action: "shared_guard", amount: 10 } ];
+        case 140: return [ { type: EffectType.CUSTOM, action: "assist_star", amount: 5 } ];
+        case 141: return [
+            { type: EffectType.COUNTDOWN, amount: 1, owner: 2, effects: [
+                { type: EffectType.DRAW, amount: 2 },
+                { type: EffectType.STARLIGHT, amount: 2 }
+            ] }
+        ];
+        case 142: return [ { type: EffectType.CUSTOM, action: "wish_discover", amount: 1 } ];
+        case 143: return [
+            { type: EffectType.DAMAGE, amount: 15, dtype: DamageType.MAGIC },
+            { type: EffectType.STATUS, status: StatusType.FROZEN, amount: 1 }
+        ];
+        case 144: return [ { type: EffectType.CUSTOM, action: "star_bond", amount: 1 } ];
+        case 145: return [ { type: EffectType.CUSTOM, action: "heal_allies", amount: 5 } ];
+        case 146: return [ { type: EffectType.STARLIGHT, amount: 3 } ];
+        case 147: return [ { type: EffectType.CUSTOM, action: "team_echo", amount: 1 } ];
+        case 148: return [ { type: EffectType.CUSTOM, action: "mark_hand_draw", amount: 1 } ];
+        case 149: return [ { type: EffectType.CUSTOM, action: "night_guard", amount: 5 } ];
+        case 150: return [
+            { type: EffectType.STARLIGHT, amount: 1 },
+            { type: EffectType.CUSTOM, action: "stars_to_power", amount: 1 }
+        ];
+        case 151: return [
+            { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 16, on_char: 2 },
+            { type: EffectType.CUSTOM, action: "armor_allies_equal", amount: 1 }
+        ];
+        case 152: return [ { type: EffectType.CUSTOM, action: "star_walk", amount: 1 } ];
+
+    }
 
     // 没有写效果的牌，效果为空
     return [];
@@ -1790,6 +1957,50 @@ function card_get_object(_n)
         case 109: return obj_card_0109;
         case 110: return obj_card_0110;
 
+        // 尘（扩展牌）
+        case 111: return obj_card_0111;
+        case 112: return obj_card_0112;
+        case 113: return obj_card_0113;
+        case 114: return obj_card_0114;
+        case 115: return obj_card_0115;
+        case 116: return obj_card_0116;
+        case 117: return obj_card_0117;
+        case 118: return obj_card_0118;
+        case 119: return obj_card_0119;
+        case 120: return obj_card_0120;
+        case 121: return obj_card_0121;
+        case 122: return obj_card_0122;
+        case 123: return obj_card_0123;
+        case 124: return obj_card_0124;
+        case 125: return obj_card_0125;
+        case 126: return obj_card_0126;
+        case 127: return obj_card_0127;
+        case 128: return obj_card_0128;
+        case 129: return obj_card_0129;
+        case 130: return obj_card_0130;
+        case 131: return obj_card_0131;
+        case 132: return obj_card_0132;
+        case 133: return obj_card_0133;
+        case 134: return obj_card_0134;
+        case 135: return obj_card_0135;
+        case 136: return obj_card_0136;
+        case 137: return obj_card_0137;
+        case 138: return obj_card_0138;
+        case 139: return obj_card_0139;
+        case 140: return obj_card_0140;
+        case 141: return obj_card_0141;
+        case 142: return obj_card_0142;
+        case 143: return obj_card_0143;
+        case 144: return obj_card_0144;
+        case 145: return obj_card_0145;
+        case 146: return obj_card_0146;
+        case 147: return obj_card_0147;
+        case 148: return obj_card_0148;
+        case 149: return obj_card_0149;
+        case 150: return obj_card_0150;
+        case 151: return obj_card_0151;
+        case 152: return obj_card_0152;
+
         // 心羽
         case 201: return obj_card_0201;
         case 202: return obj_card_0202;
@@ -2084,7 +2295,8 @@ function card_spawn_from_entry(_entry, _x, _y)
 enum CardTag
 {
     SWORD,   // 剑招
-    HUNT     // 追猎：可以攻击到后场的敌人
+    HUNT,    // 追猎：可以攻击到后场的敌人
+    RANGED   // 远程：不会进入前场
 }
 
 function card_has_tag(_id, _tag)
@@ -2095,7 +2307,10 @@ function card_has_tag(_id, _tag)
             return ((_id >= 201 && _id <= 204) || (_id >= 241 && _id <= 246));
 
         case CardTag.HUNT:
-            return (_id == 202);
+            return (_id == 202 || _id == 126);
+
+        case CardTag.RANGED:
+            return (_id == 130);
     }
 
     return false;
