@@ -1087,7 +1087,6 @@ countdown_fire = function(_cd)
 
         // 只有伤害或对敌方施加的状态才需要敌方目标
         var needs_enemy = (e.type == EffectType.DAMAGE
-            || e.type == EffectType.DAMAGE_OTHERS
             || e.type == EffectType.DAMAGE_ARMOR_TOTAL
             || (e.type == EffectType.STATUS && !variable_struct_exists(e, "on_char")));
 
