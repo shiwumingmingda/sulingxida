@@ -397,10 +397,12 @@ function map_generate(_w, _h, _ap, _link_chance, _empty_ratio, _floor)
 
     map.type[map.boss_i] = NodeType.BOSS;
 
-    // 7. 进入地图时揭露所有空地和首领。
+    // 7. 开局不直接揭露空地和普通节点。
+    // 未探索的战斗类节点显示“凶煞”，其他未探索节点显示“隐秘”；
+    // 首领位置始终公开。实际空地只有进入视野后才会显示为空地。
     for (var reveal_i = 0; reveal_i < n; reveal_i++)
     {
-        if (map.type[reveal_i] == NodeType.EMPTY || map.type[reveal_i] == NodeType.BOSS)
+        if (map.type[reveal_i] == NodeType.BOSS)
             map.revealed[reveal_i] = true;
     }
 
