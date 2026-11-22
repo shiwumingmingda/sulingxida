@@ -67,11 +67,18 @@ if (scry_active)
             }
         }
 
-        var target_list = (my < room_height * 0.52) ? scry_top : scry_bottom;
-        var insert_at = 0;
-        while (insert_at < array_length(target_list)
-        && target_list[insert_at].x < mx) insert_at++;
-        array_insert(target_list, insert_at, moving);
+        if (my < room_height * 0.52)
+        {
+            var insert_at = 0;
+            while (insert_at < array_length(scry_top) && scry_top[insert_at].x < mx) insert_at++;
+            array_insert(scry_top, insert_at, moving);
+        }
+        else
+        {
+            var insert_at = 0;
+            while (insert_at < array_length(scry_bottom) && scry_bottom[insert_at].x < mx) insert_at++;
+            array_insert(scry_bottom, insert_at, moving);
+        }
         scry_drag_card = noone;
         scry_layout();
     }
@@ -212,6 +219,19 @@ if (turn_state == "enemy")
             var rot_en = enemies[0];
             array_delete(enemies, 0, 1);
             enemies[array_length(enemies)] = rot_en;
+
+            // 贯索锁定的敌人离开前场后，立即重新回到前场。
+            for (var lock_i = 0; lock_i < array_length(enemies); lock_i++)
+            {
+                var lock_enemy = enemies[lock_i];
+                if (!instance_exists(lock_enemy)) continue;
+                if (variable_instance_exists(lock_enemy, "force_front") && lock_enemy.force_front)
+                {
+                    array_delete(enemies, lock_i, 1);
+                    array_insert(enemies, 0, lock_enemy);
+                    break;
+                }
+            }
 
             enemy_phase = "attack";
         }
