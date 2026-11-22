@@ -320,7 +320,18 @@ function card_get_effects(_id)
 // 读取这张牌"当前"的效果列表（优先用牌自己的，没有就查表）
 function card_current_effects(_inst)
 {
+    // 合成、强化或其他效果修改过的卡牌，优先读取实例自身保存的效果
     if (variable_instance_exists(_inst, "effects")) return _inst.effects;
+
+    // 新卡优先读取 scr_card_new 中的数据
+    var new_effects = card_get_effects_new(_inst.card_id);
+
+    if (array_length(new_effects) > 0)
+    {
+        return new_effects;
+    }
+
+    // 没有新卡效果数据时，继续使用旧卡牌效果表
     return card_get_effects(_inst.card_id);
 }
 
@@ -886,6 +897,7 @@ function card_get_object(_n)
         case 14: return obj_card_0014;
         case 15: return obj_card_0015;
         case 16: return obj_card_0016;
+        case 17: return obj_card_0017;
         case 18: return obj_card_0018;
         case 19: return obj_card_0019;
         case 21: return obj_card_0021;
@@ -894,13 +906,13 @@ function card_get_object(_n)
         case 25: return obj_card_0025;
         case 26: return obj_card_0026;
         case 27: return obj_card_0027;
-        case 33: return obj_card_33;
-        case 34: return obj_card_34;
-        case 36: return obj_card_36;
-        case 37: return obj_card_37;
-        case 39: return obj_card_39;
-        case 41: return obj_card_41;
-        case 44: return obj_card_44;
+        case 33: return obj_card_0033;
+        case 34: return obj_card_0034;
+        case 36: return obj_card_0036;
+        case 37: return obj_card_0037;
+        case 39: return obj_card_0039;
+        case 41: return obj_card_0041;
+        case 44: return obj_card_0044;
 
         // 尘
         case 101: return obj_card_0101;
