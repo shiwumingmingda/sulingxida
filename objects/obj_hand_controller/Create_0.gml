@@ -664,6 +664,7 @@ turn_played_ids = [];
 discover_queue = [];
 attack_used_this_turn = array_create(5, false);
 attack_used_last_turn = array_create(5, false);
+team_echo_used = array_create(5, false);
 witch_chant_used = false;
 starter_played_this_turn = array_create(5, false);
 starfire_ready = false;
@@ -1527,6 +1528,17 @@ draw_specific = function(_card_id, _n)
 };
 
 // 移动至后场：后场上方的角色上场，前场的这个角色退到后场
+
+send_enemy_to_back = function(_enemy)
+{
+    for (var i = 0; i < array_length(enemies); i++)
+    {
+        if (enemies[i] != _enemy) continue;
+        array_delete(enemies, i, 1);
+        enemies[array_length(enemies)] = _enemy;
+        break;
+    }
+};
 
 bring_enemy_to_front = function(_enemy)
 {
