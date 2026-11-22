@@ -547,6 +547,12 @@ else
 
     var ctype = card_get_type(released_id);
 
+    // 地岳·镇垒强化后的岩盾会让苏灵兮进入前场
+    if (released_id == 4 && get_status(char_1, StatusType.ROCK_WALL) > 0)
+    {
+        bring_to_front(char_1);
+    }
+
     // 记录各角色本回合是否打出过攻击牌
     var attack_owner_n = card_get_owner(released_id);
     if (ctype == CardType.ATTACK && attack_owner_n > 0)
