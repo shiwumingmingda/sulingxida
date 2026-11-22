@@ -657,7 +657,7 @@ if (card_is_starter(released_id) && char_is_alive(card_owner)
 {
     witch_chant_used = true;
     countdown_add(card_get_owner(released_id), 1,
-        [ { type: EffectType.REPLAY_STARTER, card_id: released_id } ]);
+        [ { type: EffectType.REPLAY_STARTER, amount: 1, card_id: released_id } ]);
 }
 
 // 销毁打出的卡牌实例
