@@ -1029,6 +1029,21 @@ send_to_back = function(_char)
     bring_to_front(back_chars[0]);
 };
 
+// 前后场轮换：前场角色退至后场，后场角色进入前场
+rotate_character = function(_char)
+{
+    if (!char_is_alive(_char)) return;
+
+    if (front_char == _char)
+    {
+        send_to_back(_char);
+    }
+    else
+    {
+        bring_to_front(_char);
+    }
+};
+
 // 本角色所有能发现的牌
 discover_pool_char = function(_n)
 {
