@@ -371,7 +371,7 @@ if (selection_active)
         if (!instance_exists(qcard) || !selection_can_select(qcard)) continue;
 
         var selected = selection_has(qcard);
-        var qy = qcard.y - (selected ? 35 : 0);
+        var qy = qcard.y;
         var qalpha = selected ? 1 : 0.82;
 
         draw_set_alpha(qalpha);
