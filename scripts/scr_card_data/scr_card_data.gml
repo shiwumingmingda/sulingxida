@@ -37,7 +37,9 @@ enum EffectType
 	DAMAGE_ARMOR_TOTAL,  // 造成等同于护甲总和的伤害
 	SHUFFLE_ELEMENT,     // 随机一张元素牌（1~4）洗入抽牌堆
     ROTATE_SELF,         // 角色在前场和后场之间轮换
-    DRAW_IF_PLAYED       // 本回合打出过指定牌时抽牌
+    DRAW_IF_PLAYED,      // 本回合打出过指定牌时抽牌
+    SELECT_HAND,         // 打开通用手牌选择界面
+    ADD_ENTRY_TO_HAND    // 将保存的强化卡牌记录加入手牌
 }
 
 // 卡牌分类
@@ -858,6 +860,34 @@ case EffectType.DRAW_IF_PLAYED:
         with (obj_hand_controller)
         {
             draw_cards(_v);
+        }
+    }
+}
+break;
+
+case EffectType.SELECT_HAND:
+{
+    with (obj_hand_controller)
+    {
+        selection_start(_e.filter_id, _e.mode, _e.min, _e.max, _e.action);
+    }
+}
+break;
+
+case EffectType.ADD_ENTRY_TO_HAND:
+{
+    with (obj_hand_controller)
+    {
+        var entry = _e.entry;
+        if (array_length(hand) >= max_hand_size)
+        {
+            discard_pile[array_length(discard_pile)] = entry;
+        }
+        else
+        {
+            var spawned = card_spawn_from_entry(entry, room_width * 0.5, room_height - 115);
+            spawned.is_dealing = true;
+            hand[array_length(hand)] = spawned;
         }
     }
 }
