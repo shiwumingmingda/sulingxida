@@ -688,10 +688,10 @@ if (try_play && target != noone && target.is_dead)
     warning_timer = 90;
 }
 // 需要其他友方角色的牌不能选择尘自己。
-if (try_play && (released_card.card_id == 110 || released_card.card_id == 135 || released_card.card_id == 139)
+if (can_play && (released_card.card_id == 110 || released_card.card_id == 135 || released_card.card_id == 139)
 && target == char_2)
 {
-    try_play = false;
+    can_play = false;
     warning_text = "请选择其他友方角色";
     warning_timer = 90;
 }
