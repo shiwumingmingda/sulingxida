@@ -254,44 +254,36 @@ if (!selection_active && !selection_was_active)
 // ---------------------------------
 // 0. 敌人回合：出手 → 轮换 → 出手 → 轮换 → 出手
 // ---------------------------------
-// ---------------------------------
-// 0. 敌人回合：出手 → 轮换 → 出手 → 轮换 → 出手
-// ---------------------------------
 if (turn_state == "enemy")
 {
     enemy_timer++;
 
-    var enemy_wait = (enemy_phase == "attack")
-        ? enemy_delay
-        : enemy_rotate_delay;
+    // 出手前等 enemy_delay 帧；出手后等 enemy_rotate_delay 帧再轮换
+    var enemy_wait = (enemy_phase == "attack") ? enemy_delay : enemy_rotate_delay;
 
     if (enemy_timer >= enemy_wait)
     {
         enemy_timer = 0;
 
         if (enemy_phase == "attack")
-        {
-            // 当前前场敌人行动
-            var attacker = (array_length(enemies) > 0)
-                ? enemies[0] : noone;
+{
+    // 当前前场的敌人行动
+    var attacker = (array_length(enemies) > 0) ? enemies[0] : noone;
 
-            if (instance_exists(attacker))
-            {
-                monster_take_turn(attacker);
-            }
+    if (instance_exists(attacker))
+    {
+        monster_take_turn(attacker);
+    }
 
-            // 等待轮换
-            enemy_phase = "rotate";
-        }
+    enemy_phase = "rotate";
+}
         else if (enemies_any_pending())
         {
-            // 还有敌人没有行动：将当前敌人移到队伍末尾
+            // 还有敌人没出手：前场退到后场下方，上方进前场，下方挪到上方
             var rot_en = enemies[0];
-
             array_delete(enemies, 0, 1);
             enemies[array_length(enemies)] = rot_en;
 
-<<<<<<< Updated upstream
             // 贯索锁定的敌人离开前场后，立即重新回到前场。
             for (var lock_i = 0; lock_i < array_length(enemies); lock_i++)
             {
@@ -310,66 +302,50 @@ if (turn_state == "enemy")
         // 只有所有敌人都行动完毕，才开始新一轮玩家回合
         if (!enemies_any_pending())
         {
-=======
-            // 下一个敌人行动
-            enemy_phase = "attack";
-        }
-        else
-        {
-            // 所有敌人都已经行动，结束敌人回合
->>>>>>> Stashed changes
             turn_state = "player";
 
-            // 战斗回合数 +1
-            battle_round++;
+// 战斗回合数 +1，按遭遇表让增援入场
+battle_round++;
 
-            // 按遭遇表让增援入场
-            for (var ri = 0; ri < array_length(global.encounter.reinf); ri++)
-            {
-                var rf = global.encounter.reinf[ri];
+for (var ri = 0; ri < array_length(global.encounter.reinf); ri++)
+{
+    var rf = global.encounter.reinf[ri];
 
-                if (rf.round == battle_round && array_length(enemies) < 3)
-                {
-                    enemies[array_length(enemies)] =
-                        spawn_enemy(rf.id, array_length(enemies));
-                }
-            }
+    if (rf.round == battle_round && array_length(enemies) < 3)
+    {
+        enemies[array_length(enemies)] = spawn_enemy(rf.id, array_length(enemies));
+    }
+}
 
-            // 敌人效果：下回合第一张牌费用增加
-            first_cost_up = pending_cost_up;
-            pending_cost_up = 0;
+// 敌人"令你下回合第一张牌费用+1"在这个回合生效
+first_cost_up = pending_cost_up;
+pending_cost_up = 0;
 
-            // 恢复基础费用
-            energy = max_energy + next_turn_energy_bonus;
-            next_turn_energy_bonus = 0;
+// 基础费用 + 上回合效果带来的额外费用，用完后清零
+energy = max_energy + next_turn_energy_bonus;
+next_turn_energy_bonus = 0;
 
-<<<<<<< Updated upstream
 // 本回合打出的牌记录清零
 turn_played_ids = [];
 wind_blade_bonus = 0;
 witch_chant_used = false;
 starter_played_this_turn = array_create(5, false);
 starfire_ready = (get_status(char_1, StatusType.STARFIRE) > 0);
-=======
-            // 清空本回合出牌记录
-            turn_played_ids = [];
->>>>>>> Stashed changes
 
-            // 新回合：护甲清零、临时魔力和熔岩加护结束
-            with (obj_character_1)
-            {
-                if (get_status(id, StatusType.ARMOR_KEEP) > 0)
-                {
-                    clear_status(id, StatusType.ARMOR_KEEP);
-                }
-                else
-                {
-                    armor_general = 0;
-                    armor_physical = 0;
-                    armor_magic = 0;
-                }
+// 新回合：护甲清零（疾风步的"护甲保留"这一次不清零）；临时魔力、熔岩加护结束
+with (obj_character_1)
+{
+    if (get_status(id, StatusType.ARMOR_KEEP) > 0)
+    {
+        clear_status(id, StatusType.ARMOR_KEEP);
+    }
+    else
+    {
+        armor_general = 0;
+        armor_physical = 0;
+        armor_magic = 0;
+    }
 
-<<<<<<< Updated upstream
     clear_status(id, StatusType.TEMP_MAGIC);
     clear_status(id, StatusType.LAVA_WARD);
     clear_status(id, StatusType.ROCK_WALL);
@@ -439,59 +415,28 @@ if (char_is_alive(char_1))
     {
         request_discover(discover_pool_char(1), 3, "reading");
     }
-=======
-                clear_status(id, StatusType.TEMP_MAGIC);
-                clear_status(id, StatusType.LAVA_WARD);
-            }
 
-            // 星光可以再次使用
-            if (instance_exists(char_2))
-            {
-                char_2.starlight_used = false;
-            }
+    // 风息庭：每回合开始，将一张风刃置入手牌
+    repeat (get_status(char_1, StatusType.WIND_COURT))
+    {
+        add_card_to_hand_id(2, -1, 0);
+    }
+}
 
-            // 倒计时
-            countdown_tick();
+// 精进：每回合开始，每层往手牌里放一张 0 费的练心
+if (char_is_alive(char_3))
+{
+    repeat (get_status(char_3, StatusType.DILIGENCE))
+    {
+        add_card_to_hand_id(208, 0, 0);
+    }
+}
 
-            if (char_is_alive(char_1))
-            {
-                repeat (get_status(char_1, StatusType.RESONANCE))
-                {
-                    countdown_add(1, 1, [
-                        { type: EffectType.SHUFFLE_ELEMENT, amount: 1 }
-                    ]);
-                }
-
-                repeat (get_status(char_1, StatusType.READING))
-                {
-                    request_discover(discover_pool_char(1), 3);
-                }
->>>>>>> Stashed changes
-
-                repeat (get_status(char_1, StatusType.WIND_COURT))
-                {
-                    add_card_to_hand_id(2, -1, 0);
-                }
-            }
-
-            if (char_is_alive(char_3))
-            {
-                repeat (get_status(char_3, StatusType.DILIGENCE))
-                {
-                    add_card_to_hand(obj_card_208, 0);
-                }
-            }
-
-<<<<<<< Updated upstream
 // 抽 5 张牌
 draw_cards(5);
 
 // 紫微垣：每回合开始占卜2。
 if (char_is_alive(char_2) && char_2.purple_star) scry_start(2);
-=======
-            // 抽 5 张牌
-            draw_cards(5);
->>>>>>> Stashed changes
         }
     }
 }
