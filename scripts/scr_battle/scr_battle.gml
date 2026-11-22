@@ -43,38 +43,69 @@ function unit_armor_total(_u)
 function deal_damage(_target, _amount, _dtype)
 {
     if (unit_is_dead(_target)) return;
-	var armor_before = unit_armor_total(_target);
+
+    // 星印：敌方接下来的两个行动回合中受到的伤害提高
+    if (instance_exists(obj_hand_controller.char_2)
+    && obj_hand_controller.char_2.enemy_debuff_turns > 0
+    && !variable_instance_exists(_target, "is_dead"))
+    {
+        _amount += obj_hand_controller.char_2.enemy_damage_taken_bonus;
+    }
+
+    var armor_before = unit_armor_total(_target);
     var remaining = _amount;
 
     if (_dtype == DamageType.PHYSICAL)
-    {
         remaining = armor_absorb(_target, "armor_physical", remaining);
-    }
     else
-    {
         remaining = armor_absorb(_target, "armor_magic", remaining);
-    }
 
     remaining = armor_absorb(_target, "armor_general", remaining);
 
-    // 剩下的才扣血
-    _target.hp = max(_target.hp - remaining, 0);
+    // 天河渡：目标护甲抵消后，剩余伤害由尘承担
+    var share_owner = variable_instance_exists(_target, "shared_damage_owner")
+        ? _target.shared_damage_owner : noone;
+    if (remaining > 0 && instance_exists(share_owner) && share_owner != _target)
+    {
+        var shared = remaining;
+        remaining = 0;
+        deal_damage(share_owner, shared, _dtype);
+    }
 
-    // 飘字显示这次攻击的伤害数值（包括被护甲抵消的部分）
+    // 长明：致命伤害改为保留1点体力，然后移除此效果
+    if (remaining > 0 && variable_instance_exists(_target, "long_life") && _target.long_life
+    && _target.hp - remaining <= 0)
+    {
+        _target.hp = 1;
+        _target.long_life = false;
+        remaining = 0;
+        spawn_float_text(_target, "长明", make_color_rgb(255, 220, 120));
+    }
+    else
+    {
+        _target.hp = max(_target.hp - remaining, 0);
+    }
+
+    // 炫技：若尘在下回合开始前受到实际伤害，失去额外护甲奖励
+    if (remaining > 0 && instance_exists(obj_hand_controller.char_2)
+    && _target == obj_hand_controller.char_2
+    && obj_hand_controller.char_2.showmanship_active)
+    {
+        obj_hand_controller.char_2.showmanship_hit = true;
+    }
+
     var cx = (_target.bbox_left + _target.bbox_right) * 0.5;
     var cy = (_target.bbox_top + _target.bbox_bottom) * 0.5;
-
     var t = instance_create_layer(cx, cy, "Instances", obj_damage_text);
     t.text = "-" + string(_amount);
-	// 熔岩加护：损失护甲后，将一张火球置入抽牌堆
-if (unit_armor_total(_target) < armor_before && get_status(_target, StatusType.LAVA_WARD) > 0)
-{
-    with (obj_hand_controller)
+
+    // 熔岩加护：损失护甲后，将一张火球置入抽牌堆
+    if (unit_armor_total(_target) < armor_before && get_status(_target, StatusType.LAVA_WARD) > 0)
     {
-        shuffle_into_deck(card_get_object(1));
+        with (obj_hand_controller) shuffle_into_deck(card_get_object(1));
     }
-}
-	battle_check_death(_target);
+
+    battle_check_death(_target);
 }
 
 // 给角色增加星光
