@@ -99,10 +99,10 @@ function card_get_description(_inst)
         case 14: return "倒计时1：移动至后场，发现一张本角色的牌";
         case 15: return "获得1费。倒计时1：获得1费";
         case 16: return "消耗，获得1点魔力，倒计时1：获得1点魔力。倒计时2：获得1点魔力";
-        case 17: return "移动，获得3点护甲。若你本回合使用过【风刃】，抽一张牌";
+        case 17: return "移动，获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲。若你本回合使用过【风刃】，抽一张牌";
         case 18: return "选择一张初始牌并将其置入你的手牌";
         case 19: return "对敌方角色造成" + string(card_current_damage(_inst)) + "点伤害。若击杀目标则将一张0费的【火球】置入手牌";
-        case 21: return "抽一张牌，获得1点临时魔力。若你本回合使用过两种不同的初始牌，获得1点费用";
+        case 21: return "抽" + string(card_current_draw(_inst)) + "张牌，获得" + string(card_current_status(_inst, StatusType.TEMP_MAGIC)) + "点临时魔力。若你本回合使用过两种不同的初始牌，获得" + string(card_current_value(_inst, EffectType.GAIN_ENERGY)) + "点费用";
         case 22: return "造成" + string(card_effect_at(_inst, 0)) + "点魔法伤害。若目标被冻结，则额外造成"
                       + string(card_effect_at(_inst, 1)) + "点魔法伤害";
         case 24: return "消耗一张【风刃】，令你手牌中的所有【火球】造成的伤害+3";
@@ -122,9 +122,9 @@ function card_get_description(_inst)
         case 37: return "回合开始时，发现一张本角色的牌，若你在本回合使用，获得1费";
         case 39: return "令本角色所有的倒计时-1";
         case 38: return "随机视为使用一张本角色的初始牌，并将该初始牌的复制置入手牌";
-        case 41: return "消耗，将本角色的所有初始牌各一张置入你的手牌，将其变为0费。然后回复5点体力值";
+        case 41: return "消耗，将本角色的所有初始牌各一张置入你的手牌，将其变为0费。然后回复" + string(card_current_value(_inst, EffectType.HEAL)) + "点体力值";
         case 40: return "消耗。令你手牌、抽牌堆、弃牌堆中的所有苏灵兮初始牌各进行一次合成强化";
-        case 42: return "所有友方角色获得倒计时1：若本角色上回合没有使用过攻击牌，获得10点护甲";
+        case 42: return "所有友方角色获得倒计时1：若本角色上回合没有使用过攻击牌，获得10点护甲（实际护甲还会受到各角色敏捷影响）";
         case 43: return "在本局对战剩余时间内，每回合当本角色第一次从手牌中打出初始牌时，倒计时1：视为使用该初始牌";
         case 45: return "将你手牌、抽牌堆和弃牌堆中的所有【火球】合成为一张，然后使用并消耗";
         case 46: return "消耗。选择手牌中的一张初始牌，将其消耗。倒计时2：将一张其合成强化后的置入手牌";
@@ -134,13 +134,13 @@ function card_get_description(_inst)
         
         // 尘：星星的孩子
         case 101: return "造成" + string(card_current_damage(_inst)) + "点法术伤害";
-        case 102: return "对所有敌人造成" + string(card_current_damage(_inst)) + "点法术伤害，\n对其他敌人造成" + string(card_current_others(_inst)) + "点法术伤害";
+        case 102: return "对前场敌人造成" + string(card_current_damage(_inst)) + "点法术伤害，\n对其他敌人造成" + string(card_current_others(_inst)) + "点法术伤害";
         case 103: return "获得" + string(card_current_xingguang(_inst)) + "点星光";
         case 104: return "令敌方接下来的两个回合受到的伤害+4，造成的伤害-3";
-        case 105: return "造成" + string(card_current_damage(_inst)) + "点法术伤害；若本回合其他角色使用过攻击牌，伤害提高";
-        case 106: return "造成" + string(card_current_damage(_inst)) + "点物理伤害，令所有后场友方角色获得" + string(card_current_value(_inst, EffectType.ARMOR_BACKLINE)) + "点护甲";
-        case 107: return "占卜5，然后抽2张牌";
-        case 108: return "占卜3，然后向敌人投射星星，造成等同于置入牌堆底数量的伤害";
+        case 105: return "造成" + string(card_current_damage(_inst)) + "点法术伤害；若本回合其他角色使用过攻击牌，此伤害额外+6";
+        case 106: return "造成" + string(card_current_damage(_inst)) + "点物理伤害，令所有后场友方角色获得4点护甲（实际护甲还会受到各角色敏捷影响）";
+        case 107: return "占卜" + string(card_current_value(_inst, EffectType.SCRY)) + "，然后抽" + string(card_current_draw(_inst)) + "张牌";
+        case 108: return "占卜" + string(card_current_value(_inst, EffectType.SCRY)) + "，然后向敌人投射星星，造成等同于置入牌堆底数量的伤害";
         case 109: return "造成" + string(card_current_damage(_inst)) + "点物理伤害";
         case 110: return "令一名其他友方角色和尘各获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲";
         case 111: return "造成" + string(card_current_damage(_inst)) + "点物理伤害，获得" + string(card_current_xingguang(_inst)) + "点星光";
