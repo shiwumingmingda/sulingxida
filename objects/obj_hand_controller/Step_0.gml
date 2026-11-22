@@ -941,10 +941,11 @@ if (char_is_alive(char_2) && char_2.team_echo_active && (ctype == CardType.ATTAC
     var actor_id = card_get_owner(released_id);
     if (actor_id <= 0)
     {
-        if (target == char_1) actor_id = 1;
-        else if (target == char_2) actor_id = 2;
-        else if (target == char_3) actor_id = 3;
-        else if (target == char_4) actor_id = 4;
+        var actor_target = (target != noone) ? target : effect_target;
+        if (actor_target == char_1) actor_id = 1;
+        else if (actor_target == char_2) actor_id = 2;
+        else if (actor_target == char_3) actor_id = 3;
+        else if (actor_target == char_4) actor_id = 4;
     }
 
     if (actor_id > 0 && !team_echo_used[actor_id])
@@ -954,7 +955,10 @@ if (char_is_alive(char_2) && char_2.team_echo_active && (ctype == CardType.ATTAC
         for (var ei = 0; ei < array_length(echo_effects); ei++)
         {
             var echo_effect = echo_effects[ei];
-            if (echo_effect.type == EffectType.SCRY || echo_effect.type == EffectType.SELECT_HAND)
+            if (echo_effect.type == EffectType.SCRY
+            || echo_effect.type == EffectType.SELECT_HAND
+            || echo_effect.type == EffectType.DISCOVER_OWN
+            || echo_effect.type == EffectType.DISCOVER_LIST)
                 has_modal = true;
 
             if (echo_effect.type == EffectType.CUSTOM
