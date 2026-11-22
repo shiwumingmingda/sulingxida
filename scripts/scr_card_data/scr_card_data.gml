@@ -1076,7 +1076,7 @@ case EffectType.MERGE_ALL_FIREBALLS:
                 best_fire_power = hand_power;
                 best_fire_entry = card_entry_from_instance(hcard);
             }
-            obj_hand_controller.remove_card_from_hand(hcard);
+            with (obj_hand_controller) remove_card_from_hand(hcard);
         }
     }
 
