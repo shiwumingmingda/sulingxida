@@ -3,13 +3,36 @@
 
 function draw_target_arrow(_x0, _y0, _x2, _y2, _col)
 {
-    var head_len = 32;   // 箭头头部长度
-    var head_w   = 18;   // 箭头头部半宽
-    var steps    = 30;   // 曲线分段数
+    var head_len = 32;
+    var head_w = 18;
+    var steps = 30;
 
     // 曲线控制点：取两端中间，并向上抬高，让箭头向上弯
     var x1 = (_x0 + _x2) * 0.5;
     var y1 = min(_y0, _y2) - 140;
+
+    // 曲线只计算一次，之后分别绘制描边和主体
+    var path_x = [_x0];
+    var path_y = [_y0];
+
+    for (var k = 1; k <= steps; k++)
+    {
+        var t = k / steps;
+        var bx = sqr(1 - t) * _x0 + 2 * (1 - t) * t * x1 + sqr(t) * _x2;
+        var by = sqr(1 - t) * _y0 + 2 * (1 - t) * t * y1 + sqr(t) * _y2;
+
+        if (point_distance(bx, by, _x2, _y2) < head_len) break;
+
+        array_push(path_x, bx);
+        array_push(path_y, by);
+    }
+
+    var last = array_length(path_x) - 1;
+    var px = path_x[last];
+    var py = path_y[last];
+    var dir = point_direction(px, py, _x2, _y2);
+    var base_x = _x2 - lengthdir_x(head_len, dir);
+    var base_y = _y2 - lengthdir_y(head_len, dir);
 
     // 先画黑色描边，再画彩色主体
     for (var pass = 0; pass < 2; pass++)
@@ -17,27 +40,11 @@ function draw_target_arrow(_x0, _y0, _x2, _y2, _col)
         draw_set_color((pass == 0) ? c_black : _col);
         var lw = (pass == 0) ? 12 : 7;
 
-        var px = _x0;
-        var py = _y0;
-
-        for (var k = 1; k <= steps; k++)
+        for (var p = 1; p < array_length(path_x); p++)
         {
-            var t = k / steps;
-            var bx = sqr(1 - t) * _x0 + 2 * (1 - t) * t * x1 + sqr(t) * _x2;
-            var by = sqr(1 - t) * _y0 + 2 * (1 - t) * t * y1 + sqr(t) * _y2;
-
-            // 快到箭头头部了就停
-            if (point_distance(bx, by, _x2, _y2) < head_len) break;
-
-            draw_line_width(px, py, bx, by, lw);
-            px = bx;
-            py = by;
+            draw_line_width(path_x[p - 1], path_y[p - 1], path_x[p], path_y[p], lw);
         }
 
-        // 最后一段接到箭头头部的底边
-        var dir = point_direction(px, py, _x2, _y2);
-        var base_x = _x2 - lengthdir_x(head_len, dir);
-        var base_y = _y2 - lengthdir_y(head_len, dir);
         draw_line_width(px, py, base_x, base_y, lw);
     }
 
