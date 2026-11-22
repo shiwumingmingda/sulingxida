@@ -45,13 +45,25 @@ if (scry_active)
     if (mouse_check_button_released(mb_left) && instance_exists(scry_drag_card))
     {
         var moving = scry_drag_card;
-        var old_list = (array_get_index(scry_top, moving) >= 0) ? scry_top : scry_bottom;
-        for (var oi = 0; oi < array_length(old_list); oi++)
+        var was_top = false;
+        for (var oi = 0; oi < array_length(scry_top); oi++)
         {
-            if (old_list[oi] == moving)
+            if (scry_top[oi] == moving)
             {
-                array_delete(old_list, oi, 1);
+                array_delete(scry_top, oi, 1);
+                was_top = true;
                 break;
+            }
+        }
+        if (!was_top)
+        {
+            for (var oi = 0; oi < array_length(scry_bottom); oi++)
+            {
+                if (scry_bottom[oi] == moving)
+                {
+                    array_delete(scry_bottom, oi, 1);
+                    break;
+                }
             }
         }
 
@@ -861,6 +873,52 @@ with (released_card)
 {
     instance_destroy();
 }
+
+// 尘的群星因你我而相连：每名友方角色每回合第一次使用攻击/技能牌，尘额外结算一次。
+if (char_is_alive(char_2) && char_2.team_echo_active && (ctype == CardType.ATTACK || ctype == CardType.SKILL))
+{
+    var actor_id = card_get_owner(released_id);
+    if (actor_id <= 0)
+    {
+        if (target == char_1) actor_id = 1;
+        else if (target == char_2) actor_id = 2;
+        else if (target == char_3) actor_id = 3;
+        else if (target == char_4) actor_id = 4;
+    }
+
+    if (actor_id > 0 && !team_echo_used[actor_id])
+    {
+        var has_scry = false;
+        var echo_effects = card_current_effects(released_card);
+        for (var ei = 0; ei < array_length(echo_effects); ei++)
+            if (echo_effects[ei].type == EffectType.SCRY) has_scry = true;
+
+        team_echo_used[actor_id] = true;
+        if (!has_scry)
+            card_play_effects(released_card, effect_target, hit_enemy);
+    }
+}
+
+// 星河相连：友方攻击后，尘向前场敌人投射星星。
+if (ctype == CardType.ATTACK && char_is_alive(char_2) && char_2.star_bond_active
+&& array_length(enemies) > 0 && instance_exists(enemies[0]))
+{
+    var bond_shot = instance_create_layer(char_2.x, char_2.y, "Instances", obj_star_projectile);
+    bond_shot.target_enemy = enemies[0];
+    bond_shot.damage = 5;
+    bond_shot.damage_type = DamageType.MAGIC;
+}
+
+// 参商：尘使用攻击牌后，令标记目标退至后场。
+if (ctype == CardType.ATTACK && released_id >= 101 && released_id <= 200
+&& instance_exists(char_2.retreat_mark_target))
+{
+    send_enemy_to_back(char_2.retreat_mark_target);
+}
+
+// 星灭：使用后自身费用提高1点，并保存在弃牌堆记录中。
+if (released_id == 134 && !card_is_exhaust(released_id) && array_length(discard_pile) > 0)
+    discard_pile[array_length(discard_pile) - 1].cost = card_current_cost(released_card) + 1;
 
 // 角色3的天赋：打出攻击牌 +1，累计到上限就归零并触发（发现）
 if (char_is_alive(char_3) && card_counts_for_discover(released_id))
