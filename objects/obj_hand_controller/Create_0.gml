@@ -1103,7 +1103,6 @@ countdown_fire = function(_cd)
             if (instance_exists(armor_receiver))
             {
                 fire_value += get_status(armor_receiver, StatusType.DEXTERITY);
-                if (variable_global_exists("armor_bonus")) fire_value += global.armor_bonus;
                 if (get_status(armor_receiver, StatusType.ROCK_WALL) > 0) fire_value *= 2;
             }
         }
