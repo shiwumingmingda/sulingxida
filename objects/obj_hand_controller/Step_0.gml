@@ -306,6 +306,9 @@ for (var i = 0; i < array_length(hand); i++)
 
     if (!instance_exists(c)) continue;
 
+    // 阅读的加费机会只属于发现它的这个回合
+    if (variable_instance_exists(c, "reading_bonus")) c.reading_bonus = false;
+
     if (card_has_retain(c.card_id) || (variable_instance_exists(c, "retain_once") && c.retain_once))
 {
     c.retain_once = false;   // "保留一回合"只保留这一次
@@ -587,6 +590,13 @@ else
     }
 	first_cost_up = 0;   // 本回合使用的第一张牌已经用掉了这个费用加成
 	turn_played_ids[array_length(turn_played_ids)] = released_id;   // 记录本回合打出的牌
+
+// 阅读：打出本回合发现的牌时获得1费（一次性）
+if (variable_instance_exists(released_card, "reading_bonus") && released_card.reading_bonus)
+{
+    energy += 1;
+    released_card.reading_bonus = false;
+}
 
 // 星火与燎原若在本回合已经使用过初始牌后才打出，则留到下回合触发
 if (released_id == 23)
