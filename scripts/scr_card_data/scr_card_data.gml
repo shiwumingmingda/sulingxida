@@ -2410,6 +2410,12 @@ function card_target_kind(_id)
 }
 
 // 是否是指向型卡牌（拖动时变成箭头）
+// 这些牌要求选择尘以外的友方角色。
+function card_requires_other_friend(_id)
+{
+    return (_id == 110 || _id == 135 || _id == 139);
+}
+
 function card_needs_target(_id)
 {
     return (card_target_kind(_id) != TargetKind.NONE);
