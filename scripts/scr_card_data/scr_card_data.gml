@@ -1710,11 +1710,17 @@ function card_spawn_from_entry(_entry, _x, _y)
     }
 
     inst.merge_level = _entry.merge_level;
-	
-	if (!is_undefined(_entry.cost))
-{
-    inst.cost = _entry.cost;
-}
+
+    // 苏灵兮的四张初始牌：获得时附带一次性保留，经过一个回合后正常弃置。
+    if (inst.card_id >= 1 && inst.card_id <= 4)
+    {
+        inst.retain_once = true;
+    }
+
+    if (!is_undefined(_entry.cost))
+    {
+        inst.cost = _entry.cost;
+    }
 
     return inst;
 }
