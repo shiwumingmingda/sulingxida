@@ -1128,16 +1128,20 @@ case EffectType.MERGE_ALL_FIREBALLS:
 
     if (fire_count > 0)
     {
-        var merge_level = 0;
+        // 1~3张都按一级强化处理；4~9张按二级；10~27张按三级
+        // 数量继续增加时，按每三级一组继续向上取整。
+        var desired_merge_level = 1;
         var remaining = fire_count;
-        while (remaining > 1)
+        while (remaining > 3)
         {
             remaining = ceil(remaining / 3);
-            merge_level++;
+            desired_merge_level++;
         }
 
         var merged_inst = card_spawn_from_entry(best_fire_entry, -1000, -1000);
-        repeat (merge_level) card_double_effects(merged_inst);
+        var existing_merge_level = card_merge_level(merged_inst);
+        var extra_merge_times = max(desired_merge_level - existing_merge_level, 0);
+        repeat (extra_merge_times) card_double_effects(merged_inst);
 
         var merged_target = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
         card_play_effects(merged_inst, _target, merged_target);
