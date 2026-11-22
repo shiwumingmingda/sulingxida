@@ -1142,7 +1142,42 @@ case EffectType.REPLAY_STARTER:
     var replay_inst = card_spawn_from_entry(card_make_entry(replay_obj), -1000, -1000);
     var replay_owner = card_get_owner_instance(_e.card_id);
     var replay_enemy = (array_length(obj_hand_controller.enemies) > 0) ? obj_hand_controller.enemies[0] : noone;
+
+    // 倒计时重放也视为本回合使用过这张初始牌
+    obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = _e.card_id;
+    if (_e.card_id >= 1 && _e.card_id <= 3)
+    {
+        obj_hand_controller.attack_used_this_turn[1] = true;
+        with (obj_hand_controller) bring_to_front(replay_owner);
+    }
+    else if (_e.card_id == 4 && get_status(replay_owner, StatusType.ROCK_WALL) > 0)
+    {
+        with (obj_hand_controller) bring_to_front(replay_owner);
+    }
+
+    if (obj_hand_controller.starfire_ready && get_status(replay_owner, StatusType.STARFIRE) > 0)
+    {
+        card_double_effects(replay_inst);
+        clear_status(replay_owner, StatusType.STARFIRE);
+        obj_hand_controller.starfire_ready = false;
+    }
+
     card_play_effects(replay_inst, replay_owner, replay_enemy);
+
+    // 重放霜落时同样会触发冰寒·落雨
+    if (_e.card_id == 3 && get_status(replay_owner, StatusType.FROST_RAIN) > 0)
+    {
+        clear_status(replay_owner, StatusType.FROST_RAIN);
+        var replay_targets = copy_array(obj_hand_controller.enemies);
+        for (var ri = 0; ri < array_length(replay_targets); ri++)
+        {
+            if (replay_targets[ri] != replay_enemy && instance_exists(replay_targets[ri]))
+            {
+                card_play_effects(replay_inst, replay_owner, replay_targets[ri]);
+            }
+        }
+    }
+
     with (replay_inst) instance_destroy();
 }
 break;
