@@ -145,6 +145,22 @@
       "name": "角色",
       "resourceType": "GMFolder",
       "resourceVersion": "2.0"
+    },
+    {
+      "$GMFolder": "",
+      "%Name": "补给",
+      "folderPath": "folders/补给.yy",
+      "name": "补给",
+      "resourceType": "GMFolder",
+      "resourceVersion": "2.0"
+    },
+    {
+      "$GMFolder": "",
+      "%Name": "药物",
+      "folderPath": "folders/补给/药物.yy",
+      "name": "药物",
+      "resourceType": "GMFolder",
+      "resourceVersion": "2.0"
     }
   ],
   "ForcedPrefabProjectReferences": [],
