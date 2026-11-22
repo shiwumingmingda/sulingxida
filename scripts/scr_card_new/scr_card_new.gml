@@ -292,7 +292,7 @@ function card_get_effects_new(_id)
 
         // 30 狂风·凝盾：消耗任意张风刃，获得其伤害总和两倍的护甲
         case 30:
-            return [ { type: EffectType.SELECT_HAND, filter_id: 2, mode: "multi", min: 1, max: 999, action: { kind: "wind_shield" } } ];
+            return [ { type: EffectType.SELECT_HAND, filter_id: 2, mode: "multi", min: 0, max: 999, action: { kind: "wind_shield" } } ];
 
         // 31 狂风·流羽：消耗一张风刃，敌方前排移动；本回合风刃伤害+2
         case 31:
