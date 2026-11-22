@@ -195,6 +195,7 @@ with (obj_character_1)
 if (instance_exists(char_2)) clear_status(char_2, StatusType.ROCK_WALL);
 if (instance_exists(char_3)) clear_status(char_3, StatusType.ROCK_WALL);
 if (instance_exists(char_4)) clear_status(char_4, StatusType.ROCK_WALL);
+rock_wall_ready = false;
 
 // 新回合：星光可以再次使用
 if (instance_exists(char_2))
@@ -612,7 +613,7 @@ if (released_id == 23)
     var ctype = card_get_type(released_id);
 
     // 地岳·镇垒强化后的岩盾：被指定的角色进入前场，并在本回合获得的护甲翻倍
-    if (released_id == 4 && get_status(char_1, StatusType.ROCK_WALL) > 0 && target != noone)
+    if (released_id == 4 && rock_wall_ready && target != noone)
     {
         bring_to_front(target);
         add_status(target, StatusType.ROCK_WALL, 1);
