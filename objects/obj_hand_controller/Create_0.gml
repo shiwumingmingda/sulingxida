@@ -706,7 +706,7 @@ selection_finish = function()
             with (upgraded) instance_destroy();
             remove_card_from_hand(chosen);
             countdown_add(1, 2, [
-                { type: EffectType.ADD_ENTRY_TO_HAND, entry: upgraded_entry }
+                { type: EffectType.ADD_ENTRY_TO_HAND, amount: 1, entry: upgraded_entry }
             ]);
         }
         break;
