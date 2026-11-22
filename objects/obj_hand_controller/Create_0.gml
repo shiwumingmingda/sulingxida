@@ -1,5 +1,7 @@
 
 /// obj_hand_controller - Create Event
+if (!variable_global_exists("chinese_font"))
+    global.chinese_font = font_add("QingNiaoHuaGuangJianMeiHei-2.ttf", 24, false, false, 32, 65535);
 // 测试用临时按钮：左上角
 test_x1 = 20;
 test_x2 = 190;
