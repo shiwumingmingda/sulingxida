@@ -663,7 +663,7 @@ if (card_is_starter(released_id) && char_is_alive(card_owner)
 && starfire_ready && get_status(card_owner, StatusType.STARFIRE) > 0)
 {
     card_double_effects(released_card);
-    clear_status(card_owner, StatusType.STARFIRE);
+    // 状态持续整个战斗；本回合触发后只关闭本回合的触发资格
     starfire_ready = false;
 }
 
