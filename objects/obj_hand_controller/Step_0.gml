@@ -507,6 +507,34 @@ if (try_play && need_id > 0 && !hand_has_card(need_id, released_card))
     warning_text = "手牌中没有所需的牌";
     warning_timer = 90;
 }
+
+if (try_play && released_id == 35 && array_length(hand) <= 1)
+{
+    try_play = false;
+    warning_text = "手牌中没有可转化的牌";
+    warning_timer = 90;
+}
+
+if (try_play && released_id == 46)
+{
+    var has_sulingxi_starter = false;
+    for (var si = 0; si < array_length(hand); si++)
+    {
+        var starter_card = hand[si];
+        if (starter_card != released_card && instance_exists(starter_card)
+        && starter_card.card_id >= 1 && starter_card.card_id <= 4)
+        {
+            has_sulingxi_starter = true;
+            break;
+        }
+    }
+    if (!has_sulingxi_starter)
+    {
+        try_play = false;
+        warning_text = "手牌中没有苏灵兮的初始牌";
+        warning_timer = 90;
+    }
+}
 if (try_play)
 {
         var released_id = released_card.card_id;
