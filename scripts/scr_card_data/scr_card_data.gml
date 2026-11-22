@@ -964,10 +964,11 @@ case EffectType.RANDOM_STARTER:
     }
 
     // 星火与燎原也会作用于这次视为使用的初始牌
-    if (get_status(random_owner, StatusType.STARFIRE) > 0)
+    if (obj_hand_controller.starfire_ready && get_status(random_owner, StatusType.STARFIRE) > 0)
     {
         card_double_effects(random_inst);
         clear_status(random_owner, StatusType.STARFIRE);
+        obj_hand_controller.starfire_ready = false;
     }
 
     card_play_effects(random_inst, random_owner, random_enemy);
