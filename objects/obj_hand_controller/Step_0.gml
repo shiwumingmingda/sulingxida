@@ -204,6 +204,24 @@ if (discover_active)
 // 手牌选择界面：只允许选择符合条件的手牌，右侧按钮确认
 // ---------------------------------
 var selection_was_active = selection_active;
+selection_hover_card = noone;
+if (selection_active)
+{
+    // 选择界面也沿用普通手牌的悬停检测，确保所有选牌效果都能预览。
+    for (var hi = array_length(hand) - 1; hi >= 0; hi--)
+    {
+        var hcard = hand[hi];
+        if (!instance_exists(hcard) || !selection_can_select(hcard)) continue;
+        var hw = sprite_get_width(hcard.sprite_index) * hcard.image_xscale * 0.5;
+        var hh = sprite_get_height(hcard.sprite_index) * hcard.image_yscale * 0.5;
+        if (point_in_rectangle(mx, my, hcard.x - hw, hcard.y - hh,
+            hcard.x + hw, hcard.y + hh))
+        {
+            selection_hover_card = hcard;
+            break;
+        }
+    }
+}
 if (selection_active && mouse_check_button_pressed(mb_left))
 {
     if (mx >= end_button_x1 && mx <= end_button_x2
