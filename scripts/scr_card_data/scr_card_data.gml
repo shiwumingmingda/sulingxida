@@ -63,7 +63,7 @@ function card_get_type(_id)
     }
 
     // 技能牌：4~5、105~107、207~208、302~304
-    if ((_id >= 4 && _id <= 6) || (_id >= 105 && _id <= 107)
+    if ((_id >= 4 && _id <= 5) || (_id >= 105 && _id <= 107)
     ||  (_id >= 207 && _id <= 208) || (_id >= 302 && _id <= 304))
     {
         return CardType.SKILL;
