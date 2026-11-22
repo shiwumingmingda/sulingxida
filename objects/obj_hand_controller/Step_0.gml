@@ -5,6 +5,44 @@ var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
 
+
+if (discard_choice_active)
+{
+    if (mouse_check_button_pressed(mb_left))
+    {
+        if (mx >= discard_choice_x1 && mx <= discard_choice_x2
+        && my >= discard_choice_y1 && my <= discard_choice_y2)
+        {
+            discard_choice_finish();
+            exit;
+        }
+
+        for (var di = 0; di < array_length(discard_choice_options); di++)
+        {
+            var opt = discard_choice_options[di];
+            if (!instance_exists(opt.card)) continue;
+            var hw = sprite_get_width(opt.card.sprite_index) * discard_choice_scale * 0.5;
+            var hh = sprite_get_height(opt.card.sprite_index) * discard_choice_scale * 0.5;
+            if (point_in_rectangle(mx, my, opt.card.x - hw, opt.card.y - hh,
+                opt.card.x + hw, opt.card.y + hh))
+            {
+                if (opt.selected)
+                    opt.selected = false;
+                else
+                {
+                    var selected_count = 0;
+                    for (var si = 0; si < array_length(discard_choice_options); si++)
+                        if (discard_choice_options[si].selected) selected_count++;
+                    if (selected_count < discard_choice_max) opt.selected = true;
+                }
+                break;
+            }
+        }
+    }
+
+    exit;
+}
+
 // 占卜界面：暂停其他操作，只处理拖动、排序和确认。
 if (scry_active)
 {
