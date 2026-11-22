@@ -477,6 +477,8 @@ discover_queue = [];
 attack_used_this_turn = array_create(4, false);
 attack_used_last_turn = array_create(4, false);
 witch_chant_used = false;
+starter_played_this_turn = false;
+starfire_ready = false;
 wind_blade_bonus = 0;
 selection_active = false;
 selection_cards = [];
@@ -1010,6 +1012,8 @@ turn_played_ids = [];     // 本回合打出过的牌编号
 attack_used_this_turn = array_create(4, false);
 attack_used_last_turn = array_create(4, false);
 witch_chant_used = false;
+starter_played_this_turn = false;
+starfire_ready = false;
 discover_queue = [];      // 排队等待的发现
 
 countdown_add = function(_owner, _turns, _effects)
