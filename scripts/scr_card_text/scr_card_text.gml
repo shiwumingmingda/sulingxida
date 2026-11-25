@@ -183,7 +183,7 @@ function card_get_description(_inst)
         case 147: return "本场战斗中，每回合每名友方角色使用的第一张技能牌或攻击牌额外结算一次";
         case 148: return "消耗。为所有手牌施加【繁星】，然后弃置所有手牌并抽取等量的牌";
         case 149: return "在本场战斗中，当一名友方角色受到攻击时，令其获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲";
-        case 150: return "消耗。获得" + string(card_current_xingguang(_inst)) + "点星光，然后获得等同于当前星光数量的魔力和护甲";
+        case 150: return "获得" + string(card_current_xingguang(_inst)) + "点星光，然后获得等同于当前星光数量的魔力和护甲";
         case 151: return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲。令其他友方角色获得等同于尘当前护甲总和的护甲";
         case 152: return "每回合结束时，为抽牌堆中的一张牌施加【繁星】；本场战斗中，星光补费不再限次";
         case 153: return "在本场战斗剩余时间内，你的所有占卜数量额外+1";
