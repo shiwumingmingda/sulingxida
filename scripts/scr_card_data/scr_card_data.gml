@@ -1053,12 +1053,51 @@ function card_pick_random_living_ally()
 
 function card_get_owner(_id)
 {
-    if (_id >= 1   && _id <= 100) return 1;   // 苏灵兮
-    if (_id >= 101 && _id <= 200) return 2;   // 尘
-    if (_id >= 201 && _id <= 300) return 3;   // 心羽
-    if (_id == 401) return 3;                 // 猩红
+    if (_id >= 1   && _id <= 100) return 1;
+    if (_id >= 101 && _id <= 200) return 2;
+    if (_id >= 201 && _id <= 300) return 3;
+    if (_id == 401) return 3;
+    return 0;
+}
 
-    return 0;                                 // 通用牌、其他异常牌
+// 心羽本回合已使用的攻击牌数量。
+function character3_attack_count_this_turn()
+{
+    if (!instance_exists(obj_hand_controller)) return 0;
+    var count = 0;
+    for (var i = 0; i < array_length(obj_hand_controller.turn_played_ids); i++)
+    {
+        var cid = obj_hand_controller.turn_played_ids[i];
+        if (card_get_owner(cid) == 3 && card_get_type(cid) == CardType.ATTACK) count++;
+    }
+    return count;
+}
+
+// 当前手牌中【猩红】的数量。
+function character3_scarlet_hand_count()
+{
+    if (!instance_exists(obj_hand_controller)) return 0;
+    var count = 0;
+    for (var i = 0; i < array_length(obj_hand_controller.hand); i++)
+    {
+        var c = obj_hand_controller.hand[i];
+        if (instance_exists(c) && c.card_id == 401) count++;
+    }
+    return count;
+}
+
+// 将【猩红】洗入未抽取的抽牌堆部分；_ethereal=true 时附带虚无。
+function character3_add_scarlet_to_deck(_count, _ethereal)
+{
+    if (!instance_exists(obj_hand_controller)) return;
+    repeat (_count)
+    {
+        var entry = card_make_entry(obj_card_scarlet);
+        entry.card_id = 401;
+        entry.ethereal = _ethereal;
+        var pos = irandom_range(obj_hand_controller.deck_index, array_length(obj_hand_controller.deck));
+        array_insert(obj_hand_controller.deck, pos, entry);
+    }
 }
 
 // 一个效果的最终数值：基础数值 + 全局加成 + 力量 / 敏捷 / 剑招
@@ -1087,15 +1126,24 @@ if (owner == noone) owner = _receiver;
             var dt = variable_struct_exists(_e, "dtype") ? _e.dtype : DamageType.PHYSICAL;
 
             // 力量：物理伤害 +1/层
-            // 力量：物理伤害 +1/层；魔力和临时魔力：魔法伤害 +1/层
-if (dt == DamageType.PHYSICAL)
-{
-    v += get_status(owner, StatusType.STRENGTH) + get_status(owner, StatusType.TEMP_STRENGTH);
-}
-else
-{
-    v += get_status(owner, StatusType.MAGIC_POWER) + get_status(owner, StatusType.TEMP_MAGIC);
-}
+            // 力量：物理伤害 +1/层；煞：每张手牌中的猩红额外提供3点力量。
+            if (dt == DamageType.PHYSICAL)
+            {
+                v += get_status(owner, StatusType.STRENGTH) + get_status(owner, StatusType.TEMP_STRENGTH);
+                if (instance_exists(obj_hand_controller.char_3)
+                && owner == obj_hand_controller.char_3
+                && owner.scarlet_retain_active)
+                    v += character3_scarlet_hand_count() * 3;
+            }
+            else
+            {
+                v += get_status(owner, StatusType.MAGIC_POWER) + get_status(owner, StatusType.TEMP_MAGIC);
+            }
+
+            // 猩红余烬：每张手牌中的猩红额外造成6点伤害。
+            if (variable_struct_exists(_e, "bonus_scarlet_in_hand")
+            && owner == obj_hand_controller.char_3)
+                v += character3_scarlet_hand_count() * _e.bonus_scarlet_in_hand;
 
 
             // 星幕：全队伤害提高
@@ -1119,6 +1167,9 @@ else
             if (card_has_tag(_inst.card_id, CardTag.SWORD))
             {
                 v += get_status(owner, StatusType.SWORD_FORM);
+                if (instance_exists(obj_hand_controller.char_3)
+                && owner == obj_hand_controller.char_3)
+                    v += owner.temp_sword_form;
             }
 
             // 风狂·流羽：本回合风刃的每个伤害段额外+2
@@ -2320,6 +2371,12 @@ function card_play_effects(_card, _target, _enemy)
 
         // 数值在出牌这一刻算好（含力量、魔力、敏捷、剑招等加成）
         var v = card_effect_final(e, _card, effect_target_char(e, _target));
+
+        // 见隙：若目标此刻没有任何护甲，额外造成3点伤害。
+        if (e.type == EffectType.DAMAGE
+        && variable_struct_exists(e, "bonus_if_no_armor")
+        && instance_exists(_enemy) && unit_armor_total(_enemy) <= 0)
+            v += e.bonus_if_no_armor;
 
         if (e.type == EffectType.SCRY)
         {
