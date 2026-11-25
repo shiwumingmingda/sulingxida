@@ -782,6 +782,15 @@ if (can_play && released_card.card_id == 35 && array_length(hand) <= 1)
     warning_timer = 90;
 }
 
+// 纳剑：先锋成立后，本回合心羽不能使用攻击牌。
+if (can_play && card_get_owner(released_card.card_id) == 3
+&& char_3.no_attack_this_turn && card_get_type(released_card.card_id) == CardType.ATTACK)
+{
+    can_play = false;
+    warning_text = "本回合无法使用攻击牌";
+    warning_timer = 90;
+}
+
 if (can_play && released_card.card_id == 46)
 {
     var has_sulingxi_starter = false;
@@ -879,6 +888,12 @@ if (released_id == 23)
     var attack_owner_n = card_get_owner(released_id);
     if (ctype == CardType.ATTACK && attack_owner_n == 2)
         char_2.attack_cards_used_battle++;
+
+    // 剑鸣：每使用一张剑招，消耗一层免费次数。
+    if (ctype == CardType.ATTACK && attack_owner_n == 3
+    && card_has_tag(released_id, CardTag.SWORD)
+    && char_3.sword_song_charges > 0)
+        char_3.sword_song_charges--;
     if (ctype == CardType.ATTACK)
     {
         if (attack_owner_n > 0)
@@ -1004,6 +1019,19 @@ if (first_hand_starter_this_turn && char_is_alive(card_owner)
         [ { type: EffectType.REPLAY_STARTER, amount: 1, card_id: released_id, entry: starter_replay_entry } ]);
 }
 
+// 剑影：心羽每回合使用的第一张剑招额外结算一次。
+if (ctype == CardType.ATTACK && attack_owner_n == 3
+&& card_has_tag(released_id, CardTag.SWORD)
+&& char_3.sword_shadow_active && !char_3.sword_shadow_used)
+{
+    char_3.sword_shadow_used = true;
+    card_play_effects(released_card, effect_target, hit_enemy);
+}
+
+// 血沸：每使用一张攻击牌，本回合获得1点临时力量。
+if (ctype == CardType.ATTACK && attack_owner_n == 3 && char_3.blood_boil_active)
+    add_status(char_3, StatusType.TEMP_STRENGTH, 1);
+
 // 尘的群星因你我而相连：每名友方角色每回合第一次使用攻击/技能牌，尘额外结算一次。
 if (char_is_alive(char_2) && char_2.team_echo_active && (ctype == CardType.ATTACK || ctype == CardType.SKILL))
 {
@@ -1068,16 +1096,10 @@ with (released_card)
     instance_destroy();
 }
 
-// 角色3的天赋：打出攻击牌 +1，累计到上限就归零并触发（发现）
-if (char_is_alive(char_3) && card_counts_for_discover(released_id))
+// 心羽天赋：每使用一张攻击牌，获得1层血色；每6层触发失去2点体力并发现特殊剑招。
+if (char_is_alive(char_3) && ctype == CardType.ATTACK && attack_owner_n == 3)
 {
-    char_3.talent_count++;
-
-    if (char_3.talent_count >= char_3.talent_need)
-    {
-        char_3.talent_count = 0;
-        request_discover(discover_pool_xinyu(discover_46_unlocked), 3);
-    }
+    add_status(char_3, StatusType.BLOOD, 1);
 }
 
 }
