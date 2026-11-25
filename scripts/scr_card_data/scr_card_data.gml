@@ -83,7 +83,7 @@ function card_info(_id)
         case 101: return card_make_info(CardType.ATTACK, 1, Rarity.NONE, false, TargetKind.NONE, 0);
         case 102: return card_make_info(CardType.ATTACK, 2, Rarity.NONE, false, TargetKind.NONE, 0);
         case 103: return card_make_info(CardType.SKILL,  2, Rarity.NONE, false, TargetKind.NONE, 0);
-        case 104: return card_make_info(CardType.SKILL,  0, Rarity.NONE, false, TargetKind.NONE, 0, 1);
+        case 104: return card_make_info(CardType.SKILL,  0, Rarity.NONE, false, TargetKind.ENEMY, 0, 1);
         // 普通
         case 105: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
         case 106: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
@@ -135,6 +135,12 @@ function card_info(_id)
         case 150: return card_make_info(CardType.SKILL,  2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);
         case 151: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
         case 152: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+
+        // 新增普通卡
+        case 153: return card_make_info(CardType.STATUS, 1, Rarity.COMMON, false, TargetKind.NONE, 0); // 许愿星
+        case 154: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0); // 星象
+        case 155: return card_make_info(CardType.STATUS, 1, Rarity.COMMON, false, TargetKind.NONE, 0); // 明澈
+        case 156: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0); // 换斗
 
         // ---- 普通 ----
         case 5:  return card_make_info(CardType.SKILL,  2, Rarity.COMMON, false, TargetKind.NONE, 0);    // 专注
@@ -788,7 +794,7 @@ function card_get_effects(_id)
         case 105: return [ { type: EffectType.DAMAGE, amount: 3, dtype: DamageType.MAGIC, other_attack_bonus: 6 } ];
         case 106: return [
             { type: EffectType.DAMAGE, amount: 4, dtype: DamageType.PHYSICAL },
-            { type: EffectType.ARMOR_BACKLINE, amount: 4, armor: ArmorType.GENERAL }
+            { type: EffectType.ARMOR_BACKLINE, amount: 5, armor: ArmorType.GENERAL }
         ];
         case 107: return [
             { type: EffectType.SCRY, amount: 5 },
@@ -798,10 +804,10 @@ function card_get_effects(_id)
             { type: EffectType.SCRY, amount: 3 },
             { type: EffectType.STAR_PROJECTILE, amount: 0, bottom_count: true }
         ];
-        case 109: return [ { type: EffectType.DAMAGE, amount: 25, dtype: DamageType.PHYSICAL } ];
+        case 109: return [ { type: EffectType.DAMAGE, amount: 35, dtype: DamageType.PHYSICAL } ];
         case 110: return [ { type: EffectType.CUSTOM, action: "both_armor", amount: 3 } ];
         case 111: return [
-            { type: EffectType.DAMAGE, amount: 7, dtype: DamageType.PHYSICAL },
+            { type: EffectType.DAMAGE, amount: 10, dtype: DamageType.PHYSICAL },
             { type: EffectType.STARLIGHT, amount: 1 }
         ];
         case 112: return [ { type: EffectType.CUSTOM, action: "pull_and_damage", amount: 6 } ];
@@ -823,26 +829,20 @@ function card_get_effects(_id)
         case 118: return [ { type: EffectType.STATUS, status: StatusType.DEXTERITY, amount: 2, on_char: 2 } ];
         case 119: return [ { type: EffectType.SELECT_HAND, filter_id: -2, mode: "single", min: 1, max: 1, action: { kind: "starlight_enable" } } ];
         case 120: return [ { type: EffectType.CUSTOM, action: "purple_star", amount: 1 } ];
-        case 121: return [
-            { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 8, on_char: 2 },
-            { type: EffectType.NEXT_ENERGY, amount: 1 }
-        ];
+        case 121: return [ ]; // 星轨：虚无效果在抽到时结算。
         case 122: return [
-            { type: EffectType.DAMAGE, amount: 15, dtype: DamageType.MAGIC, on_kill_starlight: 1 },
-            { type: EffectType.DAMAGE_OTHERS, amount: 15, dtype: DamageType.MAGIC, on_kill_starlight: 1 }
+            { type: EffectType.DAMAGE, amount: 10, dtype: DamageType.MAGIC, on_kill_starlight: 1 },
+            { type: EffectType.DAMAGE_OTHERS, amount: 10, dtype: DamageType.MAGIC, on_kill_starlight: 1 }
         ];
         case 123: return [ { type: EffectType.CUSTOM, action: "star_aura", amount: 2 } ];
         case 124: return [ { type: EffectType.CUSTOM, action: "long_life", amount: 1 } ];
         case 125: return [ { type: EffectType.CUSTOM, action: "retreat_mark", amount: 1 } ];
-        case 126: return [ { type: EffectType.DAMAGE, amount: 12, dtype: DamageType.PHYSICAL } ];
-        case 127: return [ { type: EffectType.CUSTOM, action: "front_lock", amount: 1 } ];
-        case 128: return [
-            { type: EffectType.ARMOR, armor: ArmorType.PHYSICAL, amount: 10, on_char: 2 },
-            { type: EffectType.ARMOR, armor: ArmorType.MAGIC, amount: 10, on_char: 2 }
-        ];
+        case 126: return [ { type: EffectType.DAMAGE, amount: 14, dtype: DamageType.PHYSICAL } ];
+        case 127: return [ { type: EffectType.CUSTOM, action: "move_enemy", amount: 1 } ];
+        case 128: return [ ]; // 垒壁阵：虚无效果在抽到时结算。
         case 129: return [ { type: EffectType.CUSTOM, action: "temp_allies", amount: 3 } ];
         case 130: return [ { type: EffectType.CUSTOM, action: "remove_armor", amount: 12 } ];
-        case 131: return [ { type: EffectType.RANDOM_DAMAGE, amount: 1, times: 7, dtype: DamageType.MAGIC } ];
+        case 131: return [ { type: EffectType.RANDOM_DAMAGE, amount: 7, times: 2, dtype: DamageType.MAGIC } ];
         case 132: return [ { type: EffectType.DAMAGE, amount: 28, dtype: DamageType.PHYSICAL } ];
         case 133: return [ { type: EffectType.CUSTOM, action: "showmanship", amount: 5 } ];
         case 134: return [ { type: EffectType.CUSTOM, action: "weaken_enemies", amount: 3 } ];
@@ -878,6 +878,11 @@ function card_get_effects(_id)
             { type: EffectType.CUSTOM, action: "armor_allies_equal", amount: 1 }
         ];
         case 152: return [ { type: EffectType.CUSTOM, action: "star_walk", amount: 1 } ];
+
+        case 153: return [ { type: EffectType.CUSTOM, action: "wish_star", amount: 1 } ];
+        case 154: return [ ]; // 星象：虚无效果在抽到时结算。
+        case 155: return [ { type: EffectType.CUSTOM, action: "mingche", amount: 1 } ];
+        case 156: return [ { type: EffectType.SELECT_HAND, filter_id: 0, mode: "single", min: 1, max: 1, action: { kind: "topdeck_draw_three" } } ];
 
     }
 
@@ -964,6 +969,14 @@ if (owner == noone) owner = _receiver;
 
     switch (_e.type)
     {
+        case EffectType.SCRY:
+        {
+            if (card_get_owner(_inst.card_id) == 2
+            && instance_exists(obj_hand_controller.char_2))
+                v += obj_hand_controller.char_2.scry_bonus;
+        }
+        break;
+
         case EffectType.DAMAGE:
         case EffectType.DAMAGE_OTHERS:
         case EffectType.RANDOM_DAMAGE:
@@ -1043,6 +1056,13 @@ else
 // 这张牌上伤害效果的重复次数（卡面文字用）
 function card_current_times(_inst)
 {
+    // 昴宿：基础重复1次，每次抽到时再增加1次，最多重复7次。
+    if (_inst.card_id == 131)
+    {
+        var repeats = variable_instance_exists(_inst, "echo_repeats") ? _inst.echo_repeats : 1;
+        return 1 + min(repeats, 7);
+    }
+
     var effects = card_current_effects(_inst);
 
     for (var i = 0; i < array_length(effects); i++)
@@ -1323,7 +1343,11 @@ break;
                     break;
 
                 case "starseal":
-                    dust.enemy_debuff_turns = 2;
+                    if (instance_exists(_enemy))
+                    {
+                        add_status(_enemy, StatusType.STRENGTH_DOWN, 6);
+                        add_status(_enemy, StatusType.MAGIC_DOWN, 6);
+                    }
                     break;
                 case "both_armor":
                     if (instance_exists(_target) && _target != dust)
@@ -1338,6 +1362,11 @@ break;
                     }
                     break;
                 case "purple_star": dust.purple_star = true; break;
+                case "wish_star": dust.scry_bonus += _v; break;
+                case "mingche": dust.mingche_active = true; break;
+                case "move_enemy":
+                    if (instance_exists(_enemy)) obj_hand_controller.send_enemy_to_back(_enemy);
+                    break;
                 case "star_aura": dust.star_damage_bonus_active = true; break;
                 case "long_life":
                     if (instance_exists(_target)) _target.long_life = true;
@@ -1445,14 +1474,22 @@ break;
                     break;
                 case "team_echo": dust.team_echo_active = true; break;
                 case "mark_hand_draw":
-                    var num = array_length(obj_hand_controller.hand);
-                    for (var mi = 0; mi < num; mi++)
+                {
+                    // 将剩余手牌全部施加繁星并弃置，再抽取等量的牌。
+                    var marked_hand = copy_array(obj_hand_controller.hand);
+                    var draw_num = array_length(marked_hand);
+                    for (var mi = 0; mi < draw_num; mi++)
                     {
-                        var mc = obj_hand_controller.hand[mi];
-                        if (instance_exists(mc)) mc.star_marked = true;
+                        var mc = marked_hand[mi];
+                        if (!instance_exists(mc)) continue;
+                        var marked_entry = card_entry_from_instance(mc);
+                        marked_entry.star_marked = true;
+                        obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = marked_entry;
+                        obj_hand_controller.remove_card_from_hand(mc);
                     }
-                    obj_hand_controller.draw_cards(num);
-                    break;
+                    obj_hand_controller.draw_cards(draw_num);
+                }
+                break;
                 case "night_guard": dust.night_guard_active = true; break;
                 case "stars_to_power":
                     var stars = dust.starlight;
@@ -2195,7 +2232,9 @@ function card_play_effects(_card, _target, _enemy)
         }
 
         var base_delay = variable_struct_exists(e, "delay") ? e.delay : 0;
-        var times      = variable_struct_exists(e, "times") ? e.times : 1;
+        var times      = (_card.card_id == 131)
+            ? card_current_times(_card)
+            : (variable_struct_exists(e, "times") ? e.times : 1);
         var gap        = variable_struct_exists(e, "times_gap") ? e.times_gap : 15;
 
         for (var r = 0; r < times; r++)
@@ -2326,6 +2365,10 @@ function card_get_object(_n)
         case 150: return obj_card_0150;
         case 151: return obj_card_0151;
         case 152: return obj_card_0152;
+        case 153: return obj_card_0153;
+        case 154: return obj_card_0154;
+        case 155: return obj_card_0155;
+        case 156: return obj_card_0156;
 
         // 心羽
         case 201: return obj_card_0201;
@@ -2585,6 +2628,7 @@ function card_entry_from_instance(_inst)
     entry.merge_level = card_merge_level(_inst);
     if (variable_instance_exists(_inst, "cost")) entry.cost = _inst.cost;
     if (variable_instance_exists(_inst, "star_marked") && _inst.star_marked) entry.star_marked = true;
+    if (variable_instance_exists(_inst, "echo_repeats")) entry.echo_repeats = _inst.echo_repeats;
 
     return entry;
 }
@@ -2616,6 +2660,7 @@ function card_spawn_from_entry(_entry, _x, _y)
 
     if (!is_undefined(_entry.cost)) inst.cost = _entry.cost;
     if (variable_struct_exists(_entry, "star_marked") && _entry.star_marked) inst.star_marked = true;
+    if (variable_struct_exists(_entry, "echo_repeats")) inst.echo_repeats = _entry.echo_repeats;
 
     return inst;
 }
@@ -2623,12 +2668,32 @@ function card_spawn_from_entry(_entry, _x, _y)
 function card_on_draw(_inst)
 {
     if (!instance_exists(_inst)) return;
+    var dust = obj_hand_controller.char_2;
+
     if (variable_instance_exists(_inst, "star_marked") && _inst.star_marked)
     {
-        var dust = obj_hand_controller.char_2;
         add_starlight(dust, 1);
         add_armor(dust, ArmorType.MAGIC, 5 + get_status(dust, StatusType.DEXTERITY));
         _inst.star_marked = false;
+    }
+
+    // 虚无：这些效果在抽到卡牌时立即触发。
+    switch (_inst.card_id)
+    {
+        case 121:
+            obj_hand_controller.next_turn_energy_bonus += 2;
+            break;
+        case 128:
+            add_armor(dust, ArmorType.PHYSICAL, 10 + get_status(dust, StatusType.DEXTERITY));
+            add_armor(dust, ArmorType.MAGIC, 10 + get_status(dust, StatusType.DEXTERITY));
+            break;
+        case 154:
+            add_armor(dust, ArmorType.GENERAL, 8 + get_status(dust, StatusType.DEXTERITY));
+            break;
+        case 131:
+            if (!variable_instance_exists(_inst, "echo_repeats")) _inst.echo_repeats = 1;
+            _inst.echo_repeats = min(_inst.echo_repeats + 1, 7);
+            break;
     }
 }
 
@@ -2669,6 +2734,12 @@ function card_has_exhaust_keyword(_id)
     if (_id == 207 || _id == 208) return true;   // 引血、练心
 
     return false;
+}
+
+// 虚无：若回合结束时仍在手牌中，则消耗。
+function card_is_ethereal(_id)
+{
+    return (_id == 121 || _id == 128 || _id == 154);
 }
 
 // 打出后是否移出游戏：状态牌，或者带消耗词条的牌
