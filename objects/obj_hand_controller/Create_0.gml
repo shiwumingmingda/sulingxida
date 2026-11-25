@@ -89,6 +89,7 @@ scry_bottom = [];
 scry_drag_card = noone;
 scry_hover_card = noone;
 scry_followups = [];
+draw_after_scry = 0;
 scry_scale = 0.58;
 scry_confirm_x1 = room_width * 0.40;
 scry_confirm_x2 = room_width * 0.60;
@@ -100,11 +101,49 @@ last_scry_bottom_count = 0;
 discard_choice_active = false;
 discard_choice_options = [];
 discard_choice_max = 2;
-discard_choice_scale = 0.48;
+discard_choice_scale = 1.5;
+discard_choice_hover_card = noone;
 discard_choice_x1 = room_width * 0.40;
 discard_choice_x2 = room_width * 0.60;
 discard_choice_y1 = room_height * 0.88;
 discard_choice_y2 = room_height * 0.96;
+
+// 判断鼠标是否位于旋转后的卡牌范围内。
+card_point_inside_rotated = function(_card, _mx, _my, _extra_scale)
+{
+    if (!instance_exists(_card)) return false;
+    var dx = _mx - _card.x;
+    var dy = _my - _card.y;
+    var a = _card.image_angle;
+    var lx = dx * dcos(a) + dy * dsin(a);
+    var ly = -dx * dsin(a) + dy * dcos(a);
+    var hw = sprite_get_width(_card.sprite_index) * abs(_card.image_xscale) * _extra_scale * 0.5;
+    var hh = sprite_get_height(_card.sprite_index) * abs(_card.image_yscale) * _extra_scale * 0.5;
+    return abs(lx) <= hw && abs(ly) <= hh;
+};
+
+// 绘制随卡牌旋转的边框。
+draw_rotated_card_outline = function(_card, _extra_scale, _color)
+{
+    if (!instance_exists(_card)) return;
+    var hw = sprite_get_width(_card.sprite_index) * abs(_card.image_xscale) * _extra_scale * 0.5;
+    var hh = sprite_get_height(_card.sprite_index) * abs(_card.image_yscale) * _extra_scale * 0.5;
+    var a = _card.image_angle;
+    var x1 = _card.x - hw * dcos(a) + hh * dsin(a);
+    var y1 = _card.y - hw * dsin(a) - hh * dcos(a);
+    var x2 = _card.x + hw * dcos(a) + hh * dsin(a);
+    var y2 = _card.y + hw * dsin(a) - hh * dcos(a);
+    var x3 = _card.x + hw * dcos(a) - hh * dsin(a);
+    var y3 = _card.y + hw * dsin(a) + hh * dcos(a);
+    var x4 = _card.x - hw * dcos(a) - hh * dsin(a);
+    var y4 = _card.y - hw * dsin(a) + hh * dcos(a);
+    draw_set_color(_color);
+    draw_line(x1, y1, x2, y2);
+    draw_line(x2, y2, x3, y3);
+    draw_line(x3, y3, x4, y4);
+    draw_line(x4, y4, x1, y1);
+    draw_set_color(c_white);
+};
 
 // 当前正在拖动的卡牌
 drag_card = noone;
@@ -448,13 +487,17 @@ discard_choice_start = function(_show_count, _choose_count)
         discard_choice_options[i] = { card: card, index: index, selected: false };
     }
 
-    var gap = min(170, room_width * 0.80 / max(count, 1));
+    var card_w = sprite_get_width(discard_choice_options[0].card.sprite_index) * discard_choice_scale;
+    var gap = (count > 1)
+        ? max(0, min(card_w * 1.08, (room_width * 0.90 - card_w) / (count - 1)))
+        : 0;
     for (var i = 0; i < count; i++)
     {
         var card = discard_choice_options[i].card;
         card.x = room_width * 0.5 + (i - (count - 1) * 0.5) * gap;
         card.y = room_height * 0.47;
     }
+    discard_choice_hover_card = noone;
 
     discard_choice_active = true;
 };
@@ -656,6 +699,14 @@ scry_finish = function()
         && variable_struct_exists(q.effect, "bottom_count"))
             value = bottom_count;
         card_apply_effect(q.effect, value, q.target, q.enemy);
+    }
+
+    // 回合开始的常规抽牌必须等紫微垣占卜确认后才执行。
+    if (draw_after_scry > 0)
+    {
+        var pending_draw = draw_after_scry;
+        draw_after_scry = 0;
+        draw_cards(pending_draw);
     }
 
     check_merge();
