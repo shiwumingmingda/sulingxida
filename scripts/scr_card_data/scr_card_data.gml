@@ -1149,6 +1149,7 @@ function character3_draw_attacks_free(_count)
             spawned.cost_temporary = true;
             spawned.is_dealing = true;
             obj_hand_controller.hand[array_length(obj_hand_controller.hand)] = spawned;
+            card_on_draw(spawned);
         }
     }
 
