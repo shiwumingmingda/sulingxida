@@ -7,8 +7,14 @@
   "managed":true,
   "name":"obj_card_0045",
   "overriddenProperties":[],
-  "parent":{"name":"sulingxi","path":"folders/card/sulingxi.yy",},
-  "parentObjectId":{"name":"obj_card_parent","path":"objects/obj_card_parent/obj_card_parent.yy",},
+  "parent":{
+    "name":"sulingxi",
+    "path":"folders/card/sulingxi.yy",
+  },
+  "parentObjectId":{
+    "name":"obj_card_parent",
+    "path":"objects/obj_card_parent/obj_card_parent.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -26,7 +32,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":{"name":"Sprite1","path":"sprites/Sprite1/Sprite1.yy",},
+  "spriteId":{
+    "name":"Sprite1",
+    "path":"sprites/Sprite1/Sprite1.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

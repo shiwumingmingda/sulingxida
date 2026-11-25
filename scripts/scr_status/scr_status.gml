@@ -329,11 +329,10 @@ function draw_status_tooltip(_type, _count, _spr)
     if (_spr == -1 || !sprite_exists(_spr)) return;
 
     var box_w = 390;
-    // GML 绘图换行使用 #；## 形成真正的空白行。
-    var desc = string_replace_all(status_get_description(_type), "。", "。##");
+    var desc = string_replace_all(status_get_description(_type), "。", "。\n\n");
     var text_w = box_w - 124;
-    var text_scale = 0.70;
-    var text_sep = 6;
+    var text_scale = 0.88;
+    var text_sep = 5;
     var desc_h = string_height_ext(desc, text_sep, text_w / text_scale) * text_scale;
     var box_h = max(118, desc_h + 66);
     var tx = clamp(mouse_x + 18, 8, room_width - box_w - 8);
