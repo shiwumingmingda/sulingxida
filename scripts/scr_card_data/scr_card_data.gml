@@ -842,7 +842,7 @@ function card_get_effects(_id)
         case 128: return [ ]; // 垒壁阵：虚无效果在抽到时结算。
         case 129: return [ { type: EffectType.CUSTOM, action: "temp_allies", amount: 3 } ];
         case 130: return [ { type: EffectType.CUSTOM, action: "remove_armor", amount: 12 } ];
-        case 131: return [ { type: EffectType.RANDOM_DAMAGE, amount: 7, times: 2, dtype: DamageType.MAGIC } ];
+        case 131: return [ { type: EffectType.RANDOM_DAMAGE, amount: 7, times: 1, dtype: DamageType.MAGIC } ];
         case 132: return [ { type: EffectType.DAMAGE, amount: 28, dtype: DamageType.PHYSICAL } ];
         case 133: return [ { type: EffectType.CUSTOM, action: "showmanship", amount: 5 } ];
         case 134: return [ { type: EffectType.CUSTOM, action: "weaken_enemies", amount: 3 } ];
@@ -2231,11 +2231,19 @@ function card_play_effects(_card, _target, _enemy)
             v = card_current_damage(_card);
         }
 
+        var effect_to_apply = e;
+        var times = variable_struct_exists(e, "times") ? e.times : 1;
+
+        // 昴宿的重复次数由 RANDOM_DAMAGE 内部结算，避免外层和内层重复循环相乘。
+        if (_card.card_id == 131 && e.type == EffectType.RANDOM_DAMAGE)
+        {
+            effect_to_apply = effect_copy(e);
+            effect_to_apply.times = card_current_times(_card);
+            times = 1;
+        }
+
         var base_delay = variable_struct_exists(e, "delay") ? e.delay : 0;
-        var times      = (_card.card_id == 131)
-            ? card_current_times(_card)
-            : (variable_struct_exists(e, "times") ? e.times : 1);
-        var gap        = variable_struct_exists(e, "times_gap") ? e.times_gap : 15;
+        var gap = variable_struct_exists(e, "times_gap") ? e.times_gap : 15;
 
         for (var r = 0; r < times; r++)
         {
@@ -2243,7 +2251,7 @@ function card_play_effects(_card, _target, _enemy)
 
             if (d > 0)
             {
-                var pe = { timer: d, effect: e, value: v, target: _target, enemy: _enemy };
+                var pe = { timer: d, effect: effect_to_apply, value: v, target: _target, enemy: _enemy };
 
                 with (obj_hand_controller)
                 {
@@ -2252,7 +2260,7 @@ function card_play_effects(_card, _target, _enemy)
             }
             else
             {
-                if (card_apply_effect(e, v, _target, _enemy) == false)
+                if (card_apply_effect(effect_to_apply, v, _target, _enemy) == false)
                 {
                     return;
                 }
@@ -2684,14 +2692,25 @@ function card_on_draw(_inst)
             obj_hand_controller.next_turn_energy_bonus += 2;
             break;
         case 128:
-            add_armor(dust, ArmorType.PHYSICAL, 10 + get_status(dust, StatusType.DEXTERITY));
-            add_armor(dust, ArmorType.MAGIC, 10 + get_status(dust, StatusType.DEXTERITY));
-            break;
+        {
+            var physical_armor = card_effect_final(
+                { type: EffectType.ARMOR, armor: ArmorType.PHYSICAL, amount: 10 }, _inst, dust);
+            var magic_armor = card_effect_final(
+                { type: EffectType.ARMOR, armor: ArmorType.MAGIC, amount: 10 }, _inst, dust);
+            add_armor(dust, ArmorType.PHYSICAL, physical_armor);
+            add_armor(dust, ArmorType.MAGIC, magic_armor);
+        }
+        break;
+
         case 154:
-            add_armor(dust, ArmorType.GENERAL, 8 + get_status(dust, StatusType.DEXTERITY));
-            break;
+        {
+            var general_armor = card_effect_final(
+                { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 8 }, _inst, dust);
+            add_armor(dust, ArmorType.GENERAL, general_armor);
+        }
+        break;
         case 131:
-            if (!variable_instance_exists(_inst, "echo_repeats")) _inst.echo_repeats = 0;
+            if (!variable_instance_exists(_inst, "echo_repeats")) _inst.echo_repeats = 1;
             _inst.echo_repeats = min(_inst.echo_repeats + 1, 7);
             break;
     }
