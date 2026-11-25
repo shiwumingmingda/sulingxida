@@ -1213,6 +1213,11 @@ function character3_play_top_cards(_count)
         else if (ctype == CardType.ATTACK && owner_n > 0)
         {
             controller.attack_used_this_turn[owner_n] = true;
+
+            // 从牌堆顶视为使用的其他角色攻击牌，同样推进攻击计数并切换前场。
+            if (owner_n == 2) controller.char_2.attack_cards_used_battle++;
+            if (!card_has_tag(cid, CardTag.RANGED) && instance_exists(actor))
+                controller.bring_to_front(actor);
         }
 
         var enemy_target = (array_length(controller.enemies) > 0)
