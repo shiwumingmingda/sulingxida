@@ -1218,6 +1218,13 @@ end_player_turn = function()
 
         if (variable_instance_exists(c, "reading_bonus")) c.reading_bonus = false;
 
+        // 烬战、杀念等效果授予的0费只持续当前回合；若卡牌因保留留在手牌，恢复原始费用。
+        if (variable_instance_exists(c, "cost_temporary") && c.cost_temporary)
+        {
+            c.cost = card_get_cost(c.card_id);
+            c.cost_temporary = false;
+        }
+
         var is_ethereal_card = card_is_ethereal(c.card_id)
             || (variable_instance_exists(c, "ethereal") && c.ethereal);
         var can_retain_card = !is_ethereal_card
