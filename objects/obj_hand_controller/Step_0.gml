@@ -221,10 +221,7 @@ if (selection_active)
     {
         var hcard = hand[hi];
         if (!instance_exists(hcard) || !selection_can_select(hcard)) continue;
-        var hw = sprite_get_width(hcard.sprite_index) * hcard.image_xscale * 0.5;
-        var hh = sprite_get_height(hcard.sprite_index) * hcard.image_yscale * 0.5;
-        if (point_in_rectangle(mx, my, hcard.x - hw, hcard.y - hh,
-            hcard.x + hw, hcard.y + hh))
+        if (card_point_inside_rotated(hcard, mx, my, 1.12))
         {
             selection_hover_card = hcard;
             break;
@@ -244,7 +241,7 @@ if (selection_active && mouse_check_button_pressed(mb_left))
         {
             var scard = hand[si];
             if (!instance_exists(scard)) continue;
-            if (position_meeting(mx, my, scard))
+            if (card_point_inside_rotated(scard, mx, my, 1))
             {
                 if (selection_can_select(scard))
                 {
@@ -459,11 +456,16 @@ if (char_is_alive(char_3))
     }
 }
 
-// 紫微垣：每回合开始先占卜2，再进行常规抽牌。
-if (char_is_alive(char_2) && char_2.purple_star) scry_start(2);
+// 紫微垣：每回合开始先占卜2；占卜确认后再进行常规抽牌。
+draw_after_scry = 5;
+if (char_is_alive(char_2) && char_2.purple_star)
+    scry_start(2);
 
-// 抽 5 张牌
-draw_cards(5);
+if (!scry_active)
+{
+    draw_after_scry = 0;
+    draw_cards(5);
+}
         }
     }
 }
