@@ -494,19 +494,19 @@ function card_get_effects(_id)
        // 11号牌：造成 8 点法术伤害
 		case 201:
 			return [
-				{ type: EffectType.DAMAGE, amount: 6, dtype: DamageType.PHYSICAL }
+				{ type: EffectType.DAMAGE, amount: 7, dtype: DamageType.PHYSICAL }
     ];
 
-// 22 刺：剑招，追猎，造成 4 点物理伤害
+// 22 刺：剑招，追猎，造成 5 点物理伤害
 		case 202:
 			return [
-				{ type: EffectType.DAMAGE, amount: 4, dtype: DamageType.PHYSICAL }
+				{ type: EffectType.DAMAGE, amount: 5, dtype: DamageType.PHYSICAL }
     ];
 
-// 23 格：剑招，获得 5 点护甲
+// 23 格：剑招，获得 6 点护甲
 		case 203:
 			return [
-				{ type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 5 }
+				{ type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 6, on_char: 3 }
     ];
 
 // 24 洗：剑招，造成 3 点物理伤害，令敌方下回合失去等量的力量
@@ -516,18 +516,17 @@ function card_get_effects(_id)
 			{ type: EffectType.STATUS, status: StatusType.STRENGTH_DOWN, amount: 0, equal_damage: true }
     ];
 
-// 25 业随影生：造成 10 点魔法伤害，将一张【猩红】置入手牌
-		case 205:
-			return [
-				{ type: EffectType.DAMAGE,      amount: 10, dtype: DamageType.MAGIC },
-				{ type: EffectType.ADD_TO_HAND, amount: 1, obj: obj_card_scarlet }
-    ];
+// 业随影生：造成14点魔法伤害，将一张【猩红】置入抽牌堆。
+        case 205: return [
+            { type: EffectType.DAMAGE, amount: 14, dtype: DamageType.MAGIC },
+            { type: EffectType.CUSTOM, action: "scarlet_to_deck", amount: 1 }
+        ];
 
 // 26 断业：造成 5 点物理伤害，弃置手中所有的【猩红】
 		case 206:
 			return [
 				{ type: EffectType.DAMAGE,            amount: 5, dtype: DamageType.PHYSICAL },
-				{ type: EffectType.DISCARD_FROM_HAND, amount: 1, card_id: 51 }
+				{ type: EffectType.DISCARD_FROM_HAND, amount: 1, card_id: 401 }
     ];
 
 // 27 引血：失去 3 点生命，获得 3 层血色
@@ -551,14 +550,98 @@ function card_get_effects(_id)
 			
 			
     ];
-// 30 精进：每回合开始，往手牌里放一张 0 费的练心
-		case 210:
-			return [
-		    { type: EffectType.STATUS, status: StatusType.DILIGENCE, amount: 1, on_char: 3 }
-    ];
-			
-		
-			// 41号牌：8 点物理伤害，获得 8 点护甲，令目标下回合力量和魔力 -6
+// 30 精进：每回合开始，往手牌里放一张0费练心。
+        case 210: return [ { type: EffectType.STATUS, status: StatusType.DILIGENCE, amount: 1, on_char: 3 } ];
+
+        // 普通牌
+        case 211: return [ { type: EffectType.CUSTOM, action: "guard_stance", amount: 6, bonus: 4 } ];
+        case 212: return [ { type: EffectType.CUSTOM, action: "step_draw", amount: 1 } ];
+        case 213: return [ { type: EffectType.STATUS, status: StatusType.TEMP_STRENGTH, amount: 2, on_char: 3 } ];
+        case 214: return [ { type: EffectType.CUSTOM, action: "blood_debt", amount: 2 } ];
+        case 215: return [
+            { type: EffectType.DAMAGE, amount: 2, dtype: DamageType.PHYSICAL },
+            { type: EffectType.CUSTOM, action: "pursuit_draw", amount: 1 }
+        ];
+        case 216: return [
+            { type: EffectType.DAMAGE, amount: 5, dtype: DamageType.PHYSICAL },
+            { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 4, on_char: 3 }
+        ];
+        case 217: return [ { type: EffectType.DAMAGE, amount: 5, dtype: DamageType.PHYSICAL, bonus_if_no_armor: 3 } ];
+        case 218: return [ { type: EffectType.CUSTOM, action: "finish_stance", amount: 6 } ];
+        case 219: return [ { type: EffectType.DAMAGE, amount: 12, dtype: DamageType.PHYSICAL, on_damage_at_least: 15, apply_status: StatusType.VULNERABLE, status_amount: 2 } ];
+        case 220: return [ { type: EffectType.DAMAGE, amount: 6, dtype: DamageType.PHYSICAL, on_damage_at_least: 8, gain_energy: 1 } ];
+        case 221: return [ { type: EffectType.CUSTOM, action: "blood_curtain", amount: 12 } ];
+        case 222: return [
+            { type: EffectType.CONSUME_FROM_HAND, amount: 1, card_id: 401 },
+            { type: EffectType.GAIN_ENERGY, amount: 1 }
+        ];
+        case 223: return [ { type: EffectType.CUSTOM, action: "murder_intent", amount: 1 } ];
+        case 224: return [
+            { type: EffectType.LOSE_HP, amount: 2, on_char: 3 },
+            { type: EffectType.DAMAGE, amount: 12, dtype: DamageType.PHYSICAL }
+        ];
+        case 225: return [ { type: EffectType.CUSTOM, action: "ancient_battlefield", amount: 1 } ];
+
+        // 稀有牌
+        case 226: return [ { type: EffectType.DAMAGE, amount: 12, dtype: DamageType.PHYSICAL, on_kill_energy: 2, on_kill_draw: 1 } ];
+        case 227: return [ { type: EffectType.CUSTOM, action: "blood_beast", amount: 1 } ];
+        case 228: return [ { type: EffectType.CUSTOM, action: "sword_sheath", amount: 2 } ];
+        case 229: return [ { type: EffectType.CUSTOM, action: "drawn_sheath", amount: 2 } ];
+        case 230: return [ { type: EffectType.CUSTOM, action: "red_dye", amount: 1 } ];
+        case 231: return [
+            { type: EffectType.DAMAGE, amount: 15, dtype: DamageType.PHYSICAL },
+            { type: EffectType.CUSTOM, action: "play_top_two", amount: 2 }
+        ];
+        case 232: return [ { type: EffectType.DAMAGE, amount: 8, dtype: DamageType.PHYSICAL } ];
+        case 233: return [ { type: EffectType.CUSTOM, action: "red_tide", amount: 1 } ];
+        case 234: return [ { type: EffectType.CUSTOM, action: "sword_song", amount: 2 } ];
+        case 235: return [ { type: EffectType.DAMAGE, amount: 18, dtype: DamageType.MAGIC } ];
+        case 236: return [ { type: EffectType.CUSTOM, action: "scarlet_oath", amount: 5 } ];
+        case 237: return [ { type: EffectType.CUSTOM, action: "flash_step", amount: 13 } ];
+        case 238: return [ { type: EffectType.CUSTOM, action: "terror", amount: 10 } ];
+        case 239: return [ { type: EffectType.CUSTOM, action: "blood_boil", amount: 1 } ];
+        case 240: return [ { type: EffectType.DAMAGE, amount: 15, dtype: DamageType.PHYSICAL } ];
+
+        // 特殊剑招
+        case 241: return [
+            { type: EffectType.DAMAGE, amount: 8, dtype: DamageType.PHYSICAL },
+            { type: EffectType.ARMOR, armor: ArmorType.GENERAL, amount: 8, on_char: 3 },
+            { type: EffectType.STATUS, status: StatusType.STRENGTH_DOWN, amount: 6 },
+            { type: EffectType.STATUS, status: StatusType.MAGIC_DOWN, amount: 6 }
+        ];
+        case 242: return [
+            { type: EffectType.DAMAGE, amount: 8, dtype: DamageType.PHYSICAL },
+            { type: EffectType.DAMAGE_OTHERS, amount: 8, dtype: DamageType.PHYSICAL }
+        ];
+        case 243: return [ { type: EffectType.DAMAGE, amount: 15, dtype: DamageType.PHYSICAL } ];
+        case 244: return [ { type: EffectType.DAMAGE, amount: 6, dtype: DamageType.PHYSICAL, times: 3 } ];
+        case 245: return [ { type: EffectType.STATUS, status: StatusType.SWORD_FORM, amount: 4, on_char: 3 } ];
+        case 246: return [ { type: EffectType.DAMAGE, amount: 50, dtype: DamageType.PHYSICAL } ];
+
+        // 追加稀有与传说牌
+        case 247: return [
+            { type: EffectType.DAMAGE, amount: 6, dtype: DamageType.MAGIC },
+            { type: EffectType.CUSTOM, action: "blood_mark", amount: 1 }
+        ];
+        case 248: return [ { type: EffectType.STATUS, status: StatusType.SWORD_FORM, amount: 2, on_char: 3 } ];
+        case 249: return [ { type: EffectType.DAMAGE, amount: 30, dtype: DamageType.PHYSICAL, overkill_to_others: true } ];
+        case 250: return [ { type: EffectType.CUSTOM, action: "unload_guard", amount: 1 } ];
+        case 251: return [ { type: EffectType.CUSTOM, action: "gather_strength", amount: 3 } ];
+        case 252: return [
+            { type: EffectType.DAMAGE, amount: 10, dtype: DamageType.PHYSICAL, bonus_scarlet_in_hand: 6 },
+            { type: EffectType.CUSTOM, action: "consume_scarlet_in_hand", amount: 1 }
+        ];
+        case 253: return [ { type: EffectType.CUSTOM, action: "sword_shadow", amount: 1 } ];
+        case 254: return [ { type: EffectType.DAMAGE, amount: 10, dtype: DamageType.PHYSICAL, heal_half_damage: true } ];
+        case 255: return [ { type: EffectType.CUSTOM, action: "scar_decree", amount: 1 } ];
+        case 256: return [ { type: EffectType.COUNTDOWN, amount: 1, owner: 3, effects: [
+            { type: EffectType.DAMAGE, amount: 10, dtype: DamageType.PHYSICAL, conditional_no_scarlet: true }
+        ] } ];
+        case 257: return [ { type: EffectType.CUSTOM, action: "blood_history", amount: 1 } ];
+        case 258: return [ { type: EffectType.CUSTOM, action: "endless_blood_war", amount: 3 } ];
+        case 259: return [ { type: EffectType.CUSTOM, action: "war_flames", amount: 2 } ];
+
+        // 41号牌：8 点物理伤害，获得 8 点护甲，令目标下回合力量和魔力 -6
 		case 241:
 			return [
 			{ type: EffectType.DAMAGE, amount: 8, dtype: DamageType.PHYSICAL },
