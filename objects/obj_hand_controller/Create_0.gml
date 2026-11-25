@@ -697,7 +697,7 @@ scry_finish = function()
         var value = q.value;
         if (q.effect.type == EffectType.STAR_PROJECTILE
         && variable_struct_exists(q.effect, "bottom_count"))
-            value = bottom_count;
+            value = bottom_count * 2;
         card_apply_effect(q.effect, value, q.target, q.enemy);
     }
 
