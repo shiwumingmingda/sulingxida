@@ -333,7 +333,8 @@ if (discover_active)
         var dxs = dopt.image_xscale * dk;
         var dys = dopt.image_yscale * dk;
 
-        draw_sprite_ext(dopt.sprite_index, 0, dopt.x, dopt.y, dxs, dys, 0, c_white, 1);
+        draw_sprite_ext(dopt.sprite_index, 0, dopt.x, dopt.y, dxs, dys, 0,
+            card_get_rarity_tint(dopt, dopt.sprite_index), 1);
         card_draw_text(dopt, dopt.sprite_index, dopt.x, dopt.y, dxs, dys, 0);
     }
 
@@ -383,19 +384,21 @@ if (selection_active)
 
         draw_set_alpha(qalpha);
         draw_sprite_ext(qcard.sprite_index, qcard.image_index,
-            qcard.x, qy, qxs, qys, qcard.image_angle, c_white, 1);
+            qcard.x, qy, qxs, qys, qcard.image_angle,
+            card_get_rarity_tint(qcard, qcard.sprite_index), 1);
         card_draw_text(qcard, qcard.sprite_index,
             qcard.x, qy, qxs, qys, qcard.image_angle);
         card_draw_merge_frame(qcard, qcard.sprite_index,
             qcard.x, qy, qxs, qys, qcard.image_angle);
 
-        if (selected)
+        if (selected || hovered)
         {
             draw_set_alpha(1);
-            draw_set_color(make_color_rgb(255, 220, 90));
-            draw_rectangle(qcard.bbox_left, qcard.bbox_top,
-                qcard.bbox_right, qcard.bbox_bottom, true);
-            draw_set_color(c_white);
+            var old_y = qcard.y;
+            qcard.y = qy;
+            draw_rotated_card_outline(qcard, qscale,
+                selected ? make_color_rgb(255, 220, 90) : c_white);
+            qcard.y = old_y;
         }
     }
 
@@ -465,7 +468,8 @@ if (turn_state == "reward")
         var wxs = wopt.image_xscale * wk;
         var wys = wopt.image_yscale * wk;
 
-        draw_sprite_ext(wopt.sprite_index, 0, wopt.x, wopt.y, wxs, wys, 0, c_white, 1);
+        draw_sprite_ext(wopt.sprite_index, 0, wopt.x, wopt.y, wxs, wys, 0,
+            card_get_rarity_tint(wopt, wopt.sprite_index), 1);
         card_draw_text(wopt, wopt.sprite_index, wopt.x, wopt.y, wxs, wys, 0);
     }
 
@@ -513,7 +517,8 @@ if (scry_active)
         if (!instance_exists(card) || card == scry_drag_card) continue;
         var card_scale = (card == scry_hover_card) ? scry_scale * 1.18 : scry_scale;
         draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            card_scale, card_scale, card.image_angle, c_white, 1);
+            card_scale, card_scale, card.image_angle,
+            card_get_rarity_tint(card, card.sprite_index), 1);
         card_draw_text(card, card.sprite_index, card.x, card.y, card_scale, card_scale, card.image_angle);
         card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
             card_scale, card_scale, card.image_angle);
@@ -526,7 +531,8 @@ if (scry_active)
         if (!instance_exists(card) || card == scry_drag_card) continue;
         var card_scale = (card == scry_hover_card) ? scry_scale * 1.18 : scry_scale;
         draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            card_scale, card_scale, card.image_angle, c_white, 1);
+            card_scale, card_scale, card.image_angle,
+            card_get_rarity_tint(card, card.sprite_index), 1);
         card_draw_text(card, card.sprite_index, card.x, card.y, card_scale, card_scale, card.image_angle);
         card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
             card_scale, card_scale, card.image_angle);
@@ -537,7 +543,8 @@ if (scry_active)
     {
         var card = scry_drag_card;
         draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            scry_scale, scry_scale, card.image_angle, c_white, 1);
+            scry_scale, scry_scale, card.image_angle,
+            card_get_rarity_tint(card, card.sprite_index), 1);
         card_draw_text(card, card.sprite_index, card.x, card.y, scry_scale, scry_scale, card.image_angle);
         card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
             scry_scale, scry_scale, card.image_angle);
@@ -577,7 +584,8 @@ if (scry_active)
         var preview_y = preview_cy
             - (sprite_get_height(preview_spr) * 0.5 - sprite_get_yoffset(preview_spr)) * preview_s;
         draw_sprite_ext(preview_spr, 0, preview_x, preview_y,
-            preview_s, preview_s, 0, c_white, 1);
+            preview_s, preview_s, 0,
+            card_get_rarity_tint(preview_card, preview_spr), 1);
         card_draw_text(preview_card, preview_spr, preview_x, preview_y,
             preview_s, preview_s, 0);
         card_draw_merge_frame(preview_card, preview_spr, preview_x, preview_y,
@@ -620,18 +628,27 @@ if (discard_choice_active)
         var opt = discard_choice_options[i];
         if (!instance_exists(opt.card)) continue;
         var card = opt.card;
-        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            discard_choice_scale, discard_choice_scale, card.image_angle, c_white, 1);
-        card_draw_text(card, card.sprite_index, card.x, card.y,
-            discard_choice_scale, discard_choice_scale, card.image_angle);
+        var hovered = (card == discard_choice_hover_card);
+        var draw_scale = hovered ? 1.08 : 1;
+        var draw_y = card.y - (hovered ? 24 : 0);
+        var xs = card.image_xscale * draw_scale;
+        var ys = card.image_yscale * draw_scale;
+        draw_sprite_ext(card.sprite_index, card.image_index, card.x, draw_y,
+            xs, ys, card.image_angle, card_get_rarity_tint(card, card.sprite_index), 1);
+        card_draw_text(card, card.sprite_index, card.x, draw_y,
+            xs, ys, card.image_angle);
+        if (opt.selected || hovered)
+        {
+            var old_y = card.y;
+            card.y = draw_y;
+            draw_rotated_card_outline(card, draw_scale,
+                opt.selected ? make_color_rgb(255, 220, 100) : c_white);
+            card.y = old_y;
+        }
         if (opt.selected)
         {
-            var w = sprite_get_width(card.sprite_index) * discard_choice_scale * 0.5;
-            var h = sprite_get_height(card.sprite_index) * discard_choice_scale * 0.5;
-            draw_set_color(make_color_rgb(255, 220, 100));
-            draw_rectangle(card.x - w, card.y - h, card.x + w, card.y + h, true);
-            draw_set_color(c_white);
-            draw_text(card.x, card.y - h - 24, "已选择");
+            var h = sprite_get_height(card.sprite_index) * abs(ys) * 0.5;
+            draw_text(card.x, draw_y - h - 24, "已选择");
         }
     }
 
