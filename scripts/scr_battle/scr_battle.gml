@@ -45,6 +45,15 @@ function deal_damage(_target, _amount, _dtype)
     if (unit_is_dead(_target)) return 0;
     var hp_before_damage = _target.hp;
 
+    // 浸染：被标记的敌人下次受到伤害时，心羽获得1层血色。
+    if (variable_instance_exists(_target, "blood_mark_next_damage")
+    && _target.blood_mark_next_damage && _amount > 0)
+    {
+        _target.blood_mark_next_damage = false;
+        if (instance_exists(obj_hand_controller.char_3))
+            add_status(obj_hand_controller.char_3, StatusType.BLOOD, 1);
+    }
+
     // 卸劲：心羽在前场每回合首次受到伤害时，移动到后场并完全防止本次伤害。
     if (instance_exists(obj_hand_controller)
     && _target == obj_hand_controller.char_3
