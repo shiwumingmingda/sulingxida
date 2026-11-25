@@ -641,14 +641,6 @@ function card_get_effects(_id)
         case 258: return [ { type: EffectType.CUSTOM, action: "endless_blood_war", amount: 3 } ];
         case 259: return [ { type: EffectType.CUSTOM, action: "war_flames", amount: 2 } ];
 
-        // 41号牌：8 点物理伤害，获得 8 点护甲，令目标下回合力量和魔力 -6
-		case 241:
-			return [
-			{ type: EffectType.DAMAGE, amount: 8, dtype: DamageType.PHYSICAL },
-			{ type: EffectType.ARMOR,  armor: ArmorType.GENERAL, amount: 8 },
-			{ type: EffectType.STATUS, status: StatusType.STRENGTH_DOWN, amount: 6 },
-			{ type: EffectType.STATUS, status: StatusType.MAGIC_DOWN,    amount: 6 }
-    ];
 // 31 打击：令一名友方角色造成 6 点物理伤害
 		case 301:
 			return [
@@ -672,38 +664,6 @@ function card_get_effects(_id)
 			return [
 			 { type: EffectType.DRAW, amount: 2 }
     ];
-// 42号牌：对所有敌人造成 8 点物理伤害（前场一个 + 其他敌人）
-		case 242:
-			return [
-			{ type: EffectType.DAMAGE,        amount: 8, dtype: DamageType.PHYSICAL },
-			{ type: EffectType.DAMAGE_OTHERS, amount: 8, dtype: DamageType.PHYSICAL }
-    ];
-
-// 43号牌：指向一个敌人，造成 12 点物理伤害
-		case 243:
-			return [
-				{ type: EffectType.DAMAGE, amount: 12, dtype: DamageType.PHYSICAL }
-    ];
-	// 44号牌：造成 6 点物理伤害，重复 3 次
-		case 244:
-			return [
-			{ type: EffectType.DAMAGE, amount: 6, dtype: DamageType.PHYSICAL, times: 3 }
-    ];
-
-// 45号牌：获得 2 点力量和敏捷，本场战斗剩余时间内，剑招伤害 +3
-		case 245:
-			return [
-			{ type: EffectType.STATUS, status: StatusType.STRENGTH,   amount: 2, on_char: 3 },
-			{ type: EffectType.STATUS, status: StatusType.DEXTERITY,  amount: 2, on_char: 3 },
-			{ type: EffectType.STATUS, status: StatusType.SWORD_FORM, amount: 3, on_char: 3 }
-    ];
-
-// 46号牌：造成 50 点物理伤害
-		case 246:
-			return [
-			{ type: EffectType.DAMAGE, amount: 50, dtype: DamageType.PHYSICAL }
-    ];
-
         // 苏灵兮新卡牌效果
         // 5 专注：抽三张牌。倒计时1：获得2费
         case 5:
