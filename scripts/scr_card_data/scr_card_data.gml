@@ -1237,7 +1237,7 @@ function character3_play_top_cards(_count)
             card_play_effects(temp_card, friend_target, enemy_target);
 
         // 剑影：诛屠视为使用的第一张剑招也会触发本回合的额外结算。
-        if (ctype == CardType.ATTACK && owner_n == 3
+        if (cid != 231 && ctype == CardType.ATTACK && owner_n == 3
         && card_has_tag(cid, CardTag.SWORD)
         && controller.char_3.sword_shadow_active
         && !controller.char_3.sword_shadow_used)
