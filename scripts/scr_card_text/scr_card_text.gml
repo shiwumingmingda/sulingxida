@@ -234,40 +234,7 @@ function card_get_description(_inst)
 			return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲和"
          + string(card_current_armor_of(_inst, ArmorType.PHYSICAL)) + "点物理护甲";
 
-        // 12号牌：造成物理伤害，获得星光
-
-        // 15号牌：获得星光
-			
-			
-		case 201:
-			 return "剑招，造成" + string(card_current_damage(_inst)) + "点物理伤害";
-
-		case 202:
-			return "剑招，追猎，造成" + string(card_current_damage(_inst)) + "点物理伤害";
-
-		case 203:
-			return "剑招，获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲";
-
-		case 204:
-			return "剑招，造成" + string(card_current_damage(_inst)) + "点物理伤害，令敌方下回合失去等量的力量";
-
-		case 205:
-			return "造成" + string(card_current_damage(_inst)) + "点魔法伤害，将一张【猩红】置入手牌";
-
-		case 206:
-			return "造成" + string(card_current_damage(_inst)) + "点物理伤害，弃置你手中所有的【猩红】";
-
-		case 207:
-			return "消耗，失去" + string(card_current_value(_inst, EffectType.LOSE_HP)) + "点生命，"
-         + "获得" + string(card_current_status(_inst, StatusType.BLOOD)) + "层血色";
-
-		case 208:
-			return "消耗，获得" + string(card_current_status(_inst, StatusType.STRENGTH)) + "点力量和"
-         + string(card_current_status(_inst, StatusType.DEXTERITY)) + "点敏捷，"
-         + "回复" + string(card_current_value(_inst, EffectType.HEAL)) + "点生命";
-
-        case 210: return "每回合开始时，将一张0费的【练心】置入你的手牌";
-
+        // 心羽：星星的孩子
         case 201: return "剑招。造成" + string(card_current_damage(_inst)) + "点物理伤害";
         case 202: return "剑招，追猎。造成" + string(card_current_damage(_inst)) + "点物理伤害";
         case 203: return "剑招。获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲（包括剑招加成）";
@@ -297,7 +264,7 @@ function card_get_description(_inst)
 
         case 226: return "追猎。造成12点物理伤害；若击杀目标，获得2点费用并抽1张牌";
         case 227: return "在本场对战剩余时间内，每当你抽到【猩红】，获得1点力量";
-        case 228: return "获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "层血色；若本场战斗为第一回合，改为获得6层";
+        case 228: return "获得2层血色；若本场战斗为第一回合，改为获得6层";
         case 229: return "获得2点护甲。先锋：本回合心羽无法使用攻击牌，下回合获得3点力量";
         case 230: return "获得1层血色；若力量大于3，额外获得2层。然后将一张【猩红】置入抽牌堆";
         case 231: return "剑招。造成15点物理伤害，视为使用抽牌堆顶的两张牌，并将一张【猩红】置入弃牌堆";
