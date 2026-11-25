@@ -136,11 +136,11 @@ function card_get_description(_inst)
         case 101: return "造成" + string(card_current_damage(_inst)) + "点法术伤害";
         case 102: return "对前场敌人造成" + string(card_current_damage(_inst)) + "点法术伤害，\n对其他敌人造成" + string(card_current_others(_inst)) + "点法术伤害";
         case 103: return "获得" + string(card_current_xingguang(_inst)) + "点星光";
-        case 104: return "令敌方接下来的两个回合受到的伤害+4，造成的伤害-3";
+        case 104: return "令一名敌方角色下回合的力量和魔力各降低6点";
         case 105: return "造成" + string(card_current_damage(_inst)) + "点法术伤害；若本回合其他角色使用过攻击牌，此伤害额外+6";
-        case 106: return "造成" + string(card_current_damage(_inst)) + "点物理伤害，令所有后场友方角色获得4点护甲（实际护甲还会受到各角色敏捷影响）";
+        case 106: return "造成" + string(card_current_damage(_inst)) + "点物理伤害，令所有后场友方角色获得5点护甲（实际护甲还会受到各角色敏捷影响）";
         case 107: return "占卜" + string(card_current_value(_inst, EffectType.SCRY)) + "，然后抽" + string(card_current_draw(_inst)) + "张牌";
-        case 108: return "占卜" + string(card_current_value(_inst, EffectType.SCRY)) + "，然后向敌人投射星星，造成等同于置入牌堆底数量的伤害";
+        case 108: return "占卜" + string(card_current_value(_inst, EffectType.SCRY)) + "，然后投射星星：每置入牌堆底1张牌，造成2点伤害";
         case 109: return "造成" + string(card_current_damage(_inst)) + "点物理伤害";
         case 110: return "令一名其他友方角色和尘各获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲";
         case 111: return "造成" + string(card_current_damage(_inst)) + "点物理伤害，获得" + string(card_current_xingguang(_inst)) + "点星光";
@@ -153,17 +153,17 @@ function card_get_description(_inst)
         case 118: return "获得" + string(card_current_status(_inst, StatusType.DEXTERITY)) + "点敏捷";
         case 119: return "选择一张其他角色的手牌，本回合此牌可以将星光当作费用使用";
         case 120: return "在本场战斗剩余时间内，每回合开始时，尘占卜2";
-        case 121: return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲，下回合额外获得" + string(card_current_next_energy(_inst)) + "费";
-        case 122: return "对所有敌人造成" + string(card_current_damage(_inst)) + "点魔法伤害，每击杀一个敌人，获得1点星光";
+        case 121: return "虚无。抽到此牌时，下回合获得2费";
+        case 122: return "对所有敌人造成" + string(card_current_damage(_inst)) + "点伤害，每击杀一个敌人，获得1点星光";
         case 123: return "本场战斗中，你队伍造成的所有伤害+" + string(card_current_value(_inst, EffectType.CUSTOM));
         case 124: return "消耗。令一名友方角色获得【长明】";
         case 125: return "选择一名敌方角色；当尘使用攻击牌时，若其位于前场，则令其退至后场";
-        case 126: return "追猎。造成" + string(card_current_damage(_inst)) + "点物理伤害";
-        case 127: return "选择一名敌方角色，直到下回合开始前，每当其离开前场时，将其置入前场";
-        case 128: return "获得" + string(card_current_armor_of(_inst, ArmorType.PHYSICAL)) + "点物理护甲和" + string(card_current_armor_of(_inst, ArmorType.MAGIC)) + "点法术护甲";
+        case 126: return "追猎。造成" + string(card_current_damage(_inst)) + "点伤害";
+        case 127: return "令一名敌方角色移动。当此牌被占卜置入牌堆底时，改为置入手牌";
+        case 128: return "虚无。抽到此牌时，获得10点物理护甲和10点法术护甲";
         case 129: return "本回合所有友方角色获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点力量和" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点魔力";
         case 130: return "远程。移除目标" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲";
-        case 131: return "对随机敌人造成" + string(card_current_value(_inst, EffectType.RANDOM_DAMAGE)) + "点法术伤害，重复" + string(card_current_times(_inst)) + "次";
+        case 131: return "对随机敌人造成7点法术伤害，重复" + string(max(card_current_times(_inst) - 1, 1)) + "次。每当抽到此牌时，额外重复1次（最多7次）";
         case 132: return "造成" + string(card_current_damage(_inst)) + "点物理伤害。尘每使用过一张攻击牌，此牌费用降低1点";
         case 133: return "进入前场，获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲。若下回合开始前未受到伤害，额外获得3点护甲";
         case 134: return "令所有敌方角色失去" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点力量和" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点魔力，然后此牌费用+1";
@@ -180,11 +180,15 @@ function card_get_description(_inst)
         case 145: return "消耗。所有友方角色回复" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点体力，并获得10点法术护甲";
         case 146: return "固有，消耗。获得" + string(card_current_xingguang(_inst)) + "点星光";
         case 147: return "本场战斗中，每回合每名友方角色使用的第一张技能牌或攻击牌额外结算一次";
-        case 148: return "消耗。为所有手牌施加【繁星】，然后抽取等同于手牌数量的牌";
+        case 148: return "消耗。为所有手牌施加【繁星】，然后弃置所有手牌并抽取等量的牌";
         case 149: return "在本场战斗中，当一名友方角色受到攻击时，令其获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲";
         case 150: return "消耗。获得" + string(card_current_xingguang(_inst)) + "点星光，然后获得等同于当前星光数量的魔力和护甲";
         case 151: return "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲。令其他友方角色获得等同于尘当前护甲总和的护甲";
         case 152: return "每回合结束时，为抽牌堆中的一张牌施加【繁星】；本场战斗中，星光补费不再限次";
+        case 153: return "在本场战斗剩余时间内，你的所有占卜数量额外+1";
+        case 154: return "虚无。抽到此牌时，获得8点护甲";
+        case 155: return "在本场战斗剩余时间内，每回合结束时，你可以将一张手牌洗入抽牌堆";
+        case 156: return "选择一张手牌置入牌堆顶，然后抽3张牌";
 
         // 1号牌：对前场敌人造成 6 点法术伤害，对其他敌人造成 3 点法术伤害
         case 1:
