@@ -476,7 +476,7 @@ if (char_is_alive(char_3))
 if (char_is_alive(char_2) && char_2.purple_star)
 {
     draw_after_scry = 5;
-    scry_start(2);
+    scry_start(2 + char_2.scry_bonus);
     if (!scry_active && draw_after_scry > 0)
     {
         var pending_draw = draw_after_scry;
@@ -538,81 +538,11 @@ if (mx >= test_x1 && mx <= test_x2
     else if (mx >= end_button_x1 && mx <= end_button_x2
     &&  my >= end_button_y1 && my <= end_button_y2)
     {
-		// 漫步繁星之畔：回合结束时为抽牌堆中的一张牌施加繁星。
-if (char_is_alive(char_2) && char_2.star_walk_active) mark_random_deck_card();
-
-// 出牌阶段结束：结算手牌里的回合结束效果（猩红）
-for (var ei = 0; ei < array_length(hand); ei++)
-{
-    var ec = hand[ei];
-
-    if (instance_exists(ec))
-    {
-        card_on_turn_end(ec);
-    }
-}
-        // 把所有手牌放入弃牌堆，并销毁实例
-       // 把手牌放入弃牌堆并销毁实例；带"保留"的牌留在手里
-var kept_cards = [];
-
-for (var i = 0; i < array_length(hand); i++)
-{
-    var c = hand[i];
-
-    if (!instance_exists(c)) continue;
-
-    // 阅读的加费机会只属于发现它的这个回合
-    if (variable_instance_exists(c, "reading_bonus")) c.reading_bonus = false;
-
-    if (card_has_retain(c.card_id) || (variable_instance_exists(c, "retain_once") && c.retain_once))
-{
-    c.retain_once = false;   // "保留一回合"只保留这一次
-    kept_cards[array_length(kept_cards)] = c;
-}
-    else
-    {
-        discard_pile[array_length(discard_pile)] = card_entry_from_instance(c);
-
-        with (c)
-        {
-            instance_destroy();
-        }
-    }
-}
-
-hand = kept_cards;
-drag_card = noone;
-        drag_card = noone;
-// 检测前场是否有人
-// 前场没人：让后场最左边的角色上场
-if (front_char == noone || !instance_exists(front_char))
-{
-    front_char = noone;
-
-    if (array_length(back_chars) > 0)
-    {
-        bring_to_front(back_chars[0]);
-    }
-}
-
-        // 记录本回合每个角色是否使用过攻击牌，供下一回合倒计时判断
-attack_used_last_turn = copy_array(attack_used_this_turn);
-attack_used_this_turn = array_create(5, false);
-
-// 轮到敌人
-
-turn_state = "enemy";
-enemy_timer = 0;
-enemy_phase = "attack";
-// 敌人回合开始：所有敌人标记为"还没行动"
-for (var hi = 0; hi < array_length(enemies); hi++)
-{
-    if (instance_exists(enemies[hi]))
-    {
-        enemies[hi].has_acted = false;
-    }
-}
-enemy_acted = 0;
+        // 明澈：回合结束前可选一张手牌洗入抽牌堆，也可以不选。
+        if (char_is_alive(char_2) && char_2.mingche_active && array_length(hand) > 0)
+            selection_start(0, "multi", 0, 1, { kind: "mingche_end_turn" });
+        else
+            end_player_turn();
     }
     // 抽牌按钮
    // 抽牌按钮
