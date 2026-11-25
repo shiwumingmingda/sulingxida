@@ -106,7 +106,7 @@ function card_info(_id)
         case 122: return card_make_info(CardType.ATTACK, 3, Rarity.RARE, false, TargetKind.NONE, 0);
         case 123: return card_make_info(CardType.STATUS, 0, Rarity.RARE, false, TargetKind.NONE, 0, 1);
         case 124: return card_make_info(CardType.SKILL,  1, Rarity.RARE, true,  TargetKind.FRIEND, 0, 1);
-        case 125: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.ENEMY, 0);
+        case 125: return card_make_info(CardType.SKILL,  1, Rarity.RARE, true,  TargetKind.ENEMY, 0);
         case 126: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.ENEMY, 0);
         case 127: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.ENEMY, 0);
         case 128: return card_make_info(CardType.SKILL,  2, Rarity.RARE, false, TargetKind.NONE, 0);
@@ -1378,7 +1378,10 @@ break;
                 case "long_life":
                     if (instance_exists(_target)) _target.long_life = true;
                     break;
-                case "retreat_mark": dust.retreat_mark_target = _enemy; break;
+                case "retreat_mark":
+                    dust.retreat_mark_target = _enemy;
+                    if (instance_exists(_enemy)) obj_hand_controller.send_enemy_to_back(_enemy);
+                    break;
                 case "front_lock":
                     if (instance_exists(_enemy)) _enemy.force_front = true;
                     break;
