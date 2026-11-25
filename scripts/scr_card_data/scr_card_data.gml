@@ -3238,13 +3238,16 @@ function card_has_tag(_id, _tag)
     switch (_tag)
     {
         case CardTag.SWORD:
-            return ((_id >= 201 && _id <= 204) || (_id >= 241 && _id <= 246));
+            return ((_id >= 201 && _id <= 204)
+                || _id == 217 || _id == 231 || _id == 232
+                || (_id >= 241 && _id <= 246));
 
         case CardTag.HUNT:
-            return (_id == 202 || _id == 126 || _id == 130);
+            return (_id == 202 || _id == 126 || _id == 130
+                || _id == 226 || _id == 243);
 
         case CardTag.RANGED:
-            return false;
+            return (_id == 243);
     }
 
     return false;
