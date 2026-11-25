@@ -158,7 +158,7 @@ function card_get_description(_inst)
         case 122: return "对所有敌人造成" + string(card_current_damage(_inst)) + "点伤害，每击杀一个敌人，获得1点星光";
         case 123: return "本场战斗中，你队伍造成的所有伤害+" + string(card_current_value(_inst, EffectType.CUSTOM));
         case 124: return "消耗。令一名友方角色获得【长明】";
-        case 125: return "选择一名敌方角色；当尘使用攻击牌时，若其位于前场，则令其退至后场";
+        case 125: return "消耗。选择一名敌方角色，令其退至后场；当尘使用攻击牌时，再次令其退至后场";
         case 126: return "追猎。造成" + string(card_current_damage(_inst)) + "点伤害";
         case 127: return "令一名敌方角色移动。当此牌被占卜置入牌堆底时，改为置入手牌";
         case 128: return "虚无。抽到此牌时，获得10点物理护甲和10点法术护甲";
