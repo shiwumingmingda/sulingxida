@@ -1221,14 +1221,10 @@ if (owner == noone) owner = _receiver;
             var dt = variable_struct_exists(_e, "dtype") ? _e.dtype : DamageType.PHYSICAL;
 
             // 力量：物理伤害 +1/层
-            // 力量：物理伤害 +1/层；煞：每张手牌中的猩红额外提供3点力量。
+            // 力量：物理伤害 +1/层。煞的猩红力量已包含在 get_status 中。
             if (dt == DamageType.PHYSICAL)
             {
                 v += get_status(owner, StatusType.STRENGTH) + get_status(owner, StatusType.TEMP_STRENGTH);
-                if (instance_exists(obj_hand_controller.char_3)
-                && owner == obj_hand_controller.char_3
-                && owner.scarlet_retain_active)
-                    v += character3_scarlet_hand_count() * 3;
             }
             else
             {
@@ -1280,6 +1276,14 @@ if (owner == noone) owner = _receiver;
             // 敏捷：获得的护甲 +1/层（按接收者算，没有指定接收者就按拥有者算）
             var receiver = (_receiver != noone) ? _receiver : owner;
             v += get_status(receiver, StatusType.DEXTERITY);
+
+            // 格：该牌获得的护甲同样受到剑招加成。
+            if (_inst.card_id == 203 && instance_exists(obj_hand_controller.char_3))
+            {
+                v += get_status(obj_hand_controller.char_3, StatusType.SWORD_FORM);
+                v += obj_hand_controller.char_3.temp_sword_form;
+            }
+
             if (get_status(receiver, StatusType.ROCK_WALL) > 0) v *= 2;
         }
         break;
