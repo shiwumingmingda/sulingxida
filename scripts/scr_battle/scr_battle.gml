@@ -42,7 +42,20 @@ function unit_armor_total(_u)
 // 造成伤害：先扣对应类型的护甲 → 再扣通用护甲 → 最后扣血
 function deal_damage(_target, _amount, _dtype)
 {
-    if (unit_is_dead(_target)) return;
+    if (unit_is_dead(_target)) return 0;
+    var hp_before_damage = _target.hp;
+
+    // 卸劲：心羽在前场每回合首次受到伤害时，移动到后场并完全防止本次伤害。
+    if (instance_exists(obj_hand_controller)
+    && _target == obj_hand_controller.char_3
+    && _target == obj_hand_controller.front_char
+    && _target.unload_active && !_target.unload_used
+    && _amount > 0)
+    {
+        _target.unload_used = true;
+        obj_hand_controller.rotate_character(_target);
+        return 0;
+    }
 
     // 此夜无人独行：友方任意角色每次受到攻击时，先获得5点通用护甲。
     // 在常规护甲吸收前触发，因此本次攻击即可被新护甲抵消。
@@ -66,6 +79,10 @@ function deal_damage(_target, _amount, _dtype)
         if (get_status(_target, StatusType.ROCK_WALL) > 0) guard_armor *= 2;
         add_armor(_target, ArmorType.GENERAL, guard_armor);
     }
+
+    // 脆弱：受到的伤害提高50%，向下取整；状态层数由回合开始时递减。
+    if (get_status(_target, StatusType.VULNERABLE) > 0)
+        _amount = floor(_amount * 1.5);
 
     var armor_before = unit_armor_total(_target);
     var remaining = _amount;
@@ -103,6 +120,13 @@ function deal_damage(_target, _amount, _dtype)
         _target.hp = max(_target.hp - remaining, 0);
     }
 
+    // 记录心羽上一个/本回合是否因敌方攻击损失了体力，供【守势】判断。
+    if (remaining > 0 && instance_exists(obj_hand_controller.char_3)
+    && _target == obj_hand_controller.char_3)
+    {
+        obj_hand_controller.char_3.hp_lost_this_turn = true;
+    }
+
     // 炫技：若尘在下回合开始前受到实际伤害，失去额外护甲奖励
     if (remaining > 0 && instance_exists(obj_hand_controller.char_2)
     && _target == obj_hand_controller.char_2
@@ -123,6 +147,8 @@ function deal_damage(_target, _amount, _dtype)
     }
 
     battle_check_death(_target);
+    if (instance_exists(_target)) return max(hp_before_damage - _target.hp, 0);
+    return hp_before_damage;
 }
 
 // 给角色增加星光
