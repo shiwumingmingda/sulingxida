@@ -37,6 +37,10 @@ function card_text_shadow_ext(_x, _y, _str, _wrap, _ts, _a, _col)
 // 读取卡牌"当前"的费用和伤害（优先用牌自己的变量，没有就查表）
 function card_current_cost(_inst)
 {
+    // 烬战、杀念等授予的临时0费优先于卡牌自身的动态费用。
+    if (variable_instance_exists(_inst, "cost_temporary") && _inst.cost_temporary)
+        return 0;
+
     if (_inst.card_id == 132 && instance_exists(obj_hand_controller)
     && instance_exists(obj_hand_controller.char_2))
         return max(7 - obj_hand_controller.char_2.attack_cards_used_battle, 0);
