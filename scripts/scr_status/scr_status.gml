@@ -126,24 +126,19 @@ function enemy_perform_attack(_enemy)
 
     var strength_down = get_status(_enemy, StatusType.STRENGTH_DOWN);
     var magic_down = get_status(_enemy, StatusType.MAGIC_DOWN);
-    var star_reduction = 0;
-    if (instance_exists(obj_hand_controller.char_2)
-    && obj_hand_controller.char_2.enemy_debuff_turns > 0)
-    {
-        star_reduction = obj_hand_controller.char_2.enemy_damage_reduction;
-    }
 
     for (var i = 0; i < array_length(hits); i++)
     {
         var h = hits[i];
 
-        // 物理攻击扣力量下降，魔法攻击扣魔力下降；连续攻击每一次都扣
+        // 物理攻击扣力量下降，魔法攻击扣魔力下降；连续攻击的每一击都会计算减益。
         var reduce = (h.dtype == DamageType.PHYSICAL) ? strength_down : magic_down;
-        reduce += star_reduction;
-        if (instance_exists(obj_hand_controller.char_2) && obj_hand_controller.char_2.night_guard_active)
-            add_armor(target, ArmorType.GENERAL, 5 + get_status(target, StatusType.DEXTERITY));
         deal_damage(target, max(h.damage - reduce, 0), h.dtype);
     }
+
+    // 力量/魔力下降只影响这名敌人的下一次行动。
+    if (strength_down > 0) clear_status(_enemy, StatusType.STRENGTH_DOWN);
+    if (magic_down > 0) clear_status(_enemy, StatusType.MAGIC_DOWN);
 }
 // 读取层数
 function get_status(_unit, _type)
