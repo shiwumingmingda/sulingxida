@@ -1767,9 +1767,10 @@ break;
 
                 case "guard_stance":
                 {
-                    var guard_bonus = (dust.hp_lost_last_turn ? 0 : _e.bonus);
-                    add_armor(obj_hand_controller.char_3, ArmorType.GENERAL,
-                        _v + guard_bonus + get_status(obj_hand_controller.char_3, StatusType.DEXTERITY));
+                    var heart_guard = obj_hand_controller.char_3;
+                    var guard_bonus = (heart_guard.hp_lost_last_turn ? 0 : _e.bonus);
+                    add_armor(heart_guard, ArmorType.GENERAL,
+                        _v + guard_bonus + get_status(heart_guard, StatusType.DEXTERITY));
                 }
                 break;
 
