@@ -1107,6 +1107,10 @@ function character3_draw_attacks_free(_count)
 
     repeat (_count)
     {
+        // 手牌满时按正常抽牌规则停止，不把未能拿到的攻击牌移入弃牌堆。
+        if (array_length(obj_hand_controller.hand) >= obj_hand_controller.max_hand_size)
+            break;
+
         var found = -1;
         for (var di = obj_hand_controller.deck_index; di < array_length(obj_hand_controller.deck); di++)
         {
@@ -1137,20 +1141,14 @@ function character3_draw_attacks_free(_count)
 
         var selected_entry = obj_hand_controller.deck[found];
         array_delete(obj_hand_controller.deck, found, 1);
-        if (array_length(obj_hand_controller.hand) >= obj_hand_controller.max_hand_size)
-        {
-            obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = selected_entry;
-        }
-        else
-        {
-            var spawned = card_spawn_from_entry(selected_entry,
-                room_width * 0.5, room_height - 115);
-            spawned.cost = 0;
-            spawned.cost_temporary = true;
-            spawned.is_dealing = true;
-            obj_hand_controller.hand[array_length(obj_hand_controller.hand)] = spawned;
-            card_on_draw(spawned);
-        }
+
+        var spawned = card_spawn_from_entry(selected_entry,
+            room_width * 0.5, room_height - 115);
+        spawned.cost = 0;
+        spawned.cost_temporary = true;
+        spawned.is_dealing = true;
+        obj_hand_controller.hand[array_length(obj_hand_controller.hand)] = spawned;
+        card_on_draw(spawned);
     }
 
     obj_hand_controller.check_merge();
