@@ -635,8 +635,8 @@ scry_finish = function()
         if (!instance_exists(c)) continue;
         var entry = card_entry_from_instance(c);
 
-        // 步天：放到牌堆底时改为置入手牌。
-        if (c.card_id == 116)
+        // 步天、贯索：放到牌堆底时改为置入手牌。
+        if (c.card_id == 116 || c.card_id == 127)
         {
             to_hand[array_length(to_hand)] = entry;
             continue;
@@ -821,6 +821,7 @@ selection_cards = [];
 selection_hover_card = noone;
 selection_action = { kind: "" };
 selection_queue = [];
+end_turn_waiting = false;
     // 销毁手上所有卡牌实例
     for (var i = 0; i < array_length(hand); i++)
     {
@@ -900,6 +901,11 @@ for (var si = 1; si <= 4; si++)
 if (instance_exists(char_3))
 {
     char_3.talent_count = 0;
+}
+if (instance_exists(char_2))
+{
+    char_2.scry_bonus = 0;
+    char_2.mingche_active = false;
 }
 
 };
@@ -1111,6 +1117,33 @@ selection_finish = function()
             ]);
         }
         break;
+
+        case "topdeck_draw_three":
+        {
+            var chosen = picked[0];
+            if (instance_exists(chosen))
+            {
+                var top_entry = card_entry_from_instance(chosen);
+                remove_card_from_hand(chosen);
+                array_insert(deck, deck_index, top_entry);
+                draw_cards(3);
+            }
+        }
+        break;
+
+        case "mingche_end_turn":
+        {
+            if (array_length(picked) > 0 && instance_exists(picked[0]))
+            {
+                var chosen = picked[0];
+                var entry = card_entry_from_instance(chosen);
+                var insert_at = irandom_range(deck_index, array_length(deck));
+                array_insert(deck, insert_at, entry);
+                remove_card_from_hand(chosen);
+            }
+            end_player_turn();
+        }
+        break;
     }
 
     selection_active = false;
@@ -1127,8 +1160,64 @@ selection_finish = function()
     }
 };
 
-wind_blade_bonus = 0;
-rock_wall_ready = false;
+// 统一处理玩家回合结束；明澈的选牌完成后也会调用这里继续结算。
+end_player_turn = function()
+{
+    if (turn_state != "player") return;
+
+    if (char_is_alive(char_2) && char_2.star_walk_active)
+        mark_random_deck_card();
+
+    for (var ei = 0; ei < array_length(hand); ei++)
+    {
+        var ec = hand[ei];
+        if (instance_exists(ec)) card_on_turn_end(ec);
+    }
+
+    var kept_cards = [];
+    for (var i = 0; i < array_length(hand); i++)
+    {
+        var c = hand[i];
+        if (!instance_exists(c)) continue;
+
+        if (variable_instance_exists(c, "reading_bonus")) c.reading_bonus = false;
+
+        if (card_has_retain(c.card_id) || (variable_instance_exists(c, "retain_once") && c.retain_once))
+        {
+            c.retain_once = false;
+            kept_cards[array_length(kept_cards)] = c;
+        }
+        else
+        {
+            if (!card_is_ethereal(c.card_id))
+                discard_pile[array_length(discard_pile)] = card_entry_from_instance(c);
+
+            with (c) instance_destroy();
+        }
+    }
+
+    hand = kept_cards;
+    drag_card = noone;
+
+    if (front_char == noone || !instance_exists(front_char))
+    {
+        front_char = noone;
+        if (array_length(back_chars) > 0) bring_to_front(back_chars[0]);
+    }
+
+    attack_used_last_turn = copy_array(attack_used_this_turn);
+    attack_used_this_turn = array_create(5, false);
+
+    turn_state = "enemy";
+    enemy_timer = 0;
+    enemy_phase = "attack";
+
+    for (var hi = 0; hi < array_length(enemies); hi++)
+        if (instance_exists(enemies[hi])) enemies[hi].has_acted = false;
+
+    enemy_acted = 0;
+};
+
 // 左下：抽牌按钮（在"抽牌堆/弃牌堆"文字上方）
 button_x1 = 25;
 button_x2 = 190;
