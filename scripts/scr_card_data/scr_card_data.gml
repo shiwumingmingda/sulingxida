@@ -1388,28 +1388,67 @@ function card_apply_effect(_e, _v, _target, _enemy)
     {
         case EffectType.DAMAGE:
 {
-    if (_enemy != noone)
+    if (instance_exists(_enemy))
     {
         // 条件伤害：目标被冻结才造成
         if (variable_struct_exists(_e, "if_frozen") && get_status(_enemy, StatusType.FROZEN) <= 0) break;
 
-        // 没写类型的伤害效果默认按物理伤害处理
         var dt = variable_struct_exists(_e, "dtype") ? _e.dtype : DamageType.PHYSICAL;
         var damage_target = _enemy;
-        deal_damage(damage_target, _v, dt);
+        var hp_before = damage_target.hp;
+        var armor_before = unit_armor_total(damage_target);
+        var incoming = _v;
 
-        // 击杀奖励：目标被击杀，把一张牌置入手牌
+        // 记录易伤放大和护甲吸收前后的值，以计算溢出伤害。
+        if (get_status(damage_target, StatusType.VULNERABLE) > 0)
+            incoming = floor(incoming * 1.5);
+
+        var dealt = deal_damage(damage_target, _v, dt);
         var target_killed = !instance_exists(damage_target);
         if (!target_killed && instance_exists(damage_target))
-        {
             target_killed = (damage_target.hp <= 0);
+
+        // 直踢、侧踢：按实际扣除的体力判断额外效果。
+        if (variable_struct_exists(_e, "on_damage_at_least") && dealt >= _e.on_damage_at_least)
+        {
+            if (variable_struct_exists(_e, "apply_status"))
+                add_status(damage_target, _e.apply_status, _e.status_amount);
+            if (variable_struct_exists(_e, "gain_energy"))
+                obj_hand_controller.energy += _e.gain_energy;
         }
 
+        // 红尘：回复实际造成伤害的一半。
+        if (variable_struct_exists(_e, "heal_half_damage") && _e.heal_half_damage)
+            heal_hp(obj_hand_controller.char_3, floor(dealt * 0.5));
+
+        // 摧枯拉朽：先计算穿透护甲后的溢出，再将溢出伤害分给其他敌人。
+        if (variable_struct_exists(_e, "overkill_to_others") && _e.overkill_to_others
+        && target_killed && instance_exists(damage_target))
+        {
+            var armor_after = unit_armor_total(damage_target);
+            var armor_used = armor_before - armor_after;
+            var overflow = max(incoming - armor_used - hp_before, 0);
+            if (overflow > 0)
+            {
+                var other_targets = copy_array(obj_hand_controller.enemies);
+                for (var oi = 0; oi < array_length(other_targets); oi++)
+                {
+                    var other = other_targets[oi];
+                    if (instance_exists(other) && other != damage_target)
+                        deal_damage(other, overflow, DamageType.PHYSICAL);
+                }
+            }
+        }
+
+        // 击杀奖励
         if (variable_struct_exists(_e, "on_kill_id") && target_killed)
             with (obj_hand_controller) add_card_to_hand_id(_e.on_kill_id, _e.on_kill_cost, 0);
-
         if (variable_struct_exists(_e, "on_kill_starlight") && target_killed)
             add_starlight(obj_hand_controller.char_2, _e.on_kill_starlight);
+        if (variable_struct_exists(_e, "on_kill_energy") && target_killed)
+            obj_hand_controller.energy += _e.on_kill_energy;
+        if (variable_struct_exists(_e, "on_kill_draw") && target_killed)
+            obj_hand_controller.draw_cards(_e.on_kill_draw);
     }
 }
 break;
