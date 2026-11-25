@@ -12,8 +12,12 @@ if (discard_choice_active)
     for (var di = array_length(discard_choice_options) - 1; di >= 0; di--)
     {
         var hover_opt = discard_choice_options[di];
-        if (instance_exists(hover_opt.card)
-        && card_point_inside_rotated(hover_opt.card, mx, my, 1.08))
+        if (!instance_exists(hover_opt.card)) continue;
+        var old_y = hover_opt.card.y;
+        hover_opt.card.y -= 24;
+        var hover_hit = card_point_inside_rotated(hover_opt.card, mx, my, 1.08);
+        hover_opt.card.y = old_y;
+        if (hover_hit)
         {
             discard_choice_hover_card = hover_opt.card;
             break;
@@ -469,11 +473,18 @@ if (char_is_alive(char_3))
 }
 
 // 紫微垣：每回合开始先占卜2；占卜确认后再进行常规抽牌。
-draw_after_scry = 5;
 if (char_is_alive(char_2) && char_2.purple_star)
+{
+    draw_after_scry = 5;
     scry_start(2);
-
-if (!scry_active)
+    if (!scry_active && draw_after_scry > 0)
+    {
+        var pending_draw = draw_after_scry;
+        draw_after_scry = 0;
+        draw_cards(pending_draw);
+    }
+}
+else
 {
     draw_after_scry = 0;
     draw_cards(5);
