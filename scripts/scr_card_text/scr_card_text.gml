@@ -298,7 +298,7 @@ function card_get_description(_inst)
         case 253: return "在本场对战剩余时间内，你每回合使用的第一张剑招额外结算一次";
         case 254: return "消耗。造成" + string(card_current_damage(_inst)) + "点物理伤害，回复等同于实际伤害一半的体力";
         case 255: return "在本场对战剩余时间内，每回合开始时将三张【猩红】置入抽牌堆；【猩红】具有保留。手牌中每张【猩红】使你拥有3点力量";
-        case 256: return "倒计时1：造成" + string(card_current_countdown_value(_inst, EffectType.DAMAGE)) + "点物理伤害；若触发时手牌中没有【猩红】，视为使用此牌";
+        case 256: return "倒计时1：造成" + string(card_current_countdown_value(_inst, EffectType.DAMAGE)) + "点物理伤害；若触发时手牌中没有【猩红】，则视为使用此牌";
         case 257: return "在本场对战剩余时间内，每回合首次抽到异常牌时，将其消耗，抽1张牌并获得1点费用";
         case 258: return "发现一张特殊剑招。在本场对战剩余时间内，每回合开始时获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "层血色";
         case 259: return "抽取两张本角色的攻击牌，本回合这两张牌变为0费";
