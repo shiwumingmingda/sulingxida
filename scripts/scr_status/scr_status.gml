@@ -322,7 +322,7 @@ function status_get_description(_type)
         case StatusType.STRENGTH: return "每层使造成的物理伤害提高1点。";
         case StatusType.DEXTERITY: return "每层使获得的护甲提高1点。";
         case StatusType.SWORD_FORM: return "带有剑招标签的牌造成的伤害提高对应层数。";
-        case StatusType.BLOOD: return "与心羽的天赋计数共用。打出符合条件的攻击牌或获得血色都会推进计数；达到阈值时发现心羽的牌。";
+        case StatusType.BLOOD: return "心羽的血色与天赋计数共用。每累计6层，消耗6层、失去2点体力，并发现一张特殊剑招（三选一）。";
         case StatusType.DILIGENCE: return "每个我方回合开始时，每层将一张0费的【练心】置入手牌。";
         case StatusType.MAGIC_POWER: return "每层使造成的魔法伤害提高1点。";
         case StatusType.INK: return "墨灵受到伤害降至10点以下后，在下回合开始时触发墨化护甲。";
