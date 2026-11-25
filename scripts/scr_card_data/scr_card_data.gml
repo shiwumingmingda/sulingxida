@@ -132,7 +132,7 @@ function card_info(_id)
         case 147: return card_make_info(CardType.STATUS, 3, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
         case 148: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, true, TargetKind.NONE, 0);
         case 149: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
-        case 150: return card_make_info(CardType.SKILL,  2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);
+        case 150: return card_make_info(CardType.SKILL,  2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
         case 151: return card_make_info(CardType.SKILL,  3, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
         case 152: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
 
