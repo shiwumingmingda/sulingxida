@@ -1198,14 +1198,20 @@ end_player_turn = function()
 
         if (variable_instance_exists(c, "reading_bonus")) c.reading_bonus = false;
 
-        if (card_has_retain(c.card_id) || (variable_instance_exists(c, "retain_once") && c.retain_once))
+        var is_ethereal_card = card_is_ethereal(c.card_id)
+            || (variable_instance_exists(c, "ethereal") && c.ethereal);
+        var can_retain_card = !is_ethereal_card
+            && (card_has_retain(c.card_id)
+                || (variable_instance_exists(c, "retain_once") && c.retain_once));
+
+        if (can_retain_card)
         {
             c.retain_once = false;
             kept_cards[array_length(kept_cards)] = c;
         }
         else
         {
-            if (!card_is_ethereal(c.card_id))
+            if (!is_ethereal_card)
                 discard_pile[array_length(discard_pile)] = card_entry_from_instance(c);
 
             with (c) instance_destroy();
