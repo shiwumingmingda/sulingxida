@@ -3407,7 +3407,7 @@ function card_has_tag(_id, _tag)
     {
         case CardTag.SWORD:
             return ((_id >= 201 && _id <= 204)
-                || _id == 217 || _id == 231 || _id == 232
+                || _id == 231 || _id == 232
                 || (_id >= 241 && _id <= 246));
 
         case CardTag.HUNT:
