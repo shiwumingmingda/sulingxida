@@ -152,7 +152,8 @@ function card_get_description(_inst)
         case 117: return "抽" + string(card_current_draw(_inst)) + "张牌，然后弃置2张牌。被弃置的牌获得【繁星】";
         case 118: return "获得" + string(card_current_status(_inst, StatusType.DEXTERITY)) + "点敏捷";
         case 119: return "选择一张其他角色的手牌，本回合此牌可以将星光当作费用使用";
-        case 120: return "在本场战斗剩余时间内，每回合开始时，尘占卜2";
+        case 120: return "在本场战斗剩余时间内，每回合开始时，尘占卜" +
+            string(2 + (instance_exists(obj_hand_controller.char_2) ? obj_hand_controller.char_2.scry_bonus : 0));
         case 121: return "虚无。抽到此牌时，下回合获得2费";
         case 122: return "对所有敌人造成" + string(card_current_damage(_inst)) + "点伤害，每击杀一个敌人，获得1点星光";
         case 123: return "本场战斗中，你队伍造成的所有伤害+" + string(card_current_value(_inst, EffectType.CUSTOM));
