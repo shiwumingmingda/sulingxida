@@ -3134,6 +3134,8 @@ function card_entry_from_instance(_inst)
 
     var entry = card_make_entry(saved_obj);
     entry.card_id = _inst.card_id;
+    if (variable_instance_exists(_inst, "ethereal") && _inst.ethereal)
+        entry.ethereal = true;
 
     if (variable_instance_exists(_inst, "effects"))
     {
@@ -3176,6 +3178,7 @@ function card_spawn_from_entry(_entry, _x, _y)
     if (!is_undefined(_entry.cost)) inst.cost = _entry.cost;
     if (variable_struct_exists(_entry, "star_marked") && _entry.star_marked) inst.star_marked = true;
     if (variable_struct_exists(_entry, "echo_repeats")) inst.echo_repeats = _entry.echo_repeats;
+    if (variable_struct_exists(_entry, "ethereal") && _entry.ethereal) inst.ethereal = true;
 
     return inst;
 }
@@ -3184,6 +3187,7 @@ function card_on_draw(_inst)
 {
     if (!instance_exists(_inst)) return;
     var dust = obj_hand_controller.char_2;
+    var heart = obj_hand_controller.char_3;
 
     if (variable_instance_exists(_inst, "star_marked") && _inst.star_marked)
     {
@@ -3192,6 +3196,40 @@ function card_on_draw(_inst)
             { type: EffectType.ARMOR, armor: ArmorType.MAGIC, amount: 5 }, _inst, dust);
         add_armor(dust, ArmorType.MAGIC, starmark_armor);
         _inst.star_marked = false;
+    }
+
+    // 血兽：每次抽到猩红，获得1点力量。
+    var consume_scarlet = false;
+    var draw_after_consume = false;
+
+    if (_inst.card_id == 401 && instance_exists(heart))
+    {
+        if (heart.blood_beast_active)
+            add_status(heart, StatusType.STRENGTH, 1);
+
+        // 赤潮：抽到猩红时消耗并回复2点体力。
+        if (heart.red_tide_active)
+        {
+            heal_hp(heart, 2);
+            consume_scarlet = true;
+        }
+    }
+
+    // 历战之境：每回合第一次抽到异常牌时，消耗它，抽1张并获得1费。
+    if (instance_exists(heart) && heart.history_active && !heart.history_used
+    && card_is_unplayable(_inst.card_id))
+    {
+        heart.history_used = true;
+        obj_hand_controller.energy += 1;
+        consume_scarlet = true;
+        draw_after_consume = true;
+    }
+
+    if (consume_scarlet)
+    {
+        obj_hand_controller.remove_card_from_hand(_inst);
+        if (draw_after_consume) obj_hand_controller.draw_cards(1);
+        return;
     }
 
     // 虚无：这些效果在抽到卡牌时立即触发。
@@ -3310,7 +3348,7 @@ function discover_pool_xinyu(_include_46)
 
 function card_make_entry(_obj)
 {
-    return { obj: _obj, effects: undefined, merge_level: 0, cost: undefined };
+    return { obj: _obj, effects: undefined, merge_level: 0, cost: undefined, ethereal: false };
 }
 // 无法被打出的牌（拖出去也会回到手牌）
 function card_is_unplayable(_id)
@@ -3322,6 +3360,12 @@ function card_on_turn_end(_inst)
 {
     switch (_inst.card_id)
     {
+        // 焚心：若仍留在手牌中，回合结束时将一张猩红置入弃牌堆。
+        case 235:
+            obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] =
+                card_make_entry(obj_card_scarlet);
+            break;
+
         // 猩红：扣 3 点生命，获得 1 层血色
         case 401:
         {
@@ -3358,7 +3402,11 @@ function card_owner_dead(_id)
 
 function card_has_retain(_id)
 {
-    return (_id == 303);
+    if (_id == 303) return true;
+    if (_id == 401 && instance_exists(obj_hand_controller)
+    && instance_exists(obj_hand_controller.char_3))
+        return obj_hand_controller.char_3.scarlet_retain_active;
+    return false;
 }
 
 
