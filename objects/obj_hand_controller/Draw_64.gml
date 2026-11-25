@@ -195,6 +195,7 @@ if (hover_card != noone && instance_exists(hover_card))
     // 取高清图；没有高清图就用牌自己的图
     var spr = card_get_preview_sprite(hc.card_id);
     if (spr == -1) spr = hc.sprite_index;
+    spr = card_get_rarity_sprite(hc, spr);
 
     var s  = preview_height / sprite_get_height(spr);
     var pw = sprite_get_width(spr) * s;
@@ -208,8 +209,7 @@ if (hover_card != noone && instance_exists(hover_card))
     var dx = cx - (sprite_get_width(spr)  * 0.5 - sprite_get_xoffset(spr)) * s;
     var dy = cy - (sprite_get_height(spr) * 0.5 - sprite_get_yoffset(spr)) * s;
 
-    draw_sprite_ext(spr, 0, dx, dy, s, s, 0,
-        card_get_rarity_tint(hc, spr), 1);
+    draw_sprite_ext(spr, 0, dx, dy, s, s, 0, c_white, 1);
 
     // 在大卡上画文字
     card_draw_text(hc, spr, dx, dy, s, s, 0);
@@ -333,10 +333,10 @@ if (discover_active)
         var dk = position_meeting(dmx, dmy, dopt) ? 1.08 : 1;
         var dxs = dopt.image_xscale * dk;
         var dys = dopt.image_yscale * dk;
+        var dspr = card_get_rarity_sprite(dopt, dopt.sprite_index);
 
-        draw_sprite_ext(dopt.sprite_index, 0, dopt.x, dopt.y, dxs, dys, 0,
-            card_get_rarity_tint(dopt, dopt.sprite_index), 1);
-        card_draw_text(dopt, dopt.sprite_index, dopt.x, dopt.y, dxs, dys, 0);
+        draw_sprite_ext(dspr, 0, dopt.x, dopt.y, dxs, dys, 0, c_white, 1);
+        card_draw_text(dopt, dspr, dopt.x, dopt.y, dxs, dys, 0);
     }
 
     // 恢复默认设置
@@ -382,14 +382,14 @@ if (selection_active)
         var qxs = qcard.image_xscale * qscale;
         var qys = qcard.image_yscale * qscale;
         var qalpha = selected ? 1 : 0.82;
+        var qspr = card_get_rarity_sprite(qcard, qcard.sprite_index);
 
         draw_set_alpha(qalpha);
-        draw_sprite_ext(qcard.sprite_index, qcard.image_index,
-            qcard.x, qy, qxs, qys, qcard.image_angle,
-            card_get_rarity_tint(qcard, qcard.sprite_index), 1);
-        card_draw_text(qcard, qcard.sprite_index,
+        draw_sprite_ext(qspr, qcard.image_index,
+            qcard.x, qy, qxs, qys, qcard.image_angle, c_white, 1);
+        card_draw_text(qcard, qspr,
             qcard.x, qy, qxs, qys, qcard.image_angle);
-        card_draw_merge_frame(qcard, qcard.sprite_index,
+        card_draw_merge_frame(qcard, qspr,
             qcard.x, qy, qxs, qys, qcard.image_angle);
 
         if (selected || hovered)
@@ -468,10 +468,10 @@ if (turn_state == "reward")
         var wk = position_meeting(rmx, rmy, wopt) ? 1.08 : 1;
         var wxs = wopt.image_xscale * wk;
         var wys = wopt.image_yscale * wk;
+        var wspr = card_get_rarity_sprite(wopt, wopt.sprite_index);
 
-        draw_sprite_ext(wopt.sprite_index, 0, wopt.x, wopt.y, wxs, wys, 0,
-            card_get_rarity_tint(wopt, wopt.sprite_index), 1);
-        card_draw_text(wopt, wopt.sprite_index, wopt.x, wopt.y, wxs, wys, 0);
+        draw_sprite_ext(wspr, 0, wopt.x, wopt.y, wxs, wys, 0, c_white, 1);
+        card_draw_text(wopt, wspr, wopt.x, wopt.y, wxs, wys, 0);
     }
 
     // 跳过按钮
@@ -517,11 +517,11 @@ if (scry_active)
         var card = scry_top[i];
         if (!instance_exists(card) || card == scry_drag_card) continue;
         var card_scale = (card == scry_hover_card) ? scry_scale * 1.18 : scry_scale;
-        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            card_scale, card_scale, card.image_angle,
-            card_get_rarity_tint(card, card.sprite_index), 1);
-        card_draw_text(card, card.sprite_index, card.x, card.y, card_scale, card_scale, card.image_angle);
-        card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
+        var top_spr = card_get_rarity_sprite(card, card.sprite_index);
+        draw_sprite_ext(top_spr, card.image_index, card.x, card.y,
+            card_scale, card_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, top_spr, card.x, card.y, card_scale, card_scale, card.image_angle);
+        card_draw_merge_frame(card, top_spr, card.x, card.y,
             card_scale, card_scale, card.image_angle);
     }
 
@@ -531,11 +531,11 @@ if (scry_active)
         var card = scry_bottom[i];
         if (!instance_exists(card) || card == scry_drag_card) continue;
         var card_scale = (card == scry_hover_card) ? scry_scale * 1.18 : scry_scale;
-        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            card_scale, card_scale, card.image_angle,
-            card_get_rarity_tint(card, card.sprite_index), 1);
-        card_draw_text(card, card.sprite_index, card.x, card.y, card_scale, card_scale, card.image_angle);
-        card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
+        var bottom_spr = card_get_rarity_sprite(card, card.sprite_index);
+        draw_sprite_ext(bottom_spr, card.image_index, card.x, card.y,
+            card_scale, card_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, bottom_spr, card.x, card.y, card_scale, card_scale, card.image_angle);
+        card_draw_merge_frame(card, bottom_spr, card.x, card.y,
             card_scale, card_scale, card.image_angle);
     }
 
@@ -543,11 +543,11 @@ if (scry_active)
     if (instance_exists(scry_drag_card))
     {
         var card = scry_drag_card;
-        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            scry_scale, scry_scale, card.image_angle,
-            card_get_rarity_tint(card, card.sprite_index), 1);
-        card_draw_text(card, card.sprite_index, card.x, card.y, scry_scale, scry_scale, card.image_angle);
-        card_draw_merge_frame(card, card.sprite_index, card.x, card.y,
+        var drag_spr = card_get_rarity_sprite(card, card.sprite_index);
+        draw_sprite_ext(drag_spr, card.image_index, card.x, card.y,
+            scry_scale, scry_scale, card.image_angle, c_white, 1);
+        card_draw_text(card, drag_spr, card.x, card.y, scry_scale, scry_scale, card.image_angle);
+        card_draw_merge_frame(card, drag_spr, card.x, card.y,
             scry_scale, scry_scale, card.image_angle);
     }
 
@@ -557,6 +557,7 @@ if (scry_active)
         var preview_card = scry_hover_card;
         var preview_spr = card_get_preview_sprite(preview_card.card_id);
         if (preview_spr == -1) preview_spr = preview_card.sprite_index;
+        preview_spr = card_get_rarity_sprite(preview_card, preview_spr);
 
         var preview_h = room_height * 0.42;
         var preview_s = preview_h / sprite_get_height(preview_spr);
@@ -585,8 +586,7 @@ if (scry_active)
         var preview_y = preview_cy
             - (sprite_get_height(preview_spr) * 0.5 - sprite_get_yoffset(preview_spr)) * preview_s;
         draw_sprite_ext(preview_spr, 0, preview_x, preview_y,
-            preview_s, preview_s, 0,
-            card_get_rarity_tint(preview_card, preview_spr), 1);
+            preview_s, preview_s, 0, c_white, 1);
         card_draw_text(preview_card, preview_spr, preview_x, preview_y,
             preview_s, preview_s, 0);
         card_draw_merge_frame(preview_card, preview_spr, preview_x, preview_y,
@@ -634,9 +634,10 @@ if (discard_choice_active)
         var draw_y = card.y - (hovered ? 24 : 0);
         var xs = card.image_xscale * draw_scale;
         var ys = card.image_yscale * draw_scale;
-        draw_sprite_ext(card.sprite_index, card.image_index, card.x, draw_y,
-            xs, ys, card.image_angle, card_get_rarity_tint(card, card.sprite_index), 1);
-        card_draw_text(card, card.sprite_index, card.x, draw_y,
+        var discard_spr = card_get_rarity_sprite(card, card.sprite_index);
+        draw_sprite_ext(discard_spr, card.image_index, card.x, draw_y,
+            xs, ys, card.image_angle, c_white, 1);
+        card_draw_text(card, discard_spr, card.x, draw_y,
             xs, ys, card.image_angle);
         if (opt.selected || hovered)
         {
