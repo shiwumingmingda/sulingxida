@@ -102,13 +102,13 @@ function card_info(_id)
         case 118: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
         case 119: return card_make_info(CardType.SKILL,  0, Rarity.RARE, false, TargetKind.NONE, 0);
         case 120: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);
-        case 121: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0, 1);
+        case 121: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
         case 122: return card_make_info(CardType.ATTACK, 3, Rarity.RARE, false, TargetKind.NONE, 0);
         case 123: return card_make_info(CardType.STATUS, 0, Rarity.RARE, false, TargetKind.NONE, 0, 1);
         case 124: return card_make_info(CardType.SKILL,  1, Rarity.RARE, true,  TargetKind.FRIEND, 0, 1);
         case 125: return card_make_info(CardType.SKILL,  1, Rarity.RARE, true,  TargetKind.ENEMY, 0);
         case 126: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.ENEMY, 0);
-        case 127: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.ENEMY, 0);
+        case 127: return card_make_info(CardType.SKILL,  0, Rarity.RARE, false, TargetKind.ENEMY, 0);
         case 128: return card_make_info(CardType.SKILL,  2, Rarity.RARE, false, TargetKind.NONE, 0);
         case 129: return card_make_info(CardType.SKILL,  1, Rarity.RARE, false, TargetKind.NONE, 0);
         case 130: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.ENEMY, 0);
