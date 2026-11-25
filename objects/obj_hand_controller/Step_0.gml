@@ -423,6 +423,65 @@ for (var fi = 0; fi < array_length(party_insts); fi++)
 }
 team_echo_used = array_create(5, false);
 
+// 心羽：新回合更新战斗内的一回合标记。
+if (instance_exists(char_3))
+{
+    char_3.hp_lost_last_turn = char_3.hp_lost_this_turn;
+    char_3.hp_lost_this_turn = false;
+    char_3.unload_used = false;
+    char_3.sword_shadow_used = false;
+    char_3.history_used = false;
+    char_3.no_attack_this_turn = false;
+
+    // 蓄势的剑招加成持续到当前回合结束。
+    if (char_3.temp_sword_form_active)
+    {
+        char_3.temp_sword_form = 0;
+        char_3.temp_sword_form_active = false;
+    }
+    if (char_3.pending_sword_form > 0)
+    {
+        char_3.temp_sword_form = char_3.pending_sword_form;
+        char_3.pending_sword_form = 0;
+        char_3.temp_sword_form_active = true;
+    }
+
+    // 纳剑：上回合先锋成立时，本回合获得3点力量。
+    if (char_3.next_strength_bonus > 0)
+    {
+        add_status(char_3, StatusType.STRENGTH, char_3.next_strength_bonus);
+        char_3.next_strength_bonus = 0;
+    }
+
+    // 古战场：每回合获得1点力量，并将一张虚无猩红洗入抽牌堆。
+    if (char_3.ancient_battlefield_active)
+    {
+        add_status(char_3, StatusType.STRENGTH, 1);
+        character3_add_scarlet_to_deck(1, true);
+    }
+
+    // 赤潮：每回合开始将一张猩红洗入抽牌堆。
+    if (char_3.red_tide_active)
+        character3_add_scarlet_to_deck(1, false);
+
+    // 煞：每回合开始将三张猩红洗入抽牌堆。
+    if (char_3.scarlet_retain_active)
+        character3_add_scarlet_to_deck(3, false);
+
+    // 无尽血战：每回合开始获得3层血色。
+    if (char_3.endless_blood_war_active)
+        add_status(char_3, StatusType.BLOOD, 3);
+}
+
+// 脆弱持续回合数：每个新的玩家回合开始时，所有敌人的脆弱减少1。
+for (var vi = 0; vi < array_length(enemies); vi++)
+{
+    var vulnerable_enemy = enemies[vi];
+    if (instance_exists(vulnerable_enemy)
+    && get_status(vulnerable_enemy, StatusType.VULNERABLE) > 0)
+        remove_status_stack(vulnerable_enemy, StatusType.VULNERABLE, 1);
+}
+
 // 同尘授予的星光支付只持续当前回合。
 for (var hi = 0; hi < array_length(hand); hi++)
     if (instance_exists(hand[hi])) hand[hi].starlight_enabled = false;
