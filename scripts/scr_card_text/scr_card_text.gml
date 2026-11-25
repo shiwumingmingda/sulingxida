@@ -266,9 +266,73 @@ function card_get_description(_inst)
          + string(card_current_status(_inst, StatusType.DEXTERITY)) + "点敏捷，"
          + "回复" + string(card_current_value(_inst, EffectType.HEAL)) + "点生命";
 
-		case 210:
-			return "每回合开始时，将一张0费的【练心】置入你的手牌";
-		case 301:
+        case 210: return "每回合开始时，将一张0费的【练心】置入你的手牌";
+
+        case 201: return "剑招。造成" + string(card_current_damage(_inst)) + "点物理伤害";
+        case 202: return "剑招，追猎。造成" + string(card_current_damage(_inst)) + "点物理伤害";
+        case 203: return "剑招。获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲（包括剑招加成）";
+        case 204: return "剑招。造成" + string(card_current_damage(_inst)) + "点物理伤害，令敌方下回合失去等量的力量";
+        case 205: return "造成" + string(card_current_damage(_inst)) + "点魔法伤害，将一张【猩红】置入抽牌堆";
+        case 206: return "造成" + string(card_current_damage(_inst)) + "点物理伤害，弃置你手中所有的【猩红】";
+        case 207: return "消耗。失去3点体力，获得3层血色";
+        case 208: return "消耗。获得1点力量和1点敏捷，回复1点体力";
+        case 209: return "在本局对战剩余时间内，将【血.极】加入你的剑招中";
+        case 210: return "每回合开始时，将一张0费的【练心】置入你的手牌";
+
+        case 211: return "获得6点护甲；若心羽上回合未因敌方攻击损失体力，额外获得4点护甲";
+        case 212: return "保留。心羽进入前场，抽1张牌";
+        case 213: return "本回合获得2点力量";
+        case 214: return "消耗。获得2点费用，将两张【猩红】置入抽牌堆";
+        case 215: return "造成2点物理伤害。若本回合此前使用过攻击牌，抽1张牌";
+        case 216: return "造成5点物理伤害，获得4点护甲";
+        case 217: return "剑招。造成5点物理伤害；若目标没有护甲，额外造成3点伤害";
+        case 218: return "获得6点护甲；若本回合使用过至少两张攻击牌，抽1张牌";
+        case 219: return "造成12点物理伤害。若此次伤害不小于15，令目标获得2层脆弱";
+        case 220: return "造成6点物理伤害。若此次伤害不小于8，获得1点费用";
+        case 221: return "令前场角色获得12点物理护甲，将一张【猩红】置入抽牌堆";
+        case 222: return "消耗一张【猩红】，获得1点费用";
+        case 223: return "随机将一张本角色的攻击牌和一张【猩红】置入手牌，本回合变为0费";
+        case 224: return "失去2点体力，造成12点物理伤害";
+        case 225: return "在本场对战剩余时间内，每回合开始时，获得1点力量并将一张虚无的【猩红】置入抽牌堆";
+
+        case 226: return "追猎。造成12点物理伤害；若击杀目标，获得2点费用并抽1张牌";
+        case 227: return "在本场对战剩余时间内，每当你抽到【猩红】，获得1点力量";
+        case 228: return "获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "层血色；若本场战斗为第一回合，改为获得6层";
+        case 229: return "获得2点护甲。先锋：本回合心羽无法使用攻击牌，下回合获得3点力量";
+        case 230: return "获得1层血色；若力量大于3，额外获得2层。然后将一张【猩红】置入抽牌堆";
+        case 231: return "剑招。造成15点物理伤害，视为使用抽牌堆顶的两张牌，并将一张【猩红】置入弃牌堆";
+        case 232: return "剑招。造成8点物理伤害；若本回合已使用至少两张攻击牌，此牌费用变为0";
+        case 233: return "在本场对战剩余时间内，每回合开始时，将一张【猩红】置入抽牌堆；抽到【猩红】时，消耗并回复2点体力";
+        case 234: return "消耗。接下来两张剑招不消耗费用";
+        case 235: return "造成18点魔法伤害。若此牌在回合结束时仍在手牌，将一张【猩红】置入弃牌堆";
+        case 236: return "令一名角色获得5点护甲；每有1层血色，额外获得1点护甲";
+        case 237: return "令我方后场上方的角色进入前场并获得13点护甲";
+        case 238: return "令一名敌方角色失去10点护甲；若其原本没有护甲，获得1层脆弱";
+        case 239: return "在本场对战剩余时间内，每当你使用攻击牌，本回合获得1点力量";
+        case 240: return "造成" + string(card_current_damage(_inst)) + "点物理伤害。每有1点力量，此牌费用降低1点";
+
+        case 241: return "剑招，消耗。造成8点物理伤害，获得8点护甲，令目标下回合力量和魔力各降低6点";
+        case 242: return "剑招，消耗。对所有敌人造成8点物理伤害";
+        case 243: return "剑招，消耗，远程，追猎。造成15点物理伤害";
+        case 244: return "剑招，消耗。造成6点物理伤害，重复3次";
+        case 245: return "剑招，消耗。在本场对战剩余时间内，你的剑招伤害+4";
+        case 246: return "剑招，消耗。造成50点物理伤害";
+
+        case 247: return "造成6点魔法伤害。目标下次受到伤害时，心羽获得1层血色";
+        case 248: return "在本场对战剩余时间内，你的剑招造成的伤害+2";
+        case 249: return "消耗。造成30点物理伤害，对其他敌人造成等同于溢出的伤害";
+        case 250: return "在本场对战剩余时间内，每回合心羽在前场首次受到伤害时，移动至后场并防止本次伤害";
+        case 251: return "下回合你的剑招造成的伤害+3";
+        case 252: return "造成10点物理伤害。每有一张手牌中的【猩红】，额外造成6点伤害；然后消耗所有手牌中的【猩红】";
+        case 253: return "在本场对战剩余时间内，你每回合使用的第一张剑招额外结算一次";
+        case 254: return "消耗。造成10点物理伤害，回复等同于实际伤害一半的体力";
+        case 255: return "在本场对战剩余时间内，每回合开始时将三张【猩红】置入抽牌堆；【猩红】具有保留。手牌中每张【猩红】使你拥有3点力量";
+        case 256: return "倒计时1：造成10点物理伤害；若触发时手牌中没有【猩红】，视为使用此牌";
+        case 257: return "在本场对战剩余时间内，每回合首次抽到异常牌时，将其消耗，抽1张牌并获得1点费用";
+        case 258: return "发现一张特殊剑招。在本场对战剩余时间内，每回合开始时获得3层血色";
+        case 259: return "抽取两张本角色的攻击牌，本回合这两张牌变为0费";
+
+        case 301:
 			return "令一名友方角色造成" + string(card_current_damage(_inst)) + "点物理伤害";
 
 		case 302:

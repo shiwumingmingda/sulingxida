@@ -1137,8 +1137,6 @@ function character3_draw_attacks_free(_count)
 
         var selected_entry = obj_hand_controller.deck[found];
         array_delete(obj_hand_controller.deck, found, 1);
-        selected_entry.cost = 0;
-
         if (array_length(obj_hand_controller.hand) >= obj_hand_controller.max_hand_size)
         {
             obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = selected_entry;
@@ -1148,6 +1146,7 @@ function character3_draw_attacks_free(_count)
             var spawned = card_spawn_from_entry(selected_entry,
                 obj_hand_controller.room_width * 0.5, obj_hand_controller.room_height - 115);
             spawned.cost = 0;
+            spawned.cost_temporary = true;
             spawned.is_dealing = true;
             obj_hand_controller.hand[array_length(obj_hand_controller.hand)] = spawned;
         }
@@ -1831,7 +1830,14 @@ break;
                     if (array_length(owned_attacks) > 0)
                     {
                         var picked_attack = owned_attacks[irandom(array_length(owned_attacks) - 1)];
-                        obj_hand_controller.add_card_to_hand_id(picked_attack, 0, 0);
+                        var hand_before_murder = array_length(obj_hand_controller.hand);
+                        obj_hand_controller.add_card_to_hand_id(picked_attack, -1, 0);
+                        if (array_length(obj_hand_controller.hand) > hand_before_murder)
+                        {
+                            var gained_attack = obj_hand_controller.hand[array_length(obj_hand_controller.hand) - 1];
+                            gained_attack.cost = 0;
+                            gained_attack.cost_temporary = true;
+                        }
                     }
                     obj_hand_controller.add_card_to_hand(obj_card_scarlet, 0);
                 }
@@ -1961,6 +1967,8 @@ break;
 
                 case "endless_blood_war":
                     obj_hand_controller.char_3.endless_blood_war_active = true;
+                    obj_hand_controller.request_discover(
+                        discover_pool_xinyu(obj_hand_controller.discover_46_unlocked), 3);
                     break;
 
                 case "war_flames":
@@ -2900,6 +2908,40 @@ function card_get_object(_n)
         case 208: return obj_card_0208;
         case 209: return obj_card_0209;
         case 210: return obj_card_0210;
+        case 220: return obj_card_0220;
+        case 221: return obj_card_0221;
+        case 222: return obj_card_0222;
+        case 223: return obj_card_0223;
+        case 224: return obj_card_0224;
+        case 225: return obj_card_0225;
+        case 226: return obj_card_0226;
+        case 227: return obj_card_0227;
+        case 228: return obj_card_0228;
+        case 229: return obj_card_0229;
+        case 230: return obj_card_0230;
+        case 231: return obj_card_0231;
+        case 232: return obj_card_0232;
+        case 233: return obj_card_0233;
+        case 234: return obj_card_0234;
+        case 235: return obj_card_0235;
+        case 236: return obj_card_0236;
+        case 237: return obj_card_0237;
+        case 238: return obj_card_0238;
+        case 239: return obj_card_0239;
+        case 240: return obj_card_0240;
+        case 247: return obj_card_0247;
+        case 248: return obj_card_0248;
+        case 249: return obj_card_0249;
+        case 250: return obj_card_0250;
+        case 251: return obj_card_0251;
+        case 252: return obj_card_0252;
+        case 253: return obj_card_0253;
+        case 254: return obj_card_0254;
+        case 255: return obj_card_0255;
+        case 256: return obj_card_0256;
+        case 257: return obj_card_0257;
+        case 258: return obj_card_0258;
+        case 259: return obj_card_0259;
 
         // 通用
         case 301: return obj_card_0301;
@@ -3147,7 +3189,9 @@ function card_entry_from_instance(_inst)
     }
 
     entry.merge_level = card_merge_level(_inst);
-    if (variable_instance_exists(_inst, "cost")) entry.cost = _inst.cost;
+    if (variable_instance_exists(_inst, "cost")
+    && !(variable_instance_exists(_inst, "cost_temporary") && _inst.cost_temporary))
+        entry.cost = _inst.cost;
     if (variable_instance_exists(_inst, "star_marked") && _inst.star_marked) entry.star_marked = true;
     if (variable_instance_exists(_inst, "echo_repeats")) entry.echo_repeats = _inst.echo_repeats;
 
