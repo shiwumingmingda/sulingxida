@@ -61,7 +61,10 @@ function deal_damage(_target, _amount, _dtype)
     if (is_friend_target && instance_exists(obj_hand_controller.char_2)
     && obj_hand_controller.char_2.night_guard_active)
     {
-        add_armor(_target, ArmorType.GENERAL, 5);
+        var guard_armor = card_effect_value({ type: EffectType.ARMOR, amount: 5 })
+            + get_status(_target, StatusType.DEXTERITY);
+        if (get_status(_target, StatusType.ROCK_WALL) > 0) guard_armor *= 2;
+        add_armor(_target, ArmorType.GENERAL, guard_armor);
     }
 
     var armor_before = unit_armor_total(_target);
