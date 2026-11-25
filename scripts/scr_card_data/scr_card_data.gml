@@ -1980,6 +1980,7 @@ break;
                 case "terror":
                     if (instance_exists(_enemy))
                     {
+                        var had_no_armor = unit_armor_total(_enemy) <= 0;
                         var armor_left_terror = _v;
                         var cut_terror = min(_enemy.armor_general, armor_left_terror);
                         _enemy.armor_general -= cut_terror;
@@ -1990,7 +1991,7 @@ break;
                         cut_terror = min(_enemy.armor_magic, armor_left_terror);
                         _enemy.armor_magic -= cut_terror;
 
-                        if (unit_armor_total(_enemy) <= 0)
+                        if (had_no_armor)
                             add_status(_enemy, StatusType.VULNERABLE, 1);
                     }
                     break;
