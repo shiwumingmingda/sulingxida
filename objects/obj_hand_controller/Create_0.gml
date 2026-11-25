@@ -702,7 +702,7 @@ scry_finish = function()
     }
 
     // 回合开始的常规抽牌必须等紫微垣占卜确认后才执行。
-    if (draw_after_scry > 0)
+    if (draw_after_scry > 0 && !scry_active)
     {
         var pending_draw = draw_after_scry;
         draw_after_scry = 0;
