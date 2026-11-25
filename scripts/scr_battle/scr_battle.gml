@@ -44,26 +44,6 @@ function deal_damage(_target, _amount, _dtype)
 {
     if (unit_is_dead(_target)) return;
 
-    // 星印：只对敌方角色增加受到的伤害。
-    var is_enemy_target = false;
-    if (instance_exists(obj_hand_controller))
-    {
-        for (var ei = 0; ei < array_length(obj_hand_controller.enemies); ei++)
-        {
-            if (obj_hand_controller.enemies[ei] == _target)
-            {
-                is_enemy_target = true;
-                break;
-            }
-        }
-    }
-
-    if (is_enemy_target && instance_exists(obj_hand_controller.char_2)
-    && obj_hand_controller.char_2.enemy_debuff_turns > 0)
-    {
-        _amount += obj_hand_controller.char_2.enemy_damage_taken_bonus;
-    }
-
     // 此夜无人独行：友方任意角色每次受到攻击时，先获得5点通用护甲。
     // 在常规护甲吸收前触发，因此本次攻击即可被新护甲抵消。
     var is_friend_target = false;
