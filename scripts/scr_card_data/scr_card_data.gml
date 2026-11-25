@@ -635,7 +635,7 @@ function card_get_effects(_id)
         case 254: return [ { type: EffectType.DAMAGE, amount: 10, dtype: DamageType.PHYSICAL, heal_half_damage: true } ];
         case 255: return [ { type: EffectType.CUSTOM, action: "scar_decree", amount: 1 } ];
         case 256: return [ { type: EffectType.COUNTDOWN, amount: 1, owner: 3, effects: [
-            { type: EffectType.DAMAGE, amount: 10, dtype: DamageType.PHYSICAL, conditional_no_scarlet: true }
+            { type: EffectType.DAMAGE, amount: 10, dtype: DamageType.PHYSICAL, counts_as_attack_if_no_scarlet: true }
         ] } ];
         case 257: return [ { type: EffectType.CUSTOM, action: "blood_history", amount: 1 } ];
         case 258: return [ { type: EffectType.CUSTOM, action: "endless_blood_war", amount: 3 } ];
