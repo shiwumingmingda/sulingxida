@@ -8,6 +8,18 @@ var my = device_mouse_y_to_gui(0);
 
 if (discard_choice_active)
 {
+    discard_choice_hover_card = noone;
+    for (var di = array_length(discard_choice_options) - 1; di >= 0; di--)
+    {
+        var hover_opt = discard_choice_options[di];
+        if (instance_exists(hover_opt.card)
+        && card_point_inside_rotated(hover_opt.card, mx, my, 1.08))
+        {
+            discard_choice_hover_card = hover_opt.card;
+            break;
+        }
+    }
+
     if (mouse_check_button_pressed(mb_left))
     {
         if (mx >= discard_choice_x1 && mx <= discard_choice_x2
@@ -21,10 +33,11 @@ if (discard_choice_active)
         {
             var opt = discard_choice_options[di];
             if (!instance_exists(opt.card)) continue;
-            var hw = sprite_get_width(opt.card.sprite_index) * discard_choice_scale * 0.5;
-            var hh = sprite_get_height(opt.card.sprite_index) * discard_choice_scale * 0.5;
-            if (point_in_rectangle(mx, my, opt.card.x - hw, opt.card.y - hh,
-                opt.card.x + hw, opt.card.y + hh))
+            var old_y = opt.card.y;
+            if (opt.card == discard_choice_hover_card) opt.card.y -= 24;
+            var card_hit = card_point_inside_rotated(opt.card, mx, my, 1.08);
+            opt.card.y = old_y;
+            if (card_hit)
             {
                 if (opt.selected)
                     opt.selected = false;
@@ -212,10 +225,11 @@ if (selection_active)
     {
         var hcard = hand[hi];
         if (!instance_exists(hcard) || !selection_can_select(hcard)) continue;
-        var hw = sprite_get_width(hcard.sprite_index) * hcard.image_xscale * 0.5;
-        var hh = sprite_get_height(hcard.sprite_index) * hcard.image_yscale * 0.5;
-        if (point_in_rectangle(mx, my, hcard.x - hw, hcard.y - hh,
-            hcard.x + hw, hcard.y + hh))
+        var old_y = hcard.y;
+        hcard.y -= 22;
+        var card_hit = card_point_inside_rotated(hcard, mx, my, 1.12);
+        hcard.y = old_y;
+        if (card_hit)
         {
             selection_hover_card = hcard;
             break;
@@ -235,7 +249,11 @@ if (selection_active && mouse_check_button_pressed(mb_left))
         {
             var scard = hand[si];
             if (!instance_exists(scard)) continue;
-            if (position_meeting(mx, my, scard))
+            var old_y = scard.y;
+            if (scard == selection_hover_card) scard.y -= 22;
+            var card_hit = card_point_inside_rotated(scard, mx, my, 1.12);
+            scard.y = old_y;
+            if (card_hit)
             {
                 if (selection_can_select(scard))
                 {
@@ -450,11 +468,16 @@ if (char_is_alive(char_3))
     }
 }
 
-// 抽 5 张牌
-draw_cards(5);
+// 紫微垣：每回合开始先占卜2；占卜确认后再进行常规抽牌。
+draw_after_scry = 5;
+if (char_is_alive(char_2) && char_2.purple_star)
+    scry_start(2);
 
-// 紫微垣：每回合开始占卜2。
-if (char_is_alive(char_2) && char_2.purple_star) scry_start(2);
+if (!scry_active)
+{
+    draw_after_scry = 0;
+    draw_cards(5);
+}
         }
     }
 }
@@ -496,7 +519,7 @@ if (turn_state == "player" && !selection_active && !hand_collapsed && drag_card 
 if (mx >= test_x1 && mx <= test_x2
 &&  my >= test_y1 && my <= test_y2)
 {
-    start_discover(discover_pool_field());
+    start_discover(discover_pool_field(), 7);
 }
 // 回合结束按钮
 
