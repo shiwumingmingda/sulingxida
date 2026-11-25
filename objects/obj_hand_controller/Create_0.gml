@@ -1647,13 +1647,16 @@ countdown_fire = function(_cd)
             }
         }
 
+        var counts_as_heart_attack = variable_struct_exists(e, "counts_as_attack_if_no_scarlet")
+            && e.counts_as_attack_if_no_scarlet
+            && character3_scarlet_hand_count() <= 0
+            && instance_exists(en);
+
         card_apply_effect(e, fire_value, owner_inst, en);
 
         // 心剑：伤害照常结算；若触发时手牌没有猩红，这次倒计时同时视为使用了一张攻击牌。
-        if (variable_struct_exists(e, "counts_as_attack_if_no_scarlet")
-        && e.counts_as_attack_if_no_scarlet
-        && character3_scarlet_hand_count() <= 0
-        && instance_exists(en) && instance_exists(char_3))
+        // 在伤害结算前记录条件，避免击杀目标后遗漏攻击触发。
+        if (counts_as_heart_attack && instance_exists(char_3))
         {
             turn_played_ids[array_length(turn_played_ids)] = 256;
             attack_used_this_turn[3] = true;
