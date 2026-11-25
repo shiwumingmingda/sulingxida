@@ -39,8 +39,22 @@ function card_current_cost(_inst)
 {
     if (_inst.card_id == 132 && instance_exists(obj_hand_controller)
     && instance_exists(obj_hand_controller.char_2))
-    {
         return max(7 - obj_hand_controller.char_2.attack_cards_used_battle, 0);
+
+    if (instance_exists(obj_hand_controller) && instance_exists(obj_hand_controller.char_3))
+    {
+        var heart = obj_hand_controller.char_3;
+
+        // 追斩：本回合已使用两张攻击牌后变为0费。
+        if (_inst.card_id == 232 && character3_attack_count_this_turn() >= 2) return 0;
+
+        // 血袭：每层力量使费用降低1点。
+        if (_inst.card_id == 240)
+            return max(3 - get_status(heart, StatusType.STRENGTH), 0);
+
+        // 剑鸣：接下来的两张剑招不消耗费用。
+        if (card_has_tag(_inst.card_id, CardTag.SWORD) && heart.sword_song_charges > 0)
+            return 0;
     }
 
     if (variable_instance_exists(_inst, "cost")) return _inst.cost;
