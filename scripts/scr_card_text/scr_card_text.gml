@@ -163,7 +163,7 @@ function card_get_description(_inst)
         case 127: return "令一名敌方角色移动。当此牌被占卜置入牌堆底时，改为置入手牌";
         case 128: return "虚无。抽到此牌时，获得10点物理护甲和10点法术护甲";
         case 129: return "本回合所有友方角色获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点力量和" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点魔力";
-        case 130: return "远程。移除目标" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲";
+        case 130: return "追猎。移除目标" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点任意护甲";
         case 131: return "对随机敌人造成7点法术伤害，重复" + string(max(card_current_times(_inst) - 1, 1)) + "次。每当抽到此牌时，额外重复1次（最多7次）";
         case 132: return "造成" + string(card_current_damage(_inst)) + "点物理伤害。尘每使用过一张攻击牌，此牌费用降低1点";
         case 133: return "进入前场，获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲。若下回合开始前未受到伤害，额外获得3点护甲";
