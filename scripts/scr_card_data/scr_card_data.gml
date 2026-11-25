@@ -2742,10 +2742,10 @@ function card_has_tag(_id, _tag)
             return ((_id >= 201 && _id <= 204) || (_id >= 241 && _id <= 246));
 
         case CardTag.HUNT:
-            return (_id == 202 || _id == 126);
+            return (_id == 202 || _id == 126 || _id == 130);
 
         case CardTag.RANGED:
-            return (_id == 130);
+            return false;
     }
 
     return false;
