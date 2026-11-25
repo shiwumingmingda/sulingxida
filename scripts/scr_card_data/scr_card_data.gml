@@ -1365,7 +1365,14 @@ break;
                 case "wish_star": dust.scry_bonus += _v; break;
                 case "mingche": dust.mingche_active = true; break;
                 case "move_enemy":
-                    if (instance_exists(_enemy)) obj_hand_controller.send_enemy_to_back(_enemy);
+                    if (instance_exists(_enemy))
+                    {
+                        if (array_length(obj_hand_controller.enemies) > 0
+                        && obj_hand_controller.enemies[0] == _enemy)
+                            obj_hand_controller.send_enemy_to_back(_enemy);
+                        else
+                            obj_hand_controller.bring_enemy_to_front(_enemy);
+                    }
                     break;
                 case "star_aura": dust.star_damage_bonus_active = true; break;
                 case "long_life":
