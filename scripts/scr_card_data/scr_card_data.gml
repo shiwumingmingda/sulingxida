@@ -213,22 +213,22 @@ function card_rarity(_id)
     return Rarity.COMMON;
 }
 
-// 只有通用占位卡底图按稀有度染色；专属卡图和角色图保持原色。
-function card_get_rarity_tint(_inst, _spr)
+// 通用纯色底图按稀有度替换；专属卡图、角色图和无稀有度卡牌保持原样。
+function card_get_rarity_sprite(_inst, _spr)
 {
-    if (!instance_exists(_inst)) return c_white;
-    if (_spr != Sprite1 && _spr != Sprite2 && _spr != Sprite3 && _spr != Sprite9)
-        return c_white;
-    if (!variable_instance_exists(_inst, "card_id")) return c_white;
+    if (!instance_exists(_inst)) return _spr;
+    if (_spr != Sprite1 && _spr != Sprite2 && _spr != Sprite3
+    && _spr != Sprite9 && _spr != Spr_enemy1) return _spr;
+    if (!variable_instance_exists(_inst, "card_id")) return _spr;
 
     switch (card_rarity(_inst.card_id))
     {
-        case Rarity.COMMON: return make_color_rgb(225, 225, 225);
-        case Rarity.RARE: return make_color_rgb(155, 200, 255);
-        case Rarity.LEGENDARY: return make_color_rgb(255, 205, 120);
+        case Rarity.COMMON: return Sprite2;     // 青色：普通
+        case Rarity.RARE: return Sprite3;       // 蓝色：稀有
+        case Rarity.LEGENDARY: return Sprite1;  // 金黄色：传说
     }
 
-    return c_white;
+    return _spr;
 }
 
 // 打出这张牌需要手牌里有哪张牌（0 = 不需要）
