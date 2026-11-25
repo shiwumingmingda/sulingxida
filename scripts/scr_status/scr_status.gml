@@ -411,7 +411,9 @@ function draw_status_icons(_unit, _x, _y)
     {
         for (var t = 0; t < StatusType.COUNT; t++)
         {
-            var n = _unit.status_stacks[t];
+            // 血色已经由上方天赋图标显示；力量读取get_status，包含【煞】提供的猩红加成。
+            var n = (t == StatusType.BLOOD && variable_instance_exists(_unit, "talent_count"))
+                ? 0 : get_status(_unit, t);
             if (n <= 0) continue;
 
             var spr = status_get_sprite(t);
