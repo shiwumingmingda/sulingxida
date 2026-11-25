@@ -1144,7 +1144,7 @@ function character3_draw_attacks_free(_count)
         else
         {
             var spawned = card_spawn_from_entry(selected_entry,
-                obj_hand_controller.room_width * 0.5, obj_hand_controller.room_height - 115);
+                room_width * 0.5, room_height - 115);
             spawned.cost = 0;
             spawned.cost_temporary = true;
             spawned.is_dealing = true;
@@ -1156,44 +1156,105 @@ function character3_draw_attacks_free(_count)
 }
 
 // 诛屠：免费使用抽牌堆顶的两张牌，然后将一张猩红置入弃牌堆。
+// 诛屠：依次使用抽牌堆顶的两张牌，然后将一张猩红置入弃牌堆。
 function character3_play_top_cards(_count)
 {
-    if (!instance_exists(obj_hand_controller)) return;
+    var controller = instance_find(obj_hand_controller, 0);
+    if (!instance_exists(controller)) return;
 
     repeat (_count)
     {
-        if (obj_hand_controller.deck_index >= array_length(obj_hand_controller.deck)
-        && array_length(obj_hand_controller.discard_pile) > 0)
+        // 抽牌堆为空时，把弃牌堆洗回抽牌堆。
+        if (controller.deck_index >= array_length(controller.deck)
+        && array_length(controller.discard_pile) > 0)
         {
-            obj_hand_controller.deck = array_shuffle(obj_hand_controller.discard_pile);
-            obj_hand_controller.deck_index = 0;
-            obj_hand_controller.discard_pile = [];
+            controller.deck = array_shuffle(controller.discard_pile);
+            controller.deck_index = 0;
+            controller.discard_pile = [];
         }
 
-        if (obj_hand_controller.deck_index >= array_length(obj_hand_controller.deck)) break;
+        if (controller.deck_index >= array_length(controller.deck)) break;
 
-        var entry = obj_hand_controller.deck[obj_hand_controller.deck_index];
-        obj_hand_controller.deck_index++;
+        var entry = controller.deck[controller.deck_index];
+        controller.deck_index++;
         var temp_card = card_spawn_from_entry(entry, -1000, -1000);
         var cid = temp_card.card_id;
-        var enemy_target = (array_length(obj_hand_controller.enemies) > 0)
-            ? obj_hand_controller.enemies[0] : noone;
+        var ctype = card_get_type(cid);
+        var owner_n = card_get_owner(cid);
+        var actor = card_get_owner_instance(cid);
 
-        obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = cid;
-        if (card_get_owner(cid) == 3 && card_get_type(cid) == CardType.ATTACK)
+        if (!instance_exists(actor)) actor = controller.char_3;
+
+        // 【猩红】等异常牌无法被使用，直接进入弃牌堆，不触发其手牌回合结束效果。
+        if (card_is_unplayable(cid))
         {
-            obj_hand_controller.attack_used_this_turn[3] = true;
-            add_status(obj_hand_controller.char_3, StatusType.BLOOD, 1);
+            controller.discard_pile[array_length(controller.discard_pile)] =
+                card_entry_from_instance(temp_card);
+            with (temp_card) instance_destroy();
+            continue;
         }
 
-        card_play_effects(temp_card, obj_hand_controller.char_3, enemy_target);
+        controller.turn_played_ids[array_length(controller.turn_played_ids)] = cid;
+
+        if (ctype == CardType.ATTACK && owner_n == 3)
+        {
+            controller.attack_used_this_turn[3] = true;
+            add_status(controller.char_3, StatusType.BLOOD, 1);
+
+            // 剑鸣：每使用一张剑招，消耗一次免费次数。
+            if (card_has_tag(cid, CardTag.SWORD)
+            && controller.char_3.sword_song_charges > 0)
+                controller.char_3.sword_song_charges--;
+
+            // 攻击牌照常使心羽进入前场；远程剑招不改变站位。
+            if (!card_has_tag(cid, CardTag.RANGED))
+                controller.bring_to_front(controller.char_3);
+
+            if (controller.char_3.blood_boil_active)
+                add_status(controller.char_3, StatusType.TEMP_STRENGTH, 1);
+        }
+        else if (ctype == CardType.ATTACK && owner_n > 0)
+        {
+            controller.attack_used_this_turn[owner_n] = true;
+        }
+
+        var enemy_target = (array_length(controller.enemies) > 0)
+            ? controller.enemies[0] : noone;
+        var friend_target = actor;
+
+        // 若抽到需要友方目标的牌，默认由牌的拥有者作为目标。
+        if (card_target_kind(cid) == TargetKind.FRIEND)
+            friend_target = actor;
+
+        // 状态牌按照普通出牌规则登记状态覆盖关系。
+        if (ctype == CardType.STATUS && owner_n > 0)
+            state_card_played(actor, cid);
+
+        // 视为使用卡牌本身；不允许诛屠再次触发诛屠，以免形成递归连锁。
+        if (cid != 231)
+            card_play_effects(temp_card, friend_target, enemy_target);
+
+        // 剑影：诛屠视为使用的第一张剑招也会触发本回合的额外结算。
+        if (ctype == CardType.ATTACK && owner_n == 3
+        && card_has_tag(cid, CardTag.SWORD)
+        && controller.char_3.sword_shadow_active
+        && !controller.char_3.sword_shadow_used)
+        {
+            controller.char_3.sword_shadow_used = true;
+            card_play_effects(temp_card, friend_target, enemy_target);
+        }
+
+        // 被使用的非消耗牌进入弃牌堆；剑招等消耗牌则直接移出战斗。
+        if (!card_is_exhaust(cid))
+            controller.discard_pile[array_length(controller.discard_pile)] =
+                card_entry_from_instance(temp_card);
+
         with (temp_card) instance_destroy();
     }
 
-    obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] =
+    controller.discard_pile[array_length(controller.discard_pile)] =
         card_make_entry(obj_card_scarlet);
 }
-
 // 一个效果的最终数值：基础数值 + 全局加成 + 力量 / 敏捷 / 剑招
 // _inst：这张牌；_receiver：接收护甲的角色（显示卡面数字时传 noone，按牌的拥有者算）
 function card_effect_final(_e, _inst, _receiver)
@@ -1868,8 +1929,6 @@ break;
                 case "red_dye":
                 {
                     var current_strength = get_status(obj_hand_controller.char_3, StatusType.STRENGTH);
-                    if (obj_hand_controller.char_3.scarlet_retain_active)
-                        current_strength += character3_scarlet_hand_count() * 3;
                     add_status(obj_hand_controller.char_3, StatusType.BLOOD,
                         _v + ((current_strength > 3) ? 2 : 0));
                     character3_add_scarlet_to_deck(1, false);
