@@ -3000,6 +3000,12 @@ function card_get_object(_n)
         case 238: return obj_card_0238;
         case 239: return obj_card_0239;
         case 240: return obj_card_0240;
+        case 241: return obj_card_xinyu_1;
+        case 242: return obj_card_xinyu_2;
+        case 243: return obj_card_xinyu_3;
+        case 244: return obj_card_xinyu_4;
+        case 245: return obj_card_xinyu_5;
+        case 246: return obj_card_xinyu_6;
         case 247: return obj_card_0247;
         case 248: return obj_card_0248;
         case 249: return obj_card_0249;
@@ -3019,6 +3025,7 @@ function card_get_object(_n)
         case 302: return obj_card_0302;
         case 303: return obj_card_0303;
         case 304: return obj_card_0304;
+        case 401: return obj_card_scarlet;
     }
 
     return -1;
