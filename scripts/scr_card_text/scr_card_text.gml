@@ -313,37 +313,7 @@ function card_get_description(_inst)
 		case 401:
 			return "无法被打出。出牌阶段结束时，扣除3点生命，获得1层血色";
 	
-		case 209:
-			return "在本局对战剩余时间内，将【血.极】加入你的剑招中";
-			// 44号牌
-		// 41号牌
-		case 241:
-			return "造成" + string(card_current_damage(_inst)) + "点物理伤害，"
-         + "获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲，"
-         + "令目标下回合力量和魔力-" + string(card_current_status(_inst, StatusType.STRENGTH_DOWN));
-
-// 42号牌
-		case 242:
-			return "对所有敌人造成" + string(card_current_damage(_inst)) + "点物理伤害";
-
-// 43号牌
-		case 243:
-			return "指定一名敌人，造成" + string(card_current_damage(_inst)) + "点物理伤害";
-	
-		case 244:
-			return "造成" + string(card_current_damage(_inst)) + "点物理伤害，"
-			+ "重复" + string(card_current_times(_inst)) + "次";
-
-// 45号牌
-		case 245:
-			return "获得" + string(card_current_status(_inst, StatusType.STRENGTH)) + "点力量和敏捷，"
-				+ "本场战斗剩余时间内，你的剑招伤害+" + string(card_current_status(_inst, StatusType.SWORD_FORM));
-
-// 46号牌
-		case 246:
-			return "造成" + string(card_current_damage(_inst)) + "点物理伤害";
-			
-			case 402:
+		case 402:
     return "无法被使用。结束阶段，若此牌在你手牌，前排的角色受到2点伤害";
 		}
 		
