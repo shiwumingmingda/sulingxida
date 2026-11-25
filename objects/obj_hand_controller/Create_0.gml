@@ -1583,11 +1583,15 @@ countdown_fire = function(_cd)
         var e = _cd.effects[k];
 
         if (variable_struct_exists(e, "conditional_no_attack")
-        &&  e.conditional_no_attack
-        &&  attack_used_last_turn[_cd.owner])
-        {
+        && e.conditional_no_attack
+        && attack_used_last_turn[_cd.owner])
             continue;
-        }
+
+        // 心剑：倒计时触发时，若心羽手牌中没有猩红才造成伤害。
+        if (variable_struct_exists(e, "conditional_no_scarlet")
+        && e.conditional_no_scarlet
+        && character3_scarlet_hand_count() > 0)
+            continue;
 
         // 只有伤害或对敌方施加的状态才需要敌方目标
         var needs_enemy = (e.type == EffectType.DAMAGE
