@@ -1436,7 +1436,7 @@ break;
                         dust.assist_star_used = true;
                         obj_hand_controller.energy += _v;
                         var gifts = [];
-                        for (var gi = 101; gi <= 152; gi++)
+                        for (var gi = 101; gi <= 156; gi++)
                             if (gi != 140 && card_get_object(gi) != -1)
                                 gifts[array_length(gifts)] = gi;
                         repeat (2)
@@ -1454,7 +1454,7 @@ break;
                     for (var wt = 0; wt < 3; wt++)
                     {
                         var ids = [];
-                        for (var wish_card_id = 101; wish_card_id <= 152; wish_card_id++)
+                        for (var wish_card_id = 101; wish_card_id <= 156; wish_card_id++)
                             if (card_get_type(wish_card_id) == wt && card_rarity(wish_card_id) != Rarity.NONE && card_get_object(wish_card_id) != -1)
                                 ids[array_length(ids)] = wish_card_id;
                         if (array_length(ids) > 0)
@@ -2691,7 +2691,7 @@ function card_on_draw(_inst)
             add_armor(dust, ArmorType.GENERAL, 8 + get_status(dust, StatusType.DEXTERITY));
             break;
         case 131:
-            if (!variable_instance_exists(_inst, "echo_repeats")) _inst.echo_repeats = 1;
+            if (!variable_instance_exists(_inst, "echo_repeats")) _inst.echo_repeats = 0;
             _inst.echo_repeats = min(_inst.echo_repeats + 1, 7);
             break;
     }
