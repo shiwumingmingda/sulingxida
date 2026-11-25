@@ -152,8 +152,17 @@ function get_status(_unit, _type)
     if (_type == StatusType.BLOOD && variable_instance_exists(_unit, "talent_count"))
         return _unit.talent_count;
 
-    if (!variable_instance_exists(_unit, "status_stacks")) return 0;
-    return _unit.status_stacks[_type];
+    var value = variable_instance_exists(_unit, "status_stacks")
+        ? _unit.status_stacks[_type] : 0;
+
+    // 煞：手牌中每张猩红都使心羽拥有3点力量。
+    if (_type == StatusType.STRENGTH && instance_exists(obj_hand_controller)
+    && instance_exists(obj_hand_controller.char_3)
+    && _unit == obj_hand_controller.char_3
+    && _unit.scarlet_retain_active)
+        value += character3_scarlet_hand_count() * 3;
+
+    return value;
 }
 
 // 增加层数
