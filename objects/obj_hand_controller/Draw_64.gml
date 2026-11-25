@@ -389,13 +389,11 @@ if (selection_active)
         card_draw_merge_frame(qcard, qcard.sprite_index,
             qcard.x, qy, qxs, qys, qcard.image_angle);
 
-        if (selected)
+        if (selected || hovered)
         {
             draw_set_alpha(1);
-            draw_set_color(make_color_rgb(255, 220, 90));
-            draw_rectangle(qcard.bbox_left, qcard.bbox_top,
-                qcard.bbox_right, qcard.bbox_bottom, true);
-            draw_set_color(c_white);
+            draw_rotated_card_outline(qcard, qscale,
+                selected ? make_color_rgb(255, 220, 90) : c_white);
         }
     }
 
@@ -620,18 +618,27 @@ if (discard_choice_active)
         var opt = discard_choice_options[i];
         if (!instance_exists(opt.card)) continue;
         var card = opt.card;
-        draw_sprite_ext(card.sprite_index, card.image_index, card.x, card.y,
-            discard_choice_scale, discard_choice_scale, card.image_angle, c_white, 1);
-        card_draw_text(card, card.sprite_index, card.x, card.y,
-            discard_choice_scale, discard_choice_scale, card.image_angle);
+        var hovered = (card == discard_choice_hover_card);
+        var draw_scale = hovered ? 1.08 : 1;
+        var draw_y = card.y - (hovered ? 24 : 0);
+        var xs = card.image_xscale * draw_scale;
+        var ys = card.image_yscale * draw_scale;
+        draw_sprite_ext(card.sprite_index, card.image_index, card.x, draw_y,
+            xs, ys, card.image_angle, c_white, 1);
+        card_draw_text(card, card.sprite_index, card.x, draw_y,
+            xs, ys, card.image_angle);
+        if (opt.selected || hovered)
+        {
+            var old_y = card.y;
+            card.y = draw_y;
+            draw_rotated_card_outline(card, draw_scale,
+                opt.selected ? make_color_rgb(255, 220, 100) : c_white);
+            card.y = old_y;
+        }
         if (opt.selected)
         {
-            var w = sprite_get_width(card.sprite_index) * discard_choice_scale * 0.5;
-            var h = sprite_get_height(card.sprite_index) * discard_choice_scale * 0.5;
-            draw_set_color(make_color_rgb(255, 220, 100));
-            draw_rectangle(card.x - w, card.y - h, card.x + w, card.y + h, true);
-            draw_set_color(c_white);
-            draw_text(card.x, card.y - h - 24, "已选择");
+            var h = sprite_get_height(card.sprite_index) * abs(ys) * 0.5;
+            draw_text(card.x, draw_y - h - 24, "已选择");
         }
     }
 
