@@ -1912,7 +1912,6 @@ break;
                 case "terror":
                     if (instance_exists(_enemy))
                     {
-                        var armor_before_terror = unit_armor_total(_enemy);
                         var armor_left_terror = _v;
                         var cut_terror = min(_enemy.armor_general, armor_left_terror);
                         _enemy.armor_general -= cut_terror;
@@ -1923,7 +1922,7 @@ break;
                         cut_terror = min(_enemy.armor_magic, armor_left_terror);
                         _enemy.armor_magic -= cut_terror;
 
-                        if (armor_before_terror <= 0)
+                        if (unit_armor_total(_enemy) <= 0)
                             add_status(_enemy, StatusType.VULNERABLE, 1);
                     }
                     break;
@@ -3450,7 +3449,7 @@ function card_owner_dead(_id)
 
 function card_has_retain(_id)
 {
-    if (_id == 303) return true;
+    if (_id == 303 || _id == 212) return true;
     if (_id == 401 && instance_exists(obj_hand_controller)
     && instance_exists(obj_hand_controller.char_3))
         return obj_hand_controller.char_3.scarlet_retain_active;
