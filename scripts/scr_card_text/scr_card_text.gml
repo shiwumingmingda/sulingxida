@@ -256,7 +256,7 @@ function card_get_description(_inst)
         case 214: return "消耗。获得2点费用，将两张【猩红】置入抽牌堆";
         case 215: return "造成" + string(card_current_damage(_inst)) + "点物理伤害。若本回合此前使用过攻击牌，抽1张牌";
         case 216: return "造成" + string(card_current_damage(_inst)) + "点物理伤害，获得" + string(card_current_armor_of(_inst, ArmorType.GENERAL)) + "点护甲";
-        case 217: return "剑招。造成" + string(card_current_damage(_inst)) + "点物理伤害；若目标没有护甲，额外造成3点伤害";
+        case 217: return "造成" + string(card_current_damage(_inst)) + "点物理伤害；若目标没有护甲，额外造成3点伤害";
         case 218: return "获得" + string(card_current_value(_inst, EffectType.CUSTOM)) + "点护甲；若本回合使用过至少两张攻击牌，抽1张牌";
         case 219: return "造成" + string(card_current_damage(_inst)) + "点物理伤害。若此次伤害不小于15，令目标获得2层脆弱";
         case 220: return "造成" + string(card_current_damage(_inst)) + "点物理伤害。若此次伤害不小于8，获得1点费用";
