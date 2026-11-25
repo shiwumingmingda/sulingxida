@@ -89,6 +89,7 @@ scry_bottom = [];
 scry_drag_card = noone;
 scry_hover_card = noone;
 scry_followups = [];
+draw_after_scry = 0;
 scry_scale = 0.58;
 scry_confirm_x1 = room_width * 0.40;
 scry_confirm_x2 = room_width * 0.60;
@@ -488,7 +489,7 @@ discard_choice_start = function(_show_count, _choose_count)
 
     var card_w = sprite_get_width(discard_choice_options[0].card.sprite_index) * discard_choice_scale;
     var gap = (count > 1)
-        ? min(card_w * 1.08, (room_width * 0.90 - card_w) / (count - 1))
+        ? max(0, min(card_w * 1.08, (room_width * 0.90 - card_w) / (count - 1)))
         : 0;
     for (var i = 0; i < count; i++)
     {
@@ -698,6 +699,14 @@ scry_finish = function()
         && variable_struct_exists(q.effect, "bottom_count"))
             value = bottom_count;
         card_apply_effect(q.effect, value, q.target, q.enemy);
+    }
+
+    // 回合开始的常规抽牌必须等紫微垣占卜确认后才执行。
+    if (draw_after_scry > 0)
+    {
+        var pending_draw = draw_after_scry;
+        draw_after_scry = 0;
+        draw_cards(pending_draw);
     }
 
     check_merge();
