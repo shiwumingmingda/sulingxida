@@ -208,7 +208,8 @@ if (hover_card != noone && instance_exists(hover_card))
     var dx = cx - (sprite_get_width(spr)  * 0.5 - sprite_get_xoffset(spr)) * s;
     var dy = cy - (sprite_get_height(spr) * 0.5 - sprite_get_yoffset(spr)) * s;
 
-    draw_sprite_ext(spr, 0, dx, dy, s, s, 0, c_white, 1);
+    draw_sprite_ext(spr, 0, dx, dy, s, s, 0,
+        card_get_rarity_tint(hc, spr), 1);
 
     // 在大卡上画文字
     card_draw_text(hc, spr, dx, dy, s, s, 0);
