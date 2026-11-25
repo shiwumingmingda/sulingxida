@@ -2691,7 +2691,9 @@ function card_on_draw(_inst)
     if (variable_instance_exists(_inst, "star_marked") && _inst.star_marked)
     {
         add_starlight(dust, 1);
-        add_armor(dust, ArmorType.MAGIC, 5 + get_status(dust, StatusType.DEXTERITY));
+        var starmark_armor = card_effect_final(
+            { type: EffectType.ARMOR, armor: ArmorType.MAGIC, amount: 5 }, _inst, dust);
+        add_armor(dust, ArmorType.MAGIC, starmark_armor);
         _inst.star_marked = false;
     }
 
