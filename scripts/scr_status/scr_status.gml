@@ -597,20 +597,13 @@ function state_card_played(_char, _card_id)
 {
     if (!instance_exists(_char)) return;
 
+    // 永久状态牌不占普通状态位置，也不应顶掉已有的普通状态牌。
+    if (card_state_is_permanent(_card_id)) return;
 
-    // 这个角色当前的状态牌编号（0 = 没有）
+    // 新的普通状态牌替换当前普通状态牌。
     var current = variable_instance_exists(_char, "state_card_id") ? _char.state_card_id : 0;
-
-    // 使用任何状态牌，都会让当前的状态牌效果消失
     if (current != 0)
-    {
         state_remove(_char, current);
-        _char.state_card_id = 0;
-    }
 
-    // 永久牌（209、43）不占位置；普通状态牌成为新的当前状态
-    if (!card_state_is_permanent(_card_id))
-    {
-        _char.state_card_id = _card_id;
-    }
+    _char.state_card_id = _card_id;
 }
