@@ -901,6 +901,26 @@ for (var si = 1; si <= 4; si++)
 if (instance_exists(char_3))
 {
     char_3.talent_count = 0;
+    char_3.hp_lost_this_turn = false;
+    char_3.hp_lost_last_turn = false;
+    char_3.ancient_battlefield_active = false;
+    char_3.blood_beast_active = false;
+    char_3.red_tide_active = false;
+    char_3.blood_boil_active = false;
+    char_3.no_attack_this_turn = false;
+    char_3.next_strength_bonus = 0;
+    char_3.sword_song_charges = 0;
+    char_3.sword_shadow_active = false;
+    char_3.sword_shadow_used = false;
+    char_3.unload_active = false;
+    char_3.unload_used = false;
+    char_3.scarlet_retain_active = false;
+    char_3.history_active = false;
+    char_3.history_used = false;
+    char_3.endless_blood_war_active = false;
+    char_3.pending_sword_form = 0;
+    char_3.temp_sword_form = 0;
+    char_3.temp_sword_form_active = false;
 }
 if (instance_exists(char_2))
 {
