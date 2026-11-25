@@ -165,7 +165,7 @@ function card_info(_id)
         case 219: return card_make_info(CardType.ATTACK, 2, Rarity.COMMON, false, TargetKind.NONE, 0);
         case 220: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
         case 221: return card_make_info(CardType.SKILL, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
-        case 222: return card_make_info(CardType.SKILL, 0, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 222: return card_make_info(CardType.SKILL, 0, Rarity.COMMON, false, TargetKind.NONE, 401);
         case 223: return card_make_info(CardType.SKILL, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
         case 224: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
         case 225: return card_make_info(CardType.STATUS, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
