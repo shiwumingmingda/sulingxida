@@ -1625,12 +1625,6 @@ countdown_fire = function(_cd)
         && attack_used_last_turn[_cd.owner])
             continue;
 
-        // 心剑：倒计时触发时，若心羽手牌中没有猩红才造成伤害。
-        if (variable_struct_exists(e, "conditional_no_scarlet")
-        && e.conditional_no_scarlet
-        && character3_scarlet_hand_count() > 0)
-            continue;
-
         // 只有伤害或对敌方施加的状态才需要敌方目标
         var needs_enemy = (e.type == EffectType.DAMAGE
             || e.type == EffectType.DAMAGE_ARMOR_TOTAL
@@ -1654,6 +1648,22 @@ countdown_fire = function(_cd)
         }
 
         card_apply_effect(e, fire_value, owner_inst, en);
+
+        // 心剑：伤害照常结算；若触发时手牌没有猩红，这次倒计时同时视为使用了一张攻击牌。
+        if (variable_struct_exists(e, "counts_as_attack_if_no_scarlet")
+        && e.counts_as_attack_if_no_scarlet
+        && character3_scarlet_hand_count() <= 0
+        && instance_exists(en) && instance_exists(char_3))
+        {
+            turn_played_ids[array_length(turn_played_ids)] = 256;
+            attack_used_this_turn[3] = true;
+            bring_to_front(char_3);
+
+            if (char_3.blood_boil_active)
+                add_status(char_3, StatusType.TEMP_STRENGTH, 1);
+
+            add_status(char_3, StatusType.BLOOD, 1);
+        }
     }
 };
 
