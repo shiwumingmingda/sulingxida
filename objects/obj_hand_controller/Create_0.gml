@@ -861,6 +861,8 @@ for (var ci = 1; ci <= 4; ci++)
         clear_status(cc, StatusType.RESONANCE);
         clear_status(cc, StatusType.STRENGTH);
         clear_status(cc, StatusType.DEXTERITY);
+        clear_status(cc, StatusType.TEMP_STRENGTH);
+        clear_status(cc, StatusType.TEMP_MAGIC);
         clear_status(cc, StatusType.SWORD_FORM);
 		clear_status(cc, StatusType.BLOOD);
 		clear_status(cc, StatusType.DILIGENCE);
