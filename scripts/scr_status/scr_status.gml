@@ -209,6 +209,14 @@ function clear_status(_unit, _type)
     _unit.status_stacks[_type] = 0;
 }
 
+// 减少可持续回合类状态的层数。
+function remove_status_stack(_unit, _type, _amount)
+{
+    if (!instance_exists(_unit)) return;
+    status_init(_unit);
+    _unit.status_stacks[_type] = max(_unit.status_stacks[_type] - _amount, 0);
+}
+
 // 单位的回合开始结算，返回 true 表示这个单位本回合无法行动
 function status_turn_start(_unit)
 {
@@ -554,10 +562,13 @@ function draw_countdown_icons(_owner, _x, _y)
 // 永久状态牌：不占状态位置，也不会被顶掉
 function card_state_is_permanent(_id)
 {
-    // 尘的战斗常驻状态：不占普通状态牌位置，也不会被另一张状态牌顶掉。
+    // 尘与心羽的战斗常驻状态，不占普通状态牌位置，也不会被其他状态牌顶掉。
     return (_id == 209 || _id == 43 || _id == 120 || _id == 123
         || _id == 144 || _id == 147 || _id == 149 || _id == 152
-        || _id == 153 || _id == 155);
+        || _id == 153 || _id == 155
+        || _id == 225 || _id == 227 || _id == 233 || _id == 239
+        || _id == 248 || _id == 250 || _id == 253 || _id == 255
+        || _id == 257 || _id == 258);
 }
 
 // 移除一张状态牌给这个角色带来的效果（图标也会消失）
@@ -596,6 +607,18 @@ function state_remove(_char, _card_id)
         _char.star_walk_active = false;
         _char.starlight_unlimited = false;
     }
+
+    // 心羽的常驻战斗状态。
+    if (_card_id == 225) _char.ancient_battlefield_active = false;
+    if (_card_id == 227) _char.blood_beast_active = false;
+    if (_card_id == 233) _char.red_tide_active = false;
+    if (_card_id == 239) _char.blood_boil_active = false;
+    if (_card_id == 248) clear_status(_char, StatusType.SWORD_FORM);
+    if (_card_id == 250) _char.unload_active = false;
+    if (_card_id == 253) _char.sword_shadow_active = false;
+    if (_card_id == 255) _char.scarlet_retain_active = false;
+    if (_card_id == 257) _char.history_active = false;
+    if (_card_id == 258) _char.endless_blood_war_active = false;
 }
 
 // 这个角色使用了一张状态牌：顶掉旧的状态牌效果，普通状态牌成为新的当前状态
