@@ -1199,7 +1199,6 @@ function character3_play_top_cards(_count)
         if (ctype == CardType.ATTACK && owner_n == 3)
         {
             controller.attack_used_this_turn[3] = true;
-            add_status(controller.char_3, StatusType.BLOOD, 1);
 
             // 剑鸣：每使用一张剑招，消耗一次免费次数。
             if (card_has_tag(cid, CardTag.SWORD)
@@ -1209,9 +1208,6 @@ function character3_play_top_cards(_count)
             // 攻击牌照常使心羽进入前场；远程剑招不改变站位。
             if (!card_has_tag(cid, CardTag.RANGED))
                 controller.bring_to_front(controller.char_3);
-
-            if (controller.char_3.blood_boil_active)
-                add_status(controller.char_3, StatusType.TEMP_STRENGTH, 1);
         }
         else if (ctype == CardType.ATTACK && owner_n > 0)
         {
@@ -1242,6 +1238,14 @@ function character3_play_top_cards(_count)
         {
             controller.char_3.sword_shadow_used = true;
             card_play_effects(temp_card, friend_target, enemy_target);
+        }
+
+        // 血沸在攻击牌结算后生效；天赋血色也在攻击结算后获得。
+        if (ctype == CardType.ATTACK && owner_n == 3)
+        {
+            if (controller.char_3.blood_boil_active)
+                add_status(controller.char_3, StatusType.TEMP_STRENGTH, 1);
+            add_status(controller.char_3, StatusType.BLOOD, 1);
         }
 
         // 被使用的非消耗牌进入弃牌堆；剑招等消耗牌则直接移出战斗。
