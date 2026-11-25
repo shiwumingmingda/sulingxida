@@ -142,6 +142,66 @@ function card_info(_id)
         case 155: return card_make_info(CardType.STATUS, 1, Rarity.COMMON, false, TargetKind.NONE, 0); // 明澈
         case 156: return card_make_info(CardType.SKILL,  1, Rarity.COMMON, false, TargetKind.NONE, 0); // 换斗
 
+        // 心羽：初始牌、普通牌与稀有牌
+        case 201: return card_make_info(CardType.ATTACK, 1, Rarity.NONE, false, TargetKind.NONE, 0);
+        case 202: return card_make_info(CardType.ATTACK, 1, Rarity.NONE, false, TargetKind.ENEMY, 0);
+        case 203: return card_make_info(CardType.ATTACK, 1, Rarity.NONE, false, TargetKind.NONE, 0);
+        case 204: return card_make_info(CardType.ATTACK, 1, Rarity.NONE, false, TargetKind.NONE, 0);
+        case 205: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 206: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 207: return card_make_info(CardType.SKILL, 0, Rarity.COMMON, true, TargetKind.NONE, 0);
+        case 208: return card_make_info(CardType.SKILL, 1, Rarity.COMMON, true, TargetKind.NONE, 0);
+        case 209: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 210: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+
+        case 211: return card_make_info(CardType.SKILL, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 212: return card_make_info(CardType.SKILL, 0, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 213: return card_make_info(CardType.SKILL, 0, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 214: return card_make_info(CardType.SKILL, 0, Rarity.COMMON, true, TargetKind.NONE, 0);
+        case 215: return card_make_info(CardType.ATTACK, 0, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 216: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 217: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 218: return card_make_info(CardType.SKILL, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 219: return card_make_info(CardType.ATTACK, 2, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 220: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 221: return card_make_info(CardType.SKILL, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 222: return card_make_info(CardType.SKILL, 0, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 223: return card_make_info(CardType.SKILL, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 224: return card_make_info(CardType.ATTACK, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+        case 225: return card_make_info(CardType.STATUS, 1, Rarity.COMMON, false, TargetKind.NONE, 0);
+
+        case 226: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.ENEMY, 0);
+        case 227: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 228: return card_make_info(CardType.SKILL, 1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 229: return card_make_info(CardType.SKILL, 0, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 230: return card_make_info(CardType.SKILL, 0, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 231: return card_make_info(CardType.ATTACK, 3, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 232: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 233: return card_make_info(CardType.STATUS, 2, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 234: return card_make_info(CardType.SKILL, 1, Rarity.RARE, true, TargetKind.NONE, 0);
+        case 235: return card_make_info(CardType.ATTACK, 2, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 236: return card_make_info(CardType.SKILL, 1, Rarity.RARE, false, TargetKind.FRIEND, 0);
+        case 237: return card_make_info(CardType.SKILL, 2, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 238: return card_make_info(CardType.SKILL, 1, Rarity.RARE, false, TargetKind.ENEMY, 0);
+        case 239: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 240: return card_make_info(CardType.ATTACK, 3, Rarity.RARE, false, TargetKind.NONE, 0);
+
+        case 247: return card_make_info(CardType.ATTACK, 1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 248: return card_make_info(CardType.STATUS, 1, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 249: return card_make_info(CardType.ATTACK, 3, Rarity.RARE, true, TargetKind.NONE, 0);
+        case 250: return card_make_info(CardType.STATUS, 2, Rarity.RARE, false, TargetKind.NONE, 0);
+        case 251: return card_make_info(CardType.SKILL, 0, Rarity.RARE, false, TargetKind.NONE, 0);
+
+        // 心羽：传说牌
+        case 252: return card_make_info(CardType.ATTACK, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 253: return card_make_info(CardType.STATUS, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 254: return card_make_info(CardType.ATTACK, 2, Rarity.LEGENDARY, true, TargetKind.NONE, 0);
+        case 255: return card_make_info(CardType.STATUS, 0, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 256: return card_make_info(CardType.ATTACK, 1, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 257: return card_make_info(CardType.STATUS, 1, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 258: return card_make_info(CardType.STATUS, 3, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+        case 259: return card_make_info(CardType.SKILL, 2, Rarity.LEGENDARY, false, TargetKind.NONE, 0);
+
         // ---- 普通 ----
         case 5:  return card_make_info(CardType.SKILL,  2, Rarity.COMMON, false, TargetKind.NONE, 0);    // 专注
         case 11: return card_make_info(CardType.SKILL,  2, Rarity.COMMON, false, TargetKind.NONE, 0);    // 风墙
