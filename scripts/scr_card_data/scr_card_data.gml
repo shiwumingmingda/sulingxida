@@ -1100,6 +1100,101 @@ function character3_add_scarlet_to_deck(_count, _ethereal)
     }
 }
 
+// 从抽牌堆中找出心羽攻击牌并以0费置入手牌。
+function character3_draw_attacks_free(_count)
+{
+    if (!instance_exists(obj_hand_controller)) return;
+
+    repeat (_count)
+    {
+        var found = -1;
+        for (var di = obj_hand_controller.deck_index; di < array_length(obj_hand_controller.deck); di++)
+        {
+            var entry = obj_hand_controller.deck[di];
+            var cid = variable_struct_exists(entry, "card_id") ? entry.card_id : -1;
+
+            if (cid < 0)
+            {
+                for (var id_check = 201; id_check <= 259; id_check++)
+                {
+                    if (card_get_type(id_check) == CardType.ATTACK
+                    && card_get_object(id_check) == entry.obj)
+                    {
+                        cid = id_check;
+                        break;
+                    }
+                }
+            }
+
+            if (cid >= 201 && cid <= 300 && card_get_type(cid) == CardType.ATTACK)
+            {
+                found = di;
+                break;
+            }
+        }
+
+        if (found < 0) break;
+
+        var selected_entry = obj_hand_controller.deck[found];
+        array_delete(obj_hand_controller.deck, found, 1);
+        selected_entry.cost = 0;
+
+        if (array_length(obj_hand_controller.hand) >= obj_hand_controller.max_hand_size)
+        {
+            obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] = selected_entry;
+        }
+        else
+        {
+            var spawned = card_spawn_from_entry(selected_entry,
+                obj_hand_controller.room_width * 0.5, obj_hand_controller.room_height - 115);
+            spawned.cost = 0;
+            spawned.is_dealing = true;
+            obj_hand_controller.hand[array_length(obj_hand_controller.hand)] = spawned;
+        }
+    }
+
+    obj_hand_controller.check_merge();
+}
+
+// 诛屠：免费使用抽牌堆顶的两张牌，然后将一张猩红置入弃牌堆。
+function character3_play_top_cards(_count)
+{
+    if (!instance_exists(obj_hand_controller)) return;
+
+    repeat (_count)
+    {
+        if (obj_hand_controller.deck_index >= array_length(obj_hand_controller.deck)
+        && array_length(obj_hand_controller.discard_pile) > 0)
+        {
+            obj_hand_controller.deck = array_shuffle(obj_hand_controller.discard_pile);
+            obj_hand_controller.deck_index = 0;
+            obj_hand_controller.discard_pile = [];
+        }
+
+        if (obj_hand_controller.deck_index >= array_length(obj_hand_controller.deck)) break;
+
+        var entry = obj_hand_controller.deck[obj_hand_controller.deck_index];
+        obj_hand_controller.deck_index++;
+        var temp_card = card_spawn_from_entry(entry, -1000, -1000);
+        var cid = temp_card.card_id;
+        var enemy_target = (array_length(obj_hand_controller.enemies) > 0)
+            ? obj_hand_controller.enemies[0] : noone;
+
+        obj_hand_controller.turn_played_ids[array_length(obj_hand_controller.turn_played_ids)] = cid;
+        if (card_get_owner(cid) == 3 && card_get_type(cid) == CardType.ATTACK)
+        {
+            obj_hand_controller.attack_used_this_turn[3] = true;
+            add_status(obj_hand_controller.char_3, StatusType.BLOOD, 1);
+        }
+
+        card_play_effects(temp_card, obj_hand_controller.char_3, enemy_target);
+        with (temp_card) instance_destroy();
+    }
+
+    obj_hand_controller.discard_pile[array_length(obj_hand_controller.discard_pile)] =
+        card_make_entry(obj_card_scarlet);
+}
+
 // 一个效果的最终数值：基础数值 + 全局加成 + 力量 / 敏捷 / 剑招
 // _inst：这张牌；_receiver：接收护甲的角色（显示卡面数字时传 noone，按牌的拥有者算）
 function card_effect_final(_e, _inst, _receiver)
