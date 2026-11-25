@@ -1259,6 +1259,15 @@ end_player_turn = function()
     attack_used_last_turn = copy_array(attack_used_this_turn);
     attack_used_this_turn = array_create(5, false);
 
+    // 浸染只持续到本回合结束：若目标本回合未再受到伤害，则清除标记。
+    for (var bi = 0; bi < array_length(enemies); bi++)
+    {
+        var blood_marked_enemy = enemies[bi];
+        if (instance_exists(blood_marked_enemy)
+        && variable_instance_exists(blood_marked_enemy, "blood_mark_next_damage"))
+            blood_marked_enemy.blood_mark_next_damage = false;
+    }
+
     turn_state = "enemy";
     enemy_timer = 0;
     enemy_phase = "attack";
