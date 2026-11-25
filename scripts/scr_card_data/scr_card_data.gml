@@ -1494,12 +1494,17 @@ function card_apply_effect(_e, _v, _target, _enemy)
         var dt = variable_struct_exists(_e, "dtype") ? _e.dtype : DamageType.PHYSICAL;
         var damage_target = _enemy;
         var hp_before = damage_target.hp;
-        var armor_before = unit_armor_total(damage_target);
         var incoming = _v;
 
-        // 记录易伤放大和护甲吸收前后的值，以计算溢出伤害。
+        // 计算易伤和本次攻击真正能穿透的护甲，供摧枯拉朽计算溢出伤害。
         if (get_status(damage_target, StatusType.VULNERABLE) > 0)
             incoming = floor(incoming * 1.5);
+
+        var matching_armor = (dt == DamageType.PHYSICAL)
+            ? damage_target.armor_physical : damage_target.armor_magic;
+        var matching_used = min(incoming, matching_armor);
+        var general_used = min(max(incoming - matching_used, 0), damage_target.armor_general);
+        var overkill_amount = max(incoming - matching_used - general_used - hp_before, 0);
 
         var dealt = deal_damage(damage_target, _v, dt);
         var target_killed = !instance_exists(damage_target);
@@ -1519,22 +1524,16 @@ function card_apply_effect(_e, _v, _target, _enemy)
         if (variable_struct_exists(_e, "heal_half_damage") && _e.heal_half_damage)
             heal_hp(obj_hand_controller.char_3, floor(dealt * 0.5));
 
-        // 摧枯拉朽：先计算穿透护甲后的溢出，再将溢出伤害分给其他敌人。
-        if (variable_struct_exists(_e, "overkill_to_others") && _e.overkill_to_others
-        && target_killed && instance_exists(damage_target))
+        // 摧枯拉朽：击杀目标后，将穿透护甲并超过其剩余体力的伤害分给所有其他敌人。
+        if (variable_struct_exists(_e, "overkill_to_others")
+        && _e.overkill_to_others && target_killed && overkill_amount > 0)
         {
-            var armor_after = unit_armor_total(damage_target);
-            var armor_used = armor_before - armor_after;
-            var overflow = max(incoming - armor_used - hp_before, 0);
-            if (overflow > 0)
+            var other_targets = copy_array(obj_hand_controller.enemies);
+            for (var oi = 0; oi < array_length(other_targets); oi++)
             {
-                var other_targets = copy_array(obj_hand_controller.enemies);
-                for (var oi = 0; oi < array_length(other_targets); oi++)
-                {
-                    var other = other_targets[oi];
-                    if (instance_exists(other) && other != damage_target)
-                        deal_damage(other, overflow, DamageType.PHYSICAL);
-                }
+                var other = other_targets[oi];
+                if (instance_exists(other) && other != damage_target)
+                    deal_damage(other, overkill_amount, DamageType.PHYSICAL);
             }
         }
 
