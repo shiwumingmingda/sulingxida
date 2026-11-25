@@ -1760,6 +1760,208 @@ break;
                     }
                     obj_hand_controller.request_discover(wish_pool, array_length(wish_pool), "retain_once");
                     break;
+                // 心羽：猩红与血色相关效果
+                case "scarlet_to_deck":
+                    character3_add_scarlet_to_deck(_v, false);
+                    break;
+
+                case "guard_stance":
+                {
+                    var guard_bonus = (dust.hp_lost_last_turn ? 0 : _e.bonus);
+                    add_armor(obj_hand_controller.char_3, ArmorType.GENERAL,
+                        _v + guard_bonus + get_status(obj_hand_controller.char_3, StatusType.DEXTERITY));
+                }
+                break;
+
+                case "step_draw":
+                    obj_hand_controller.bring_to_front(obj_hand_controller.char_3);
+                    obj_hand_controller.draw_cards(_v);
+                    break;
+
+                case "blood_debt":
+                    obj_hand_controller.energy += _v;
+                    character3_add_scarlet_to_deck(2, false);
+                    break;
+
+                case "pursuit_draw":
+                    // 当前追锋本身已记入本回合记录，因此至少要有另一张攻击牌。
+                    if (character3_attack_count_this_turn() > 1)
+                        obj_hand_controller.draw_cards(_v);
+                    break;
+
+                case "finish_stance":
+                    add_armor(obj_hand_controller.char_3, ArmorType.GENERAL,
+                        _v + get_status(obj_hand_controller.char_3, StatusType.DEXTERITY));
+                    if (character3_attack_count_this_turn() >= 2)
+                        obj_hand_controller.draw_cards(1);
+                    break;
+
+                case "blood_curtain":
+                {
+                    var curtain_target = obj_hand_controller.front_char;
+                    if (instance_exists(curtain_target))
+                        add_armor(curtain_target, ArmorType.PHYSICAL,
+                            _v + get_status(curtain_target, StatusType.DEXTERITY));
+                    character3_add_scarlet_to_deck(1, false);
+                }
+                break;
+
+                case "murder_intent":
+                {
+                    var owned_attacks = [];
+                    for (var ci = 201; ci <= 259; ci++)
+                    {
+                        if (card_get_type(ci) != CardType.ATTACK) continue;
+                        var card_obj = card_get_object(ci);
+                        if (card_obj == -1) continue;
+
+                        var owned = false;
+                        for (var pi = 0; pi < array_length(global.card_collection); pi++)
+                        {
+                            if (global.card_collection[pi] == card_obj) { owned = true; break; }
+                        }
+                        if (owned) owned_attacks[array_length(owned_attacks)] = ci;
+                    }
+
+                    if (array_length(owned_attacks) > 0)
+                    {
+                        var picked_attack = owned_attacks[irandom(array_length(owned_attacks) - 1)];
+                        obj_hand_controller.add_card_to_hand_id(picked_attack, 0, 0);
+                    }
+                    obj_hand_controller.add_card_to_hand(obj_card_scarlet, 0);
+                }
+                break;
+
+                case "ancient_battlefield":
+                    obj_hand_controller.char_3.ancient_battlefield_active = true;
+                    break;
+
+                case "blood_beast":
+                    obj_hand_controller.char_3.blood_beast_active = true;
+                    break;
+
+                case "sword_sheath":
+                    add_status(obj_hand_controller.char_3, StatusType.BLOOD,
+                        (obj_hand_controller.battle_round == 1) ? 6 : _v);
+                    break;
+
+                case "drawn_sheath":
+                    add_armor(obj_hand_controller.char_3, ArmorType.GENERAL,
+                        _v + get_status(obj_hand_controller.char_3, StatusType.DEXTERITY));
+                    if (array_length(obj_hand_controller.turn_played_ids) == 1)
+                    {
+                        obj_hand_controller.char_3.no_attack_this_turn = true;
+                        obj_hand_controller.char_3.next_strength_bonus += 3;
+                    }
+                    break;
+
+                case "red_dye":
+                {
+                    var current_strength = get_status(obj_hand_controller.char_3, StatusType.STRENGTH);
+                    if (obj_hand_controller.char_3.scarlet_retain_active)
+                        current_strength += character3_scarlet_hand_count() * 3;
+                    add_status(obj_hand_controller.char_3, StatusType.BLOOD,
+                        _v + ((current_strength > 3) ? 2 : 0));
+                    character3_add_scarlet_to_deck(1, false);
+                }
+                break;
+
+                case "play_top_two":
+                    character3_play_top_cards(_v);
+                    break;
+
+                case "red_tide":
+                    obj_hand_controller.char_3.red_tide_active = true;
+                    break;
+
+                case "sword_song":
+                    obj_hand_controller.char_3.sword_song_charges += _v;
+                    break;
+
+                case "scarlet_oath":
+                    if (instance_exists(_target))
+                        add_armor(_target, ArmorType.GENERAL,
+                            _v + get_status(obj_hand_controller.char_3, StatusType.BLOOD)
+                            + get_status(_target, StatusType.DEXTERITY));
+                    break;
+
+                case "flash_step":
+                    if (array_length(obj_hand_controller.back_chars) > 0)
+                    {
+                        var flash_target = obj_hand_controller.back_chars[0];
+                        if (char_is_alive(flash_target))
+                        {
+                            obj_hand_controller.bring_to_front(flash_target);
+                            add_armor(flash_target, ArmorType.GENERAL,
+                                _v + get_status(flash_target, StatusType.DEXTERITY));
+                        }
+                    }
+                    break;
+
+                case "terror":
+                    if (instance_exists(_enemy))
+                    {
+                        var armor_before_terror = unit_armor_total(_enemy);
+                        var armor_left_terror = _v;
+                        var cut_terror = min(_enemy.armor_general, armor_left_terror);
+                        _enemy.armor_general -= cut_terror;
+                        armor_left_terror -= cut_terror;
+                        cut_terror = min(_enemy.armor_physical, armor_left_terror);
+                        _enemy.armor_physical -= cut_terror;
+                        armor_left_terror -= cut_terror;
+                        cut_terror = min(_enemy.armor_magic, armor_left_terror);
+                        _enemy.armor_magic -= cut_terror;
+
+                        if (armor_before_terror <= 0)
+                            add_status(_enemy, StatusType.VULNERABLE, 1);
+                    }
+                    break;
+
+                case "blood_boil":
+                    obj_hand_controller.char_3.blood_boil_active = true;
+                    break;
+
+                case "blood_mark":
+                    if (instance_exists(_enemy)) _enemy.blood_mark_next_damage = true;
+                    break;
+
+                case "unload_guard":
+                    obj_hand_controller.char_3.unload_active = true;
+                    break;
+
+                case "gather_strength":
+                    obj_hand_controller.char_3.pending_sword_form += _v;
+                    break;
+
+                case "consume_scarlet_in_hand":
+                    for (var sci = array_length(obj_hand_controller.hand) - 1; sci >= 0; sci--)
+                    {
+                        var scard = obj_hand_controller.hand[sci];
+                        if (instance_exists(scard) && scard.card_id == 401)
+                            obj_hand_controller.remove_card_from_hand(scard);
+                    }
+                    break;
+
+                case "sword_shadow":
+                    obj_hand_controller.char_3.sword_shadow_active = true;
+                    break;
+
+                case "scar_decree":
+                    obj_hand_controller.char_3.scarlet_retain_active = true;
+                    break;
+
+                case "blood_history":
+                    obj_hand_controller.char_3.history_active = true;
+                    break;
+
+                case "endless_blood_war":
+                    obj_hand_controller.char_3.endless_blood_war_active = true;
+                    break;
+
+                case "war_flames":
+                    character3_draw_attacks_free(_v);
+                    break;
+
                 case "star_bond": dust.star_bond_active = true; break;
                 case "heal_allies":
                     for (var hi = 0; hi < array_length(obj_hand_controller.party_insts); hi++)
