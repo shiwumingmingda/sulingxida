@@ -367,6 +367,8 @@ if (selection_active)
         case "wind_feather": select_title = "选择一张【风刃】消耗"; break;
         case "convert_rockshield": select_title = "选择一张手牌，将其变为【岩盾】"; break;
         case "compress": select_title = "选择一张初始牌消耗"; break;
+        case "topdeck_draw_three": select_title = "选择一张手牌置入牌堆顶"; break;
+        case "mingche_end_turn": select_title = "明澈：选择一张手牌洗入抽牌堆（可以跳过）"; break;
     }
     draw_text_transformed(room_width * 0.5, room_height * 0.14, select_title, 1.5, 1.5, 0);
 
