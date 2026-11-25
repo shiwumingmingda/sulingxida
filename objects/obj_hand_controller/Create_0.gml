@@ -904,8 +904,24 @@ if (instance_exists(char_3))
 }
 if (instance_exists(char_2))
 {
+    // 尘的战斗内计数与状态在新战斗开始时统一清空。
+    char_2.starlight = 0;
+    char_2.starlight_used = false;
+    char_2.starlight_unlimited = false;
     char_2.scry_bonus = 0;
     char_2.mingche_active = false;
+    char_2.attack_cards_used_battle = 0;
+    char_2.assist_star_used = false;
+    char_2.purple_star = false;
+    char_2.star_damage_bonus_active = false;
+    char_2.star_bond_active = false;
+    char_2.team_echo_active = false;
+    char_2.night_guard_active = false;
+    char_2.star_walk_active = false;
+    char_2.next_attack_bonus = 0;
+    char_2.retreat_mark_target = noone;
+    char_2.showmanship_active = false;
+    char_2.showmanship_hit = false;
 }
 
 };
