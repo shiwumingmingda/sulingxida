@@ -2906,6 +2906,15 @@ function card_get_object(_n)
         case 208: return obj_card_0208;
         case 209: return obj_card_0209;
         case 210: return obj_card_0210;
+        case 211: return obj_card_0211;
+        case 212: return obj_card_0212;
+        case 213: return obj_card_0213;
+        case 214: return obj_card_0214;
+        case 215: return obj_card_0215;
+        case 216: return obj_card_0216;
+        case 217: return obj_card_0217;
+        case 218: return obj_card_0218;
+        case 219: return obj_card_0219;
         case 220: return obj_card_0220;
         case 221: return obj_card_0221;
         case 222: return obj_card_0222;
