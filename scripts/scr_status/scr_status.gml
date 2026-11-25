@@ -27,6 +27,7 @@ enum StatusType
     FROST_RAIN,   // 冰寒·落雨：下一张霜落对其他敌人重复
     ROCK_WALL,    // 地岳·镇垒：本回合岩盾前场化且护甲翻倍
     WITCH_CHANT,  // 女巫吟唱：本局每回合第一次初始牌延迟重放
+    VULNERABLE,   // 脆弱：受到的伤害提高50%，层数表示剩余回合
     COUNT        // 状态种类总数（放在最后，新状态加在它前面）
 	
 }
@@ -43,7 +44,8 @@ function status_get_sprite(_type)
         case StatusType.RESONANCE:
         case StatusType.OVERCHARGE: return spr_resonance;
 
-        case StatusType.STRENGTH_DOWN: return spr_strength_down;
+        case StatusType.STRENGTH_DOWN:
+        case StatusType.VULNERABLE: return spr_strength_down;
         case StatusType.MAGIC_DOWN: return spr_magic_down;
 
         case StatusType.STRENGTH:
@@ -83,6 +85,7 @@ function status_shows_count(_type)
         case StatusType.RESONANCE:
         case StatusType.STRENGTH_DOWN:
         case StatusType.MAGIC_DOWN:
+        case StatusType.VULNERABLE:
         case StatusType.STRENGTH:
         case StatusType.DEXTERITY:
         case StatusType.SWORD_FORM:
@@ -165,10 +168,11 @@ function character3_add_blood(_unit, _amount)
     var controller = instance_find(obj_hand_controller, 0);
     if (!instance_exists(controller) || controller.char_3 != _unit) return;
 
-    // 达到阈值时触发心羽天赋；若一次获得多层血色，保留超出的进度。
+    // 达到阈值时消耗6层血色，失去2点体力，并发现一张特殊剑招。
     while (_unit.talent_count >= _unit.talent_need)
     {
         _unit.talent_count -= _unit.talent_need;
+        lose_hp(_unit, 2);
         controller.request_discover(discover_pool_xinyu(controller.discover_46_unlocked), 3);
     }
 }
@@ -264,6 +268,7 @@ function status_get_name(_type)
         case StatusType.RESONANCE: return "元素共鸣";
         case StatusType.STRENGTH_DOWN: return "力量下降";
         case StatusType.MAGIC_DOWN: return "魔力下降";
+        case StatusType.VULNERABLE: return "脆弱";
         case StatusType.STRENGTH: return "力量";
         case StatusType.DEXTERITY: return "敏捷";
         case StatusType.SWORD_FORM: return "剑招";
@@ -296,6 +301,7 @@ function status_get_description(_type)
         case StatusType.RESONANCE: return "每个我方回合开始时，倒计时1：将一张随机元素牌洗入抽牌堆。";
         case StatusType.STRENGTH_DOWN: return "下次行动期间，每次物理攻击伤害减少对应层数。";
         case StatusType.MAGIC_DOWN: return "下次行动期间，每次魔法攻击伤害减少对应层数。";
+        case StatusType.VULNERABLE: return "受到的伤害提高50%，层数表示剩余回合数。";
         case StatusType.STRENGTH: return "每层使造成的物理伤害提高1点。";
         case StatusType.DEXTERITY: return "每层使获得的护甲提高1点。";
         case StatusType.SWORD_FORM: return "带有剑招标签的牌造成的伤害提高对应层数。";
